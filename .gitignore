@@ -16,3 +16,7 @@ tmp/
 
 # ignored executables shell scripts
 *.sh
+
+# assembly files
+*.s
+assembly/
