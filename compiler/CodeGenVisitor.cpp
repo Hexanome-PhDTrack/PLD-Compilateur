@@ -37,5 +37,11 @@ antlrcpp::Any CodeGenVisitor::visitConstAssign(ifccParser::ConstAssignContext *c
 
 antlrcpp::Any CodeGenVisitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
 {
+	int newVarIndex = (-4)*(++currentVarIndex);
+	int rightVarIndex = varIndexes.find(ctx->VAR(1)->getText())->second;
+	varIndexes.insert(std::pair<std::string, int>(ctx->VAR(0)->getText(), newVarIndex));
+
+	std::cout << "	movl " << rightVarIndex << "(%rbp), %eax\n";
+	std::cout << "	movl %eax, " << newVarIndex << "(%rbp)\n";
 	return 0;
 }
