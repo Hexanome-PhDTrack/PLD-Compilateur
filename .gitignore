@@ -13,6 +13,7 @@ tmp/
 
 # IDE files
 .idea
+tests/ifcc-test-output
 
 # ignored executables shell scripts
 *.sh
