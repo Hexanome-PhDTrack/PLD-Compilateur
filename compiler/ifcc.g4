@@ -2,10 +2,11 @@ grammar ifcc;
 
 axiom : prog ;
 
-prog : 'int' 'main' '(' ')' '{' EXPR* RETURN (VAR | CONST) ';' '}' ;
+prog : 'int' 'main' '(' ')' '{' expr* RETURN (VAR | CONST) ';' '}' ;
 
-EXPR: TYPE ' ' VAR '=' VAR ';'
-    | TYPE ' ' VAR '=' CONST ';';
+expr: TYPE VAR '=' VAR ';' # varAssign
+    | TYPE VAR '=' CONST ';' # constAssign
+    ;
 
 RETURN : 'return' ;
 TYPE: 'int';
