@@ -2,10 +2,9 @@ grammar ifcc;
 
 axiom : prog ;
 
-prog : 'int' 'main' '(' ')' '{' EXPR RETURN CONST ';' '}' ;
+prog : 'int' 'main' '(' ')' '{' EXPR* RETURN CONST ';' '}' ;
 
-EXPR: EXPR2;
-EXPR2: TYPE ' ' VAR '=' VAR ';'
+EXPR: TYPE ' ' VAR '=' VAR ';'
     | TYPE ' ' VAR '=' CONST ';';
 
 RETURN : 'return' ;
