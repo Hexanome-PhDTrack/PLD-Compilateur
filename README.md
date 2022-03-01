@@ -11,6 +11,12 @@ Install the following packages through `apt get install <package>`.
 
 * antlr4
 * libantlr4-runtime-dev
+* openjdk-11
+* g++
+* uuid-dev
+* unzip
+* cmake
+* pkg-config
 
 If using VSCode, install the following:
 
