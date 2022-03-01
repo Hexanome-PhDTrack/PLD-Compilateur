@@ -13,3 +13,6 @@ tmp/
 
 # IDE files
 .idea
+
+# ignored executables shell scripts
+*.sh
