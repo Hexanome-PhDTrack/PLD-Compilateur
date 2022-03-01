@@ -1,13 +1,15 @@
-install-antlr.sh
-compiler/build
-compiler/generated
-compiler/ifcc
-compiler/runmake_fedora.sh
-.idea
+# antlr4
 antlr/
 antlr.tmp/
 
 # compiled files
 compiler/build
+compiler/generated
 *.o
-ifcc
+compiler/ifcc
+
+# exclude temporary files
+tmp/
+
+# IDE files
+.idea
