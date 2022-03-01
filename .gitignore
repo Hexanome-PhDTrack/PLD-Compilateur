@@ -1,6 +1,7 @@
 # antlr4
 antlr/
 antlr.tmp/
+compiler/.antlr
 
 # compiled files
 compiler/build
@@ -14,12 +15,11 @@ tmp/
 # IDE files
 .idea
 
-# ignored executables shell scripts
-*.sh
-
 # assembly files
 *.s
 assembly/
 
+# personal config files
+*.env
+
 tests/ifcc-test-output
-compiler/.antlr
