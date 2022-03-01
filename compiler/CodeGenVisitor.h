@@ -12,7 +12,7 @@ class  CodeGenVisitor : public ifccBaseVisitor {
 		virtual antlrcpp::Any visitConstAssign(ifccParser::ConstAssignContext *ctx) override;
 
 	private:
-		int current_var_index = 0;
-		std::map<std::string, int> var_indexes;
+		int currentVarIndex = 0;
+		std::map<std::string, int> varIndexes;
 };
 
