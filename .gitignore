@@ -11,3 +11,4 @@ antlr.tmp/
 compiler/build
 *.o
 ifcc
+compiler/.antlr
