@@ -5,3 +5,8 @@ compiler/ifcc
 compiler/runmake_fedora.sh
 .idea
 antlr/
+
+# compiled files
+compiler/build
+*.o
+ifcc
