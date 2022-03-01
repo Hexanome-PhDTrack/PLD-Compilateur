@@ -15,3 +15,16 @@ The example bellow shows how to use it, to compile `testfiles/1_return42.c` insi
         movl    $42, %eax
         ret
 ```
+
+
+### Use `ifcc-test.py`
+
+This simple CLI program is used to automate testing, with Python.
+
+```shell
+(base)  ❮ onyr ★  kenzae❯ ❮ tests❯❯ python -V
+Python 3.7.9
+(base)  ❮ onyr ★  kenzae❯ ❮ tests❯❯ python ifcc-test.py 
+usage: ifcc-test.py [-h] [-d] [-v] [-w PATH] PATH [PATH ...]
+ifcc-test.py: error: the following arguments are required: PATH
+```
