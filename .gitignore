@@ -13,3 +13,4 @@ tmp/
 
 # IDE files
 .idea
+tests/ifcc-test-output
