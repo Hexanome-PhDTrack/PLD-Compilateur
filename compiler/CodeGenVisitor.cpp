@@ -2,19 +2,39 @@
 
 antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx) 
 {
-	int retval = stoi(ctx->CONST()->getText());
 	// USE TABS NOT SPACES YOU NERD
 	std::cout<<
 		".globl	main\n"
 		" main: \n"
 		"	# prologue\n"
 		"	pushq %rbp # save %rbp on the stack\n"
-		"	movq %rsp, %rbp # define %rbp for the current function\n"
-		"	movl	$"<<retval<<", %eax\n"
-		"	# epilogue\n"
+		"	movq %rsp, %rbp # define %rbp for the current function\n";
+
+		visitChildren(ctx);
+
+		if(ctx->CONST()){
+			int retval = stoi(ctx->CONST()->getText());
+			std::cout << "	movl $"<<retval<<", %eax\n";
+		}
+		else if(ctx->VAR()){
+			std::cout << "	movl " << var_indexes.find(ctx->VAR()->getText())->second << "(%rbp), %eax\n";
+		}
+
+		std::cout << "	# epilogue\n"
 		"	popq %rbp # restore %rbp from the stack\n"
 		"	ret # return to the caller (here the shell)\n";
 
 	return 0;
 }
 
+antlrcpp::Any CodeGenVisitor::visitConstAssign(ifccParser::ConstAssignContext *ctx)
+{
+	int new_var_index = (-4)*(++current_var_index);
+	var_indexes.insert(std::pair<std::string, int>(ctx->VAR()->getText(), new_var_index));
+	std::cout << "	movl $" << stoi(ctx->CONST()->getText()) << ", " << new_var_index << "(%rbp)\n";
+	return 0;
+}
+
+antlrcpp::Any CodeGenVisitor::visitVarAssign(ifccParser::VarAssignContext *ctx){
+	return 0;
+}
