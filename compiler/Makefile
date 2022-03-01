@@ -3,6 +3,22 @@ ANTLRJAR=../antlr/jar/antlr-4.9.2-complete.jar
 ANTLRINC=../antlr/include
 ANTLRLIB=../antlr/lib/libantlr4-runtime.a
 
+# TARGET specific parameters
+include .env # https://simplernerd.com/make-env/
+
+ifeq ($(TARGET),ubuntu)
+  $(info TARGET set to ubuntu.)
+  # default Ubuntu paths, using antlr4 and libantlr4-runtime-dev packages
+  ANTLRJAR=/usr/share/java/stringtemplate4.jar:/usr/share/java/antlr4.jar:/usr/share/java/antlr4-runtime.jar:/usr/share/java/antlr3-runtime.jar/:/usr/share/java/treelayout.jar
+  ANTLRINC=/usr/include/antlr4-runtime
+  ANTLRLIB=-lantlr4-runtime
+else ifeq ($(TARGET),fedora)
+  $(info TARGET set to fedora.)
+  ANTLRJAR=/usr/share/java/antlr4/antlr4.jar:/usr/share/java/antlr3-runtime.jar:/usr/share/java/antlr4/antlr4-runtime.jar:/usr/share/java/stringtemplate4/ST4.jar:/usr/share/java/treelayout/org.abego.treelayout.core.jar
+  ANTLRINC=/usr/include/antlr4-runtime
+  ANTLRLIB=/usr/lib64/libantlr4-runtime.so
+endif
+
 CC=g++
 CCFLAGS=-g -c -std=c++17 -I$(ANTLRINC) -Wno-attributes # -Wno-defaulted-function-deleted -Wno-unknown-warning-option
 LDFLAGS=-g
@@ -58,3 +74,7 @@ gui:
 clean:
 	rm -rf build generated
 	rm -f ifcc
+
+testvar:
+	@echo $(TARGET)
+	@echo $(ANTLRJAR)
