@@ -13,7 +13,6 @@ tmp/
 
 # IDE files
 .idea
-tests/ifcc-test-output
 
 # ignored executables shell scripts
 *.sh
@@ -21,3 +20,6 @@ tests/ifcc-test-output
 # assembly files
 *.s
 assembly/
+
+tests/ifcc-test-output
+compiler/.antlr
