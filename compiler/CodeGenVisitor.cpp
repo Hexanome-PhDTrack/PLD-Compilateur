@@ -3,10 +3,17 @@
 antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx) 
 {
 	int retval = stoi(ctx->CONST()->getText());
-	std::cout<<".globl	main\n"
+	// USE TABS NOT SPACES YOU NERD
+	std::cout<<
+		".globl	main\n"
 		" main: \n"
-		" 	movl	$"<<retval<<", %eax\n"
-		" 	ret\n";
+		"	# prologue\n"
+		"	pushq %rbp # save %rbp on the stack\n"
+		"	movq %rsp, %rbp # define %rbp for the current function\n"
+		"	movl	$"<<retval<<", %eax\n"
+		"	# epilogue\n"
+		"	popq %rbp # restore %rbp from the stack\n"
+		"	ret # return to the caller (here the shell)\n";
 
 	return 0;
 }
