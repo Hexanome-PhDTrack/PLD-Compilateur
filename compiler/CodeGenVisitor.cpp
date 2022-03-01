@@ -27,21 +27,34 @@ antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
 	return 0;
 }
 
-antlrcpp::Any CodeGenVisitor::visitConstAssign(ifccParser::ConstAssignContext *ctx)
+antlrcpp::Any CodeGenVisitor::visitExpr(ifccParser::ExprContext *ctx)
 {
-	int newVarIndex = (-4)*(++currentVarIndex);
-	varIndexes.insert(std::pair<std::string, int>(ctx->VAR()->getText(), newVarIndex));
-	std::cout << "	movl $" << stoi(ctx->CONST()->getText()) << ", " << newVarIndex << "(%rbp)\n";
-	return 0;
+	return visitChildren(ctx);
 }
 
 antlrcpp::Any CodeGenVisitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
 {
+	if(ctx->VAR(1)){
+		std::cout << "	movl " << varIndexes.find(ctx->VAR(1)->getText())->second << "(%rbp), %eax\n";
+		std::cout << "	movl %eax, " << varIndexes.find(ctx->VAR(0)->getText())->second << "(%rbp)\n";
+	}
+	else if(ctx->CONST()){
+		std::cout << "	movl $" << stoi(ctx->CONST()->getText()) << ", " << varIndexes.find(ctx->VAR(0)->getText())->second << "(%rbp)\n";
+	}
+	return 0;
+}
+
+antlrcpp::Any CodeGenVisitor::visitVarDefine(ifccParser::VarDefineContext *ctx)
+{
 	int newVarIndex = (-4)*(++currentVarIndex);
-	int rightVarIndex = varIndexes.find(ctx->VAR(1)->getText())->second;
 	varIndexes.insert(std::pair<std::string, int>(ctx->VAR(0)->getText(), newVarIndex));
 
-	std::cout << "	movl " << rightVarIndex << "(%rbp), %eax\n";
-	std::cout << "	movl %eax, " << newVarIndex << "(%rbp)\n";
+	if(ctx->VAR(1)){
+		std::cout << "	movl " << varIndexes.find(ctx->VAR(1)->getText())->second << "(%rbp), %eax\n";
+		std::cout << "	movl %eax, " << newVarIndex << "(%rbp)\n";
+	}
+	else if(ctx->CONST()){
+		std::cout << "	movl $" << stoi(ctx->CONST()->getText()) << ", " << newVarIndex << "(%rbp)\n";
+	}
 	return 0;
 }

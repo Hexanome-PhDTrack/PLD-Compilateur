@@ -4,9 +4,13 @@ axiom : prog ;
 
 prog : 'int' 'main' '(' ')' '{' expr* RETURN (VAR | CONST) ';' '}' ;
 
-expr: TYPE VAR '=' VAR ';' # varAssign
-    | TYPE VAR '=' CONST ';' # constAssign
+expr: varAssign
+    | varDefine
     ;
+
+varAssign: VAR '=' (VAR | CONST) ';';
+
+varDefine: TYPE VAR ('=' (VAR | CONST))? ';';
 
 RETURN : 'return' ;
 TYPE: 'int';
