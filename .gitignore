@@ -1,0 +1,6 @@
+install-antlr.sh
+compiler/build
+compiler/generated
+compiler/ifcc
+compiler/runmake_fedora.sh
+.idea
