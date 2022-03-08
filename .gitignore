@@ -24,3 +24,7 @@ assembly/
 
 tests/ifcc-test-output
 .history
+cmake-build-debug
+.vscode
+venv
+CMakeLists.txt
