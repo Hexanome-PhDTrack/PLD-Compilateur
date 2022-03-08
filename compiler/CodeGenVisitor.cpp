@@ -41,7 +41,7 @@ antlrcpp::Any CodeGenVisitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
 	VarData computedVariable = visit(ctx->computedValue());
 	VarData leftVar = varManager.getVariable(ctx->VAR()->getText());
 
-	std::cout << "	movl " << computedVariable.GetIndex() << "(%rbp), %eax\n";
+	std::cout << "	movl " << computedVariable.GetIndex() << "(%rbp), %eax\n"; // use eax => can't use movl on 2 stack pointer
 	std::cout << "	movl %eax, " << leftVar.GetIndex() << "(%rbp)\n";
 	return 0;
 }
@@ -61,7 +61,7 @@ antlrcpp::Any CodeGenVisitor::visitVarDefine(ifccParser::VarDefineContext *ctx)
 
 antlrcpp::Any CodeGenVisitor::visitValue(ifccParser::ValueContext *ctx)
 {
-	VarData newVar = varManager.addVariable("#tmp", ctx->getText(), ctx->getStart()->getLine(), TYPE_INT);
+	VarData newVar = varManager.addVariable("#tmp", ctx->getText(), ctx->getStart()->getLine(), TYPE_INT); // variable temp to compute
 
 	if (ctx->VAR())
 	{
@@ -85,18 +85,47 @@ antlrcpp::Any CodeGenVisitor::visitAddSub(ifccParser::AddSubContext *ctx)
 	VarData leftVar = visit(ctx->computedValue(0));
 	VarData rightVar = visit(ctx->computedValue(1));
 
-	std::cout << "	movl " << leftVar.GetIndex() << "(%rbp), %eax\n";
+	std::cout << "	movl " << leftVar.GetIndex() << "(%rbp), %eax\n"; // get left var in temp
 	std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n";
-	std::cout << "	movl " << rightVar.GetIndex() << "(%rbp), %eax\n";
+
+	std::cout << "	movl " << rightVar.GetIndex() << "(%rbp), %eax\n"; // get right var in eax
 
 	if (operatorSymbol == "+")
 	{
-		std::cout << "	addl %eax, " << newVar.GetIndex() << "(%rbp)\n";
+		std::cout << "	addl %eax, " << newVar.GetIndex() << "(%rbp)\n"; // add eax and temp in temp
 	}
 
 	else if (operatorSymbol == "-")
 	{
-		std::cout << "	subl %eax, " << newVar.GetIndex() << "(%rbp)\n";
+		std::cout << "	subl %eax, " << newVar.GetIndex() << "(%rbp)\n"; // substract eax and temp in temp
+	}
+
+	return newVar;
+}
+
+antlrcpp::Any CodeGenVisitor::visitMulDiv(ifccParser::MulDivContext *ctx)
+{
+	VarData newVar = varManager.addVariable("#tmp", ctx->getText(), ctx->getStart()->getLine(), TYPE_INT);
+	
+	std::string operatorSymbol = ctx->OP_MUL_DIV()->getText();
+	VarData leftVar = visit(ctx->computedValue(0));
+	VarData rightVar = visit(ctx->computedValue(1));
+
+	std::cout << "	movl " << leftVar.GetIndex() << "(%rbp), %eax\n"; // get left var in temp
+	std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n";
+
+	std::cout << "	movl " << rightVar.GetIndex() << "(%rbp), %eax\n"; // get right var in eax
+
+	if (operatorSymbol == "*")
+	{
+		// TODO : mul
+		std::cout << "	addl %eax, " << newVar.GetIndex() << "(%rbp)\n"; // add eax and temp in temp
+	}
+
+	else if (operatorSymbol == "/")
+	{	
+		// TODO : div
+		std::cout << "	subl %eax, " << newVar.GetIndex() << "(%rbp)\n"; // substract eax and temp in temp
 	}
 
 	return newVar;
