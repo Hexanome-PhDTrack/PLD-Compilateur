@@ -2,12 +2,14 @@
 antlr/
 antlr.tmp/
 compiler/.antlr
+generated
 
 # compiled files
 compiler/build
 compiler/generated
 *.o
 compiler/ifcc
+bin/
 
 # exclude temporary files
 tmp/
@@ -25,7 +27,6 @@ assembly/
 
 # personal config files
 *.env
-.vscode
 
 # testing
 tests/ifcc-test-output

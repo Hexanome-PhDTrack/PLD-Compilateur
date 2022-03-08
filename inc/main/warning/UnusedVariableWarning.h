@@ -1,22 +1,22 @@
 #pragma once
 
 #include "Warning.h"
-#include "../variable/VarData.h"
+#include "variable/VarData.h"
 
-class MultipleVariableDeclarationWarning : public virtual Warning {
+class UnusedVariableWarning : public virtual Warning {
 private: 
     VarData & varData;
 
 public:
-    MultipleVariableDeclarationWarning(
+    UnusedVariableWarning(
         VarData & varData
     ): 
-        Warning("WARNING: Multiple declarations of variable."), 
+        Warning("WARNING: Unused variable."), 
         varData(varData) 
     {
 
     }
-    ~MultipleVariableDeclarationWarning();
+    ~UnusedVariableWarning();
 
     inline void Log() {
         std::cout << this->warningMessage << std::endl;
