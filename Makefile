@@ -59,21 +59,20 @@ $(BIN_MAIN): $(OBJS_MAIN) # linking main
 	@mkdir -p bin
 	$(CC) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
+obj/%.o: src/%.cpp # compiling main
+	mkdir -p $(dir $@)
+	$(CC) -o $@ -c $^ $(CFLAGS)
+
 # generate the C++ implementation of our Lexer/Parser/Visitor
-#
 # cf https://stackoverflow.com/a/3077254/117814 for the multiple-file trick
-src/main/generated/ifcc%.cpp: ifcc.g4
+antlr: ifcc.g4
 	@mkdir -p tmp
 	java -cp $(ANTLRJAR) org.antlr.v4.Tool  -visitor -no-listener -Dlanguage=Cpp -o tmp ifcc.g4
 	mv tmp/*.h inc/main/generated/
 	mv tmp/*.cpp src/main/generated/
 
-obj/%.o: src/%.cpp # compiling main
-	mkdir -p $(dir $@)
-	$(CC) -o $@ -c $^ $(CFLAGS)
-
 clean:
-	rm -rf bin/* obj/* generated/* tmp/*
+	rm -rf bin/* obj/* generated/* tmp/* inc/main/generated/* src/main/generated/*
 
 run: $(BIN_MAIN)
 	$(ECHO) "$(TURQUOISE_COLOR)*** Executing main *** $(NO_COLOR)"

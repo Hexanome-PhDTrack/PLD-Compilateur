@@ -1,14 +1,13 @@
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <cstdlib>
-
 #include "antlr4-runtime.h"
 #include "generated/ifccLexer.h"
 #include "generated/ifccParser.h"
 #include "generated/ifccBaseVisitor.h"
-
 #include "CodeGenVisitor.h"
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <cstdlib>
 
 using namespace antlr4;
 using namespace std;

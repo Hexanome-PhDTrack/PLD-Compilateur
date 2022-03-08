@@ -1,6 +1,5 @@
 # 🛠 PLD-Compilateur
 
-
 ## 🚧 Installation
 
 ### packages
@@ -27,3 +26,9 @@ If using VSCode, install the following:
 If you use `VSCode`, install the following
 
 * `ms-vscode.cpptools`: extention comming with GDB debugger integration.
+
+## Compilation
+
+1. `make antlr` to compile ANTLR4 files
+2. `make` to compile the C++ files
+3. `./bin/ifcc <path/file.c>` to use the produced executable.

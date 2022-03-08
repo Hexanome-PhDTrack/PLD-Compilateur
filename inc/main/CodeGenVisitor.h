@@ -7,18 +7,18 @@
 
 #include <map>
 
-class WarningChecker; // fix circular dependency
-
 class  CodeGenVisitor : public ifccBaseVisitor {
 	private:
 		VariableManager varManager;
 
-		//std::unique_ptr<WarningChecker> warningChecker;
+		// https://stackoverflow.com/questions/9954518/stdunique-ptr-with-an-incomplete-type-wont-compile
+		//WarningChecker * warningChecker; // need full definition of WarningChecker (no partial one from circular import)
 		//WarningChecker * warningChecker;
 		void checkWarnings();
 
 	public:
 		CodeGenVisitor();
+		~CodeGenVisitor();
 		virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override;
 		virtual antlrcpp::Any visitExpr(ifccParser::ExprContext *ctx) override;
 		virtual antlrcpp::Any visitVarAssign(ifccParser::VarAssignContext *ctx) override;
@@ -29,7 +29,5 @@ class  CodeGenVisitor : public ifccBaseVisitor {
 
 		// getters
 		VariableManager getManager() { return varManager; }
-		
-		
 };
 

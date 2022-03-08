@@ -1,9 +1,14 @@
 #include "CodeGenVisitor.h"
-#include "warning/WarningChecker.h" // fix circular dependency
 
 CodeGenVisitor::CodeGenVisitor() {
 	//warningChecker = std::make_unique<WarningChecker>();
-	//warningChecker = new WarningChecker();	
+	//warningChecker = new WarningChecker();
+	//warningChecker = std::unique_ptr<WarningChecker>(new WarningChecker());
+}
+
+CodeGenVisitor::~CodeGenVisitor() {
+	//delete warningChecker;
+	//delete warningChecker;
 }
 
 antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)

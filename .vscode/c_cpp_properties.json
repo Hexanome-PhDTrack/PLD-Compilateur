@@ -5,6 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/inc/*",
                 "${workspaceFolder}/inc/main/*",
+                "${workspaceFolder}/src/*",
+                "${workspaceFolder}/src/main/*",
                 "/usr/include/antlr4-runtime/*"
             ],
             "defines": [],
