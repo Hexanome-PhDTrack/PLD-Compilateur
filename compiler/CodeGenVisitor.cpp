@@ -55,6 +55,7 @@ antlrcpp::Any CodeGenVisitor::visitVarDefine(ifccParser::VarDefineContext * ctx)
 	// define variable data
 
 	// TODO: fix this
+	/*
 	size_t lineNumber = ctx->getStart()->getLine();
 	std::string varName = ctx->VAR()->getText();
 	std::string lineContext = ctx->getText();
@@ -69,7 +70,7 @@ antlrcpp::Any CodeGenVisitor::visitVarDefine(ifccParser::VarDefineContext * ctx)
 				TYPE_INT
 			)
 		)
-	);
+	);*/
 
 	//varData.insert(std::pair<std::string, int>(ctx->VAR(0)->getText(), newVarIndex));
 
