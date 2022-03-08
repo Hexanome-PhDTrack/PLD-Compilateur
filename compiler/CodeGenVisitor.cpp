@@ -1,87 +1,126 @@
 #include "CodeGenVisitor.h"
 
-antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx) {
-    // USE TABS NOT SPACES YOU NERD
-#ifdef __APPLE__
-    std::cout <<
-              ".globl _main\n"
-              " _main: \n";
-#else
-    std::cout<<
-        ".globl	main\n"
-        " main: \n";
-#endif
-    std::cout << "	# prologue\n"
-                 "	pushq %rbp # save %rbp on the stack\n"
-                 "	movq %rsp, %rbp # define %rbp for the current function\n";
+VarData CodeGenVisitor::createVariable(std::string varName, std::string lineContext, size_t lineNumber, TypeName typeName)
+{
+	int newVarIndex = (-4) * (++currentVarIndex);
+	VarData newVar = VarData(
+		newVarIndex,
+		varName,
+		lineContext,
+		lineNumber,
+		TYPE_INT
+	);
 
-    visitChildren(ctx);
+	// define variable data
+	varData.insert(
+		std::pair<std::string, VarData>(
+			varName,
+			newVar
+		)
+	);
 
-		std::cout << "	# epilogue\n"
-		"	popq %rbp # restore %rbp from the stack\n"
-		"	ret # return to the caller (here the shell)\n";
-
-    return 0;
+	return newVar;
 }
 
-antlrcpp::Any CodeGenVisitor::visitExpr(ifccParser::ExprContext *ctx) {
-    return visitChildren(ctx);
+antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
+{
+	// USE TABS NOT SPACES YOU NERD
+#ifdef __APPLE__
+	std::cout << ".globl _main\n"
+				 " _main: \n";
+#else
+	std::cout << ".globl	main\n"
+				 " main: \n";
+#endif
+	std::cout << "	# prologue\n"
+				 "	pushq %rbp # save %rbp on the stack\n"
+				 "	movq %rsp, %rbp # define %rbp for the current function\n";
+
+	for(auto expr : ctx->expr())
+	{
+		visit(expr);
+	}
+
+	int returnVarIndex = visit(ctx->computedValue());
+	std::cout << "	movl " << returnVarIndex << "(%rbp), %eax\n";
+
+	std::cout << "	# epilogue\n"
+				 "	popq %rbp # restore %rbp from the stack\n"
+				 "	ret # return to the caller (here the shell)\n";
+
+	return 0;
+}
+
+antlrcpp::Any CodeGenVisitor::visitExpr(ifccParser::ExprContext *ctx)
+{
+	return visitChildren(ctx);
 }
 
 antlrcpp::Any CodeGenVisitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
 {
-	if(ctx->VAR(1)){
-		std::cout << "	movl " << varData.find(ctx->VAR(1)->getText())->second.index << "(%rbp), %eax\n";
-		std::cout << "	movl %eax, " << varData.find(ctx->VAR(0)->getText())->second.index << "(%rbp)\n";
-	}
-	else if(ctx->CONST()){
-		std::cout << "	movl $" << stoi(ctx->CONST()->getText()) << ", " << varData.find(ctx->VAR(0)->getText())->second.index << "(%rbp)\n";
-	}
+	int computedVariableIndex = visit(ctx->computedValue());
+	VarData leftVar = varData.find(ctx->VAR()->getText())->second;
+
+	std::cout << "	movl " << computedVariableIndex << "(%rbp), %eax\n";
+	std::cout << "	movl %eax, " << leftVar.GetIndex() << "(%rbp)\n";
 	return 0;
 }
 
-antlrcpp::Any CodeGenVisitor::visitVarDefine(ifccParser::VarDefineContext * ctx)
+antlrcpp::Any CodeGenVisitor::visitVarDefine(ifccParser::VarDefineContext *ctx)
 {
-	int newVarIndex = (-4)*(++currentVarIndex);
 
-	// define variable data
-
-	// TODO: fix this
-	size_t lineNumber = ctx->getStart()->getLine();
-	std::string varName = ctx->VAR()->getText();
-	std::string lineContext = ctx->getText();
-	varData.insert(
-		std::pair<std::string, VarData>(
-			ctx->VAR(1)->getText(),
-			VarData(
-				newVarIndex,
-				varName,
-				lineContext,
-				lineNumber,
-				TYPE_INT
-			)
-		)
-	);
-
-	//varData.insert(std::pair<std::string, int>(ctx->VAR(0)->getText(), newVarIndex));
-
-	if(ctx->VAR(1)){
-		std::cout << "	movl " << varData.find(ctx->VAR(1)->getText())->second.index << "(%rbp), %eax\n";
-		std::cout << "	movl %eax, " << newVarIndex << "(%rbp)\n";
+	VarData newVar = createVariable(ctx->VAR()->getText(), ctx->getText(), ctx->getStart()->getLine(), TYPE_INT);
+	if(ctx->computedValue())
+	{
+		int computedVariableIndex = visit(ctx->computedValue());
+		std::cout << "	movl " << computedVariableIndex << "(%rbp), %eax\n";
+		std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n";
 	}
-	else if(ctx->CONST()){
-		std::cout << "	movl $" << stoi(ctx->CONST()->getText()) << ", " << newVarIndex << "(%rbp)\n";
-	}
+	
 	return 0;
 }
 
 antlrcpp::Any CodeGenVisitor::visitValue(ifccParser::ValueContext *ctx)
 {
-	if(ctx->VAR()) {
-		std::cout << varIndexes.find(ctx->VAR()->getText())->second << "(%rbp)";
+	std::string varName = "#tmp" + (currentVarIndex + 1);
+	VarData newVar = createVariable(varName, ctx->getText(), ctx->getStart()->getLine(), TYPE_INT);
+
+	if (ctx->VAR())
+	{
+		std::cout << "	movl " << varData.find(ctx->VAR()->getText())->second.GetIndex() << "(%rbp), %eax\n";
+		std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n";
 	}
 
-	else if(ctx->CONST()) {
-		std::cout << "$" << stoi(ctx->CONST()->getText());
+	if (ctx->CONST())
+	{
+		std::cout << "	movl $" << stoi(ctx->CONST()->getText()) << ", " << newVar.GetIndex() << "(%rbp)\n";
 	}
+
+	return newVar.GetIndex();
+}
+
+antlrcpp::Any CodeGenVisitor::visitAddSub(ifccParser::AddSubContext *ctx)
+{
+	std::string varName = "#tmp" + (currentVarIndex + 1);
+	VarData newVar = createVariable(varName, ctx->getText(), ctx->getStart()->getLine(), TYPE_INT);
+	
+	std::string operatorSymbol = ctx->OP_ADD_SUB()->getText();
+	int leftVarIndex = visit(ctx->computedValue(0));
+	int rightVarIndex = visit(ctx->computedValue(1));
+
+	std::cout << "	movl " << leftVarIndex << "(%rbp), %eax\n";
+	std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n";
+	std::cout << "	movl " << rightVarIndex << "(%rbp), %eax\n";
+
+	if (operatorSymbol == "+")
+	{
+		std::cout << "	addl %eax, " << newVar.GetIndex() << "(%rbp)\n";
+	}
+
+	else if (operatorSymbol == "-")
+	{
+		std::cout << "	subl %eax, " << newVar.GetIndex() << "(%rbp)\n";
+	}
+
+	return newVar.GetIndex();
 }

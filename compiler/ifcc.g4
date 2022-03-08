@@ -12,10 +12,9 @@ varAssign: VAR '=' computedValue ';';
 
 varDefine: TYPE VAR ('=' computedValue)? ';';
 
-computedValue: computedValue2;
-computedValue2: computedValue2 OP_MUL_DIV computedValue2 # mulDiv
-    | computedValue2 OP_ADD_SUB computedValue2 # addSub
-    | '(' computedValue2 ')' # parenthesis
+computedValue: computedValue OP_MUL_DIV computedValue # mulDiv
+    | computedValue OP_ADD_SUB computedValue # addSub
+    | '(' computedValue ')' # parenthesis
     | (VAR | CONST) # value
     ;
 

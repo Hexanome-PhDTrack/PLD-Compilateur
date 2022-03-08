@@ -1,5 +1,7 @@
+#pragma once
+
 #include <string>
-#include "variable/TypeName.h"
+#include "TypeName.h"
 
 class VarData {
 
@@ -12,13 +14,6 @@ private:
     TypeName typeName;
     
 public:
-    int index;
-    std::string varName;
-    std::string lineContext;
-    size_t lineNumber = 0;
-
-    TypeName typeName;
-
     VarData(
         int index,
         std::string varName,
