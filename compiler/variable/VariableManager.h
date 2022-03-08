@@ -25,7 +25,6 @@ class VariableManager{
          * @brief Add the Variable object with a computed index
          * 
          * @param varName the name of the variable (if name = #temp, considere it as a temp variable and append the number of temp variable. recupere the full name in the vardata)
-         * @param lineContext the full line of the variable appeare for the first time
          * @param lineNumber the line number
          * @param typeName the type of the variable
          * @return VarData 
