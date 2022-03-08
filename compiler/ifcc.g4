@@ -2,15 +2,24 @@ grammar ifcc;
 
 axiom : prog ;
 
-prog : 'int' 'main' '(' ')' '{' expr* RETURN (VAR | CONST) ';' '}' ;
+prog : 'int' 'main' '(' ')' '{' expr* RETURN computedValue ';' '}' ;
 
 expr: varAssign
     | varDefine
     ;
 
-varAssign: VAR '=' (VAR | CONST) ';';
+varAssign: VAR '=' computedValue ';';
 
-varDefine: TYPE VAR ('=' (VAR | CONST))? ';';
+varDefine: TYPE VAR ('=' computedValue)? ';';
+
+computedValue: computedValue2;
+computedValue2: computedValue2 '+' computedValue2
+    | computedValue2 '-' computedValue2
+    | computedValue2 '*' computedValue2
+    | computedValue2 '/' computedValue2
+    | '(' computedValue2 ')'
+    | (VAR | CONST)
+    ;
 
 RETURN : 'return' ;
 TYPE: 'int';

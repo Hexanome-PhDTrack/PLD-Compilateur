@@ -12,14 +12,6 @@ antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
 
 		visitChildren(ctx);
 
-		if(ctx->CONST()){
-			int retval = stoi(ctx->CONST()->getText());
-			std::cout << "	movl $"<<retval<<", %eax\n";
-		}
-		else if(ctx->VAR()){
-			std::cout << "	movl " << varIndexes.find(ctx->VAR()->getText())->second << "(%rbp), %eax\n";
-		}
-
 		std::cout << "	# epilogue\n"
 		"	popq %rbp # restore %rbp from the stack\n"
 		"	ret # return to the caller (here the shell)\n";
@@ -57,4 +49,9 @@ antlrcpp::Any CodeGenVisitor::visitVarDefine(ifccParser::VarDefineContext *ctx)
 		std::cout << "	movl $" << stoi(ctx->CONST()->getText()) << ", " << newVarIndex << "(%rbp)\n";
 	}
 	return 0;
+}
+
+antlrcpp::Any CodeGenVisitor::visitComputedValue2(ifccParser::ComputedValue2Context *ctx)
+{
+	
 }
