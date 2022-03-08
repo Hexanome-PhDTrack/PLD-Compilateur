@@ -13,6 +13,7 @@
  */
 class VariableManager{
     public:
+        static const std::string TEMP_BASE_NAME;
         /**
          * @brief Get the Variable object with the name
          * 
@@ -70,4 +71,20 @@ class VariableManager{
          * 
          */
         std::map<std::string, VarData> varDataCollection;
+
+        /**
+         * @brief compute the next index and update freeIndex or currentVarIndex
+         * 
+         * @return int the next index (considere to be used)
+         */
+        int computeNextIndex();
+
+        /**
+         * @brief test if a var is a temp one
+         * 
+         * @param varName the variable name
+         * @return true if the variable is temp
+         * @return false 
+         */
+        bool isTemp(std::string varName);
 };
