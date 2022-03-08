@@ -12,13 +12,6 @@ private:
     TypeName typeName;
     
 public:
-    int index;
-    std::string varName;
-    std::string lineContext;
-    size_t lineNumber = 0;
-
-    TypeName typeName;
-
     VarData(
         int index,
         std::string varName,
@@ -69,6 +62,14 @@ public:
     }
     inline void SetTypeName(TypeName typeName) {
         this->typeName = typeName;
+    }
+
+    inline std::string ToString() {
+        return "VarData: " + std::to_string(index) 
+            + ", " + varName 
+            + ", [" + std::to_string(lineNumber) + "]"
+            + " " + lineContext;
+            
     }
 
 };
