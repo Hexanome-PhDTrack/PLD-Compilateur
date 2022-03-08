@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Warning.h"
-#include "variable/VarData.h"
+#include "../variable/VarData.h"
 
 class UndeclaredVariableWarning : public virtual Warning {
 private: 
