@@ -43,13 +43,13 @@ class VariableManager{
          * 
          * @return std::vector<VarData> all the temp variable
          */
-        std::vector<VarData> getTempVariable();
+        std::vector<VarData> getTempVariables();
         /**
          * @brief Get the No Temp Variable object
          * 
          * @return std::vector<VarData> all the no temp variable
          */
-        std::vector<VarData> getNoTempVariable();
+        std::vector<VarData> getNoTempVariables();
 
         VariableManager(){}
         virtual ~VariableManager() {}
