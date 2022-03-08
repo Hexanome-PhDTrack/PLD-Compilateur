@@ -22,7 +22,7 @@ VarData VariableManager::getVariable(std::string name){
     return varDataCollection.find(name) -> second;
 }
 
-VarData VariableManager::addVariable(std::string varName, std::string lineContext, size_t lineNumber, TypeName typeName){
+VarData VariableManager::addVariable(std::string varName, size_t lineNumber, TypeName typeName){
     int newIndex = computeNextIndex();
     // if temp var, update with nex index
     if(varName == TEMP_BASE_NAME){
@@ -31,7 +31,6 @@ VarData VariableManager::addVariable(std::string varName, std::string lineContex
     VarData newVar = VarData(
             newIndex,
             varName,
-            lineContext,
             lineNumber,
             typeName
         );

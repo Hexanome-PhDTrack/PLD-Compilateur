@@ -30,7 +30,7 @@ class VariableManager{
          * @param typeName the type of the variable
          * @return VarData 
          */
-        VarData addVariable(std::string varName, std::string lineContext, size_t lineNumber, TypeName typeName);
+        VarData addVariable(std::string varName, size_t lineNumber, TypeName typeName);
         /**
          * @brief remove a variable temp
          * 

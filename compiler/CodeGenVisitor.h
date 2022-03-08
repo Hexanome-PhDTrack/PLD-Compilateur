@@ -12,6 +12,8 @@ class WarningChecker; // fix circular dependency
 
 class  CodeGenVisitor : public ifccBaseVisitor {
 	private:
+		VariableManager varManager;
+
 		//std::unique_ptr<WarningChecker> warningChecker;
 		//WarningChecker * warningChecker;
 		void checkWarnings();
@@ -28,8 +30,7 @@ class  CodeGenVisitor : public ifccBaseVisitor {
 
 		// getters
 		VariableManager getManager() { return varManager; }
-
-	private:
-		VariableManager varManager;
+		
+		
 };
 
