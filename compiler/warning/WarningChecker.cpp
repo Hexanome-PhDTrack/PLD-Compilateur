@@ -3,9 +3,8 @@
 void WarningChecker::checkUnusedVariable(
     CodeGenVisitor & codeGenVisitor
 ) {
-    for (auto & varData : codeGenVisitor.getMapVariables()) {
-        if (!varData.second.IsUsed()) {
-            warnings.push_back(new UnusedVariableWarning(varData.second));
-        }
-    }
+    // TODO: iterate through all the real variables 
+    // and check if they are used
+    // if not, add a warning
+    
 }

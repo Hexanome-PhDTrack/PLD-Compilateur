@@ -61,7 +61,7 @@ antlrcpp::Any CodeGenVisitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
 
 antlrcpp::Any CodeGenVisitor::visitVarDefine(ifccParser::VarDefineContext *ctx)
 {
-	VarData newVar = varManager.addVariable(ctx->VAR()->getText(), ctx->getText(), ctx->getStart()->getLine(), TYPE_INT);
+	VarData newVar = varManager.addVariable(ctx->VAR()->getText(), ctx->getStart()->getLine(), TYPE_INT);
 	if(ctx->computedValue())
 	{
 		VarData computedVariable = visit(ctx->computedValue());
@@ -74,7 +74,7 @@ antlrcpp::Any CodeGenVisitor::visitVarDefine(ifccParser::VarDefineContext *ctx)
 
 antlrcpp::Any CodeGenVisitor::visitValue(ifccParser::ValueContext *ctx)
 {
-	VarData newVar = varManager.addVariable("#tmp", ctx->getText(), ctx->getStart()->getLine(), TYPE_INT); // variable temp to compute
+	VarData newVar = varManager.addVariable("#tmp", ctx->getStart()->getLine(), TYPE_INT); // variable temp to compute
 
 	if (ctx->VAR())
 	{
@@ -92,7 +92,7 @@ antlrcpp::Any CodeGenVisitor::visitValue(ifccParser::ValueContext *ctx)
 
 antlrcpp::Any CodeGenVisitor::visitAddSub(ifccParser::AddSubContext *ctx)
 {
-	VarData newVar = varManager.addVariable("#tmp", ctx->getText(), ctx->getStart()->getLine(), TYPE_INT);
+	VarData newVar = varManager.addVariable("#tmp", ctx->getStart()->getLine(), TYPE_INT);
 	
 	std::string operatorSymbol = ctx->OP_ADD_SUB()->getText();
 	VarData leftVar = visit(ctx->computedValue(0));
@@ -118,7 +118,7 @@ antlrcpp::Any CodeGenVisitor::visitAddSub(ifccParser::AddSubContext *ctx)
 
 antlrcpp::Any CodeGenVisitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 {
-	VarData newVar = varManager.addVariable("#tmp", ctx->getText(), ctx->getStart()->getLine(), TYPE_INT);
+	VarData newVar = varManager.addVariable("#tmp", ctx->getStart()->getLine(), TYPE_INT);
 	
 	std::string operatorSymbol = ctx->OP_MUL_DIV()->getText();
 	VarData leftVar = visit(ctx->computedValue(0));
