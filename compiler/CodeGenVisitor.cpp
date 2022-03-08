@@ -21,6 +21,8 @@ antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx) {
 		"	popq %rbp # restore %rbp from the stack\n"
 		"	ret # return to the caller (here the shell)\n";
 
+	checkWarnings();
+	
     return 0;
 }
 
