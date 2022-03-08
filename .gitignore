@@ -26,7 +26,6 @@ assembly/
 
 # personal config files
 *.env
-.vscode
 
 # testing
 tests/ifcc-test-output
