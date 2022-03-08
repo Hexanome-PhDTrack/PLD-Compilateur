@@ -8,6 +8,9 @@
 #include <map>
 
 class  CodeGenVisitor : public ifccBaseVisitor {
+	private:
+		WarningChecker warningChecker;
+
 	public:
 		virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override;
 		virtual antlrcpp::Any visitExpr(ifccParser::ExprContext *ctx) override;
@@ -20,8 +23,7 @@ class  CodeGenVisitor : public ifccBaseVisitor {
 
 		// wrappers
 		inline void checkWarnings() {
-			WarningChecker warningChecker(*this);
-			warningChecker.CheckForWarnings();
+			warningChecker.CheckForWarnings(*this);
 			warningChecker.LogWarnings();
 		}
 

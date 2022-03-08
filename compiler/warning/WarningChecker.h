@@ -9,22 +9,11 @@
 class WarningChecker {
 private:
     std::vector<Warning*> warnings;
-    CodeGenVisitor & codeGenVisitor;
 
-    void checkUnusedVariable() {
-        for (auto & varData : codeGenVisitor.getMapVariables()) {
-            if (!varData.second.IsUsed()) {
-                warnings.push_back(new UnusedVariableWarning(varData.second));
-            }
-        }
-    }
+    void checkUnusedVariable(CodeGenVisitor & codeGenVisitor);
 
 public:
-    WarningChecker(
-        CodeGenVisitor & codeGenVisitor
-    ): codeGenVisitor(codeGenVisitor) {
-
-    }
+    WarningChecker() {}
     ~WarningChecker();
 
     inline void AddWarning(Warning* warning) {
@@ -38,8 +27,8 @@ public:
         }
     }
 
-    inline void CheckForWarnings() {
+    inline void CheckForWarnings(CodeGenVisitor & codeGenVisitor) {
         // check for unused variables
-        checkUnusedVariable();
+        checkUnusedVariable(codeGenVisitor);
     }
 };

@@ -48,6 +48,18 @@ antlrcpp::Any CodeGenVisitor::visitVarDefine(ifccParser::VarDefineContext * ctx)
 
 	// define variable data
 
+	// TODO: split Definition and Declaration
+	// TODO: check for multiple Declaration of the same variable variable
+	/*
+		// code to be used when possible
+		#include "warning/MultipleVariableDeclarationWarning.h"
+		// if found previously defined varData...
+		MultipleVariableDeclarationWarning warning (varData);
+		warningChecker.AddWarning(varData);
+		)
+	*/
+	// TODO: check a variable used in definition has been declared
+
 	// TODO: fix this
 	size_t lineNumber = ctx->getStart()->getLine();
 	std::string varName = ctx->VAR()->getText();
