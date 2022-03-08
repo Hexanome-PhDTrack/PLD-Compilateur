@@ -11,7 +11,7 @@ Install the following packages through `apt get install <package>`.
 
 * antlr4
 * libantlr4-runtime-dev
-* openjdk-11
+* openjdk-11-jdk
 * g++
 * uuid-dev
 * unzip

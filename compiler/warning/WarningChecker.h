@@ -1,8 +1,8 @@
 #pragma once
 
-#include "warning/Warning.h"
-#include "warning/UnusedVariableWarning.h"
-#include "CodeGenVisitor.h"
+#include "Warning.h"
+#include "UnusedVariableWarning.h"
+#include "../CodeGenVisitor.h"
 
 #include <vector>
 

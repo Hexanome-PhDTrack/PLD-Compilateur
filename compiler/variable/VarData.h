@@ -1,5 +1,6 @@
+#pragma once
 #include <string>
-#include "variable/TypeName.h"
+#include "TypeName.h"
 
 class VarData {
 

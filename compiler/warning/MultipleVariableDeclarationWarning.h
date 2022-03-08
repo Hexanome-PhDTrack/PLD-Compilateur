@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Warning.h"
-#include "variable/VarData.h"
+#include "../variable/VarData.h"
 
 class MultipleVariableDeclarationWarning : public virtual Warning {
 private: 
