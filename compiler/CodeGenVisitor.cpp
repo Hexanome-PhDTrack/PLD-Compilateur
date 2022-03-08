@@ -51,7 +51,13 @@ antlrcpp::Any CodeGenVisitor::visitVarDefine(ifccParser::VarDefineContext *ctx)
 	return 0;
 }
 
-antlrcpp::Any CodeGenVisitor::visitComputedValue2(ifccParser::ComputedValue2Context *ctx)
+antlrcpp::Any CodeGenVisitor::visitValue(ifccParser::ValueContext *ctx)
 {
-	
+	if(ctx->VAR()) {
+		std::cout << varIndexes.find(ctx->VAR()->getText())->second << "(%rbp)";
+	}
+
+	else if(ctx->CONST()) {
+		std::cout << "$" << stoi(ctx->CONST()->getText());
+	}
 }
