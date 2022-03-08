@@ -3,7 +3,6 @@
 #include "antlr4-runtime.h"
 #include "generated/ifccBaseVisitor.h"
 #include "variable/VarData.h"
-
 #include "variable/VariableManager.h"
 
 #include <map>

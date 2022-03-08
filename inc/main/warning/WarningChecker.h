@@ -2,7 +2,7 @@
 
 #include "Warning.h"
 #include "UnusedVariableWarning.h"
-#include "../CodeGenVisitor.h"
+#include "CodeGenVisitor.h"
 
 #include <vector>
 

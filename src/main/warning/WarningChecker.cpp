@@ -1,4 +1,4 @@
-#include "WarningChecker.h"
+#include "warning/WarningChecker.h"
 
 void WarningChecker::checkUnusedVariable(
     CodeGenVisitor & codeGenVisitor
