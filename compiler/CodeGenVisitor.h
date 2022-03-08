@@ -3,15 +3,19 @@
 #include "antlr4-runtime.h"
 #include "generated/ifccBaseVisitor.h"
 #include "variable/VarData.h"
-#include "warning/WarningChecker.h"
 
 #include <map>
 
+class WarningChecker; // fix circular dependency
+
 class  CodeGenVisitor : public ifccBaseVisitor {
 	private:
-		WarningChecker warningChecker;
+		//std::unique_ptr<WarningChecker> warningChecker;
+		//WarningChecker * warningChecker;
+		void checkWarnings();
 
 	public:
+		CodeGenVisitor();
 		virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override;
 		virtual antlrcpp::Any visitExpr(ifccParser::ExprContext *ctx) override;
 		virtual antlrcpp::Any visitVarAssign(ifccParser::VarAssignContext *ctx) override;
@@ -21,12 +25,6 @@ class  CodeGenVisitor : public ifccBaseVisitor {
 
 		// getters
 		std::map<std::string, VarData> getMapVariables() { return varData; }
-
-		// wrappers
-		inline void checkWarnings() {
-			warningChecker.CheckForWarnings(*this);
-			warningChecker.LogWarnings();
-		}
 
 	private:
 		int currentVarIndex = 0;

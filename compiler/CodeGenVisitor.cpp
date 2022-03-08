@@ -1,4 +1,10 @@
 #include "CodeGenVisitor.h"
+#include "warning/WarningChecker.h" // fix circular dependency
+
+CodeGenVisitor::CodeGenVisitor() {
+	//warningChecker = std::make_unique<WarningChecker>();
+	//warningChecker = new WarningChecker();	
+}
 
 VarData CodeGenVisitor::createVariable(std::string varName, std::string lineContext, size_t lineNumber, TypeName typeName)
 {
@@ -48,10 +54,17 @@ antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
 				 "	popq %rbp # restore %rbp from the stack\n"
 				 "	ret # return to the caller (here the shell)\n";
 
-	checkWarnings();
+	//checkWarnings();
 	
     return 0;
 }
+/*
+void CodeGenVisitor::checkWarnings()
+{
+	// wrappers of WarningChecker calls
+	warningChecker->CheckForWarnings(*this);
+	warningChecker->LogWarnings();
+}*/
 
 antlrcpp::Any CodeGenVisitor::visitExpr(ifccParser::ExprContext *ctx)
 {
