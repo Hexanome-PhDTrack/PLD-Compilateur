@@ -23,4 +23,3 @@ assembly/
 *.env
 
 tests/ifcc-test-output
-.history
