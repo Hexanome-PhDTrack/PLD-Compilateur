@@ -3,7 +3,7 @@
 #include <map>
 #include "antlr4-runtime.h"
 #include "generated/ifccBaseVisitor.h"
-
+#include "variable/VarData.h"
 
 class  CodeGenVisitor : public ifccBaseVisitor {
 	public:
@@ -14,6 +14,6 @@ class  CodeGenVisitor : public ifccBaseVisitor {
 
 	private:
 		int currentVarIndex = 0;
-		std::map<std::string, int> varIndexes;
+		std::map<std::string, VarData> varData;
 };
 
