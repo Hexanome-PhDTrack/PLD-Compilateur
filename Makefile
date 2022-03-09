@@ -88,15 +88,15 @@ obj/%.o: src/%.cpp # compiling main
 # cf https://stackoverflow.com/a/3077254/117814 for the multiple-file trick
 antlr: ifcc.g4
 	@echo "$(TURQUOISE_COLOR)$(CONSTRUCTION_SIGN) Generating $(UNDERLINE)ANTLR C++ files$(NO_COLOR)$(TURQUOISE_COLOR)...$(NO_COLOR)"
-	@mkdir -p tmp
+	@mkdir -p generated
 	@mkdir -p src/main/generated
 	@mkdir -p inc/main/generated
-	java -cp $(ANTLRJAR) org.antlr.v4.Tool  -visitor -no-listener -Dlanguage=Cpp -o tmp ifcc.g4
-	mv tmp/*.h inc/main/generated/
-	mv tmp/*.cpp src/main/generated/
+	java -cp $(ANTLRJAR) org.antlr.v4.Tool  -visitor -no-listener -Dlanguage=Cpp -o generated ifcc.g4
+	mv generated/*.h inc/main/generated/
+	mv generated/*.cpp src/main/generated/
 
 clean:
-	rm -rf bin/* obj/* generated/* tmp/* inc/main/generated/* src/main/generated/*
+	rm -rf bin/* obj/* generated/* inc/main/generated/* src/main/generated/*
 
 run: $(BIN_MAIN)
 	$(ECHO) "$(TURQUOISE_COLOR)$(CONSTRUCTION_SIGN) Executing $(UNDERLINE)$(EXE)$(NO_COLOR)$(TURQUOISE_COLOR)...$(NO_COLOR)"
