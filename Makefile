@@ -1,6 +1,7 @@
 # echo -e colors
 # WARN : don't put " and use the echo command, not echo -e
 LIGHT_ORANGE_COLOR=\e[38;5;216m
+LIGHT_YELLOW_COLOR=\e[38;5;220m
 TURQUOISE_COLOR=\e[38;5;43m
 LIGHT_BLUE_COLOR=\e[38;5;153m
 RED_COLOR=\e[38;5;196m
@@ -24,19 +25,17 @@ ANTLRLIB=../antlr/lib/libantlr4-runtime.a
 include .env # https://simplernerd.com/make-env/
 
 ifeq ($(TARGET),ubuntu)
-  $(info TARGET set to ubuntu.)
+  $(info 🎯 TARGET set to $(TARGET).)
   # default Ubuntu paths, using antlr4 and libantlr4-runtime-dev packages
   ANTLRJAR=/usr/share/java/stringtemplate4.jar:/usr/share/java/antlr4.jar:/usr/share/java/antlr4-runtime.jar:/usr/share/java/antlr3-runtime.jar/:/usr/share/java/treelayout.jar
   ANTLRINC=/usr/include/antlr4-runtime
   ANTLRLIB=-lantlr4-runtime
 else ifeq ($(TARGET),fedora)
-  $(info TARGET set to fedora.)
+  $(info 🎯 TARGET set to $(TARGET).)
   ANTLRJAR=/usr/share/java/antlr4/antlr4.jar:/usr/share/java/antlr3-runtime.jar:/usr/share/java/antlr4/antlr4-runtime.jar:/usr/share/java/stringtemplate4/ST4.jar:/usr/share/java/treelayout/org.abego.treelayout.core.jar
   ANTLRINC=/usr/include/antlr4-runtime
   ANTLRLIB=/usr/lib64/libantlr4-runtime.so
 endif
-
-
 
 # paths
 EXE=ifcc
@@ -64,7 +63,7 @@ OBJ_MAIN_MAIN=obj/main/main.o
 # targets and rules
 # set default target : https://stackoverflow.com/questions/2057689/how-does-make-app-know-default-target-to-build-if-no-target-is-specified
 .DEFAULT_GOAL := default
-.PHONY: default build message antlr clean run testvar ww rebuild rr clear gui
+.PHONY: default build message antlr clean run testvar ww rebuild rr clear gui tests
 # prevent automatic cleanup of "intermediate" files like ifccLexer.cpp etc
 .PRECIOUS: src/main/generated/ifcc%.cpp
 
@@ -135,3 +134,9 @@ gui:
 	java -cp $(ANTLRJAR) org.antlr.v4.Tool -Dlanguage=Java -o generated ifcc.g4
 	javac -cp $(ANTLRJAR) -d build generated/*.java
 	java -cp $(ANTLRJAR):build org.antlr.v4.gui.TestRig ifcc axiom -gui $(FILE)
+
+tests:
+	@$(ECHO) "$(TURQUOISE_COLOR)$(CONSTRUCTION_SIGN) Running $(UNDERLINE)TESTS$(NO_COLOR)$(TURQUOISE_COLOR)...$(NO_COLOR)"
+	rm -rf tests/ifcc-test-output/
+	python3 tests/ifcc-test.py tests/testfiles/
+	mv ifcc-test-output tests/
