@@ -23,26 +23,31 @@ VarData VariableManager::getVariable(std::string name){
 }
 
 VarData VariableManager::addVariable(std::string varName, size_t lineNumber, TypeName typeName){
-    int newIndex = computeNextIndex();
-    // if temp var, update with nex index
-    if(varName == TEMP_BASE_NAME){
-        varName += newIndex;
-    }
-    VarData newVar = VarData(
-            newIndex,
-            varName,
-            lineNumber,
-            typeName
+    // check if the name is already take
+    std::map<std::string, VarData>::iterator it = varDataCollection.find(varName);
+    if(it == varDataCollection.end()){
+        return (*it).second;
+    }else{
+        int newIndex = computeNextIndex();
+        // if temp var, update with nex index
+        if(varName == TEMP_BASE_NAME){
+            varName += newIndex;
+        }
+        VarData newVar = VarData(
+                newIndex,
+                varName,
+                lineNumber,
+                typeName
+            );
+
+        varDataCollection.insert(
+            std::pair<std::string, VarData>(
+                varName,
+                newVar
+            )
         );
-
-    varDataCollection.insert(
-        std::pair<std::string, VarData>(
-            varName,
-            newVar
-        )
-    );
-    return newVar;
-
+        return newVar;
+    }
 }
 
 bool VariableManager::removeTempVariable(std::string varName){
