@@ -110,7 +110,8 @@ antlrcpp::Any CodeGenVisitor::visitAddSub(ifccParser::AddSubContext *ctx)
 
 	if (operatorSymbol == "+")
 	{
-		std::cout << "	addl %eax, " << newVar.GetIndex() << "(%rbp)\n"; // add eax and temp in temp
+		std::cout << "	addl %eax, " << newVar.GetIndex() << "(%rbp)\n"; // add eax and temp in tmp
+
 	}
 
 	else if (operatorSymbol == "-")
@@ -136,14 +137,14 @@ antlrcpp::Any CodeGenVisitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 
 	if (operatorSymbol == "*")
 	{
-		// TODO : mul
-		std::cout << "	addl %eax, " << newVar.GetIndex() << "(%rbp)\n"; // add eax and temp in temp
+		std::cout << "	imull %eax, " << newVar.GetIndex() << "(%rbp)\n"; // mul eax and temp in temp
 	}
 
 	else if (operatorSymbol == "/")
 	{	
-		// TODO : div
-		std::cout << "	subl %eax, " << newVar.GetIndex() << "(%rbp)\n"; // substract eax and temp in temp
+		std::cout << "	cltd\n";
+		std::cout << "	idivl " << newVar.GetIndex() << "(%rbp)\n"; // divise temp by eax in eax
+		std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n";
 	}
 
 	return newVar;
