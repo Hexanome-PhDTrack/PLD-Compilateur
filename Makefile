@@ -1,3 +1,20 @@
+# echo -e colors
+# WARN : don't put " and use the echo command, not echo -e
+LIGHT_ORANGE_COLOR=\e[38;5;216m
+TURQUOISE_COLOR=\e[38;5;43m
+LIGHT_BLUE_COLOR=\e[38;5;153m
+RED_COLOR=\e[38;5;196m
+NO_COLOR=\e[0m
+BOLD=\e[1m
+UNDERLINE=\e[4m
+
+CONSTRUCTION_SIGN=🚧
+
+# Determine this makefile's path.
+# NOTE: used for recursive calls
+# WARN: Be sure to place this BEFORE `include` directives, if any.
+THIS_FILE := $(lastword $(MAKEFILE_LIST))
+
 # You can override these from the command-line, as illustrated by the various `runmake_*.sh` scripts
 ANTLRJAR=../antlr/jar/antlr-4.9.2-complete.jar
 ANTLRINC=../antlr/include
@@ -22,7 +39,7 @@ endif
 
 
 # paths
-EXE=ifcc # name of executable
+EXE=ifcc
 BIN_MAIN=bin/$(EXE)
 INC_MAIN=inc/main
 INC_GENERATED=inc/main/generated
@@ -47,13 +64,17 @@ OBJ_MAIN_MAIN=obj/main/main.o
 # targets and rules
 # set default target : https://stackoverflow.com/questions/2057689/how-does-make-app-know-default-target-to-build-if-no-target-is-specified
 .DEFAULT_GOAL := default
-.PHONY: default build clean
+.PHONY: default build message antlr clean run testvar ww rebuild rr clear gui
 # prevent automatic cleanup of "intermediate" files like ifccLexer.cpp etc
 .PRECIOUS: src/main/generated/ifcc%.cpp
 
 default: build
 
-build: $(BIN_MAIN)
+build: message $(BIN_MAIN)
+
+message:
+	@echo "$(TURQUOISE_COLOR)$(CONSTRUCTION_SIGN) Compiling $(UNDERLINE)$(EXE)$(NO_COLOR)$(TURQUOISE_COLOR)...$(NO_COLOR)"
+	@echo "$(LIGHT_ORANGE_COLOR)Have you run $(BOLD)make antlr$(NO_COLOR)$(LIGHT_ORANGE_COLOR) before?$(NO_COLOR)"
 
 $(BIN_MAIN): $(OBJS_MAIN) # linking main
 	@mkdir -p bin
@@ -66,7 +87,10 @@ obj/%.o: src/%.cpp # compiling main
 # generate the C++ implementation of our Lexer/Parser/Visitor
 # cf https://stackoverflow.com/a/3077254/117814 for the multiple-file trick
 antlr: ifcc.g4
+	@echo "$(TURQUOISE_COLOR)$(CONSTRUCTION_SIGN) Generating $(UNDERLINE)ANTLR C++ files$(NO_COLOR)$(TURQUOISE_COLOR)...$(NO_COLOR)"
 	@mkdir -p tmp
+	@mkdir -p src/main/generated
+	@mkdir -p inc/main/generated
 	java -cp $(ANTLRJAR) org.antlr.v4.Tool  -visitor -no-listener -Dlanguage=Cpp -o tmp ifcc.g4
 	mv tmp/*.h inc/main/generated/
 	mv tmp/*.cpp src/main/generated/
@@ -75,21 +99,39 @@ clean:
 	rm -rf bin/* obj/* generated/* tmp/* inc/main/generated/* src/main/generated/*
 
 run: $(BIN_MAIN)
-	$(ECHO) "$(TURQUOISE_COLOR)*** Executing main *** $(NO_COLOR)"
+	$(ECHO) "$(TURQUOISE_COLOR)$(CONSTRUCTION_SIGN) Executing $(UNDERLINE)$(EXE)$(NO_COLOR)$(TURQUOISE_COLOR)...$(NO_COLOR)"
 	./$(BIN_MAIN)   
-
-
-
-# TODO: make that with input parameter
-# Usage: `make gui FILE=path/to/your/file.c`
-FILE ?= ../tests/testfiles/1_return42.c
-
-gui:
-	@mkdir -p generated build
-	java -cp $(ANTLRJAR) org.antlr.v4.Tool -Dlanguage=Java -o generated ifcc.g4
-	javac -cp $(ANTLRJAR) -d build generated/*.java
-	java -cp $(ANTLRJAR):build org.antlr.v4.gui.TestRig ifcc axiom -gui $(FILE)
 
 testvar:
 	@echo $(TARGET)
 	@echo $(ANTLRJAR)
+
+ww: # where and what
+	pwd
+	ls -alt
+
+rebuild:
+	@$(MAKE) -f $(THIS_FILE) clean
+	@$(MAKE) -f $(THIS_FILE) antlr
+	@$(MAKE) -f $(THIS_FILE) build
+
+rr: # rebuild and rerun (main)
+	@$(MAKE) -f $(THIS_FILE) clean
+	@$(MAKE) -f $(THIS_FILE) antlr
+	@$(MAKE) -f $(THIS_FILE) build
+	@$(MAKE) -f $(THIS_FILE) run
+
+clear: # alias of clean
+	@$(MAKE) -f $(THIS_FILE) clean
+
+
+# TODO: make that with input parameter
+# Usage: `make gui FILE=path/to/your/file.c`
+FILE ?= tests/testfiles/1_return42.c
+
+gui:
+	@$(ECHO) "$(TURQUOISE_COLOR)$(CONSTRUCTION_SIGN) Generating $(UNDERLINE)ANTLR GUI$(NO_COLOR)$(TURQUOISE_COLOR)...$(NO_COLOR)"
+	@mkdir -p generated build
+	java -cp $(ANTLRJAR) org.antlr.v4.Tool -Dlanguage=Java -o generated ifcc.g4
+	javac -cp $(ANTLRJAR) -d build generated/*.java
+	java -cp $(ANTLRJAR):build org.antlr.v4.gui.TestRig ifcc axiom -gui $(FILE)

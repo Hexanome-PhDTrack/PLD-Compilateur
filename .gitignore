@@ -2,7 +2,8 @@
 antlr/
 antlr.tmp/
 compiler/.antlr
-generated
+generated/
+build/
 
 # compiled files
 compiler/build
