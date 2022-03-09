@@ -27,7 +27,7 @@ class VariableManager{
          * @param varName the name of the variable (if name = #temp, considere it as a temp variable and append the number of temp variable. recupere the full name in the vardata)
          * @param lineNumber the line number
          * @param typeName the type of the variable
-         * @return VarData 
+         * @return VarData the new variable if the name hasn't already taken, the old one otherwise.
          */
         VarData addVariable(std::string varName, size_t lineNumber, TypeName typeName);
         /**
