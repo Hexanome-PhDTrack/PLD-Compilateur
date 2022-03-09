@@ -8,4 +8,14 @@
 class ErrorManager {
 private:
     std::vector<Error*> errors;
+
+public:
+    ErrorManager() {}
+    ~ErrorManager();
+
+    void LogErrors();
+
+    inline void AddError(Error* error) {
+        errors.push_back(error);
+    }
 };

@@ -1,14 +1,11 @@
 #include "CodeGenVisitor.h"
 
 CodeGenVisitor::CodeGenVisitor() {
-	//warningChecker = std::make_unique<WarningChecker>();
-	//warningChecker = new WarningChecker();
-	//warningChecker = std::unique_ptr<WarningChecker>(new WarningChecker());
+
 }
 
 CodeGenVisitor::~CodeGenVisitor() {
-	//delete warningChecker;
-	//delete warningChecker;
+
 }
 
 antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
@@ -40,16 +37,12 @@ antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
 	// check and log warnings
 	warningManager.CheckWarnings(varManager);
 	warningManager.LogWarnings();
+
+	// log errors
+	errorManager.LogErrors();
 	
     return 0;
 }
-/*
-void CodeGenVisitor::checkWarnings()
-{
-	// wrappers of WarningChecker calls
-	warningChecker->CheckForWarnings(*this);
-	warningChecker->LogWarnings();
-}*/
 
 antlrcpp::Any CodeGenVisitor::visitExpr(ifccParser::ExprContext *ctx)
 {

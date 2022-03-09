@@ -5,18 +5,16 @@
 #include "variable/VarData.h"
 #include "variable/VariableManager.h"
 #include "warning/WarningManager.h"
+#include "error/ErrorManager.h"
 
 #include <map>
 
 class  CodeGenVisitor : public ifccBaseVisitor {
 	private:
+		// https://stackoverflow.com/questions/9954518/stdunique-ptr-with-an-incomplete-type-wont-compile
 		VariableManager varManager;
 		WarningManager warningManager;
-
-		// https://stackoverflow.com/questions/9954518/stdunique-ptr-with-an-incomplete-type-wont-compile
-		//WarningChecker * warningChecker; // need full definition of WarningChecker (no partial one from circular import)
-		//WarningChecker * warningChecker;
-		void checkWarnings();
+		ErrorManager errorManager;
 
 	public:
 		CodeGenVisitor();
