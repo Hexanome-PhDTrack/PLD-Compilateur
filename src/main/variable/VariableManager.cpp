@@ -25,8 +25,8 @@ VarData VariableManager::getVariable(std::string name){
 VarData VariableManager::addVariable(std::string varName, size_t lineNumber, TypeName typeName){
     // check if the name is already take
     std::map<std::string, VarData>::iterator it = varDataCollection.find(varName);
-    if(it == varDataCollection.end()){
-        return (*it).second;
+    if(it != varDataCollection.end()){
+        return it -> second;
     }else{
         int newIndex = computeNextIndex();
         // if temp var, update with nex index
