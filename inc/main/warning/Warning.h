@@ -15,7 +15,7 @@ public:
 
     inline void Log() {
         if(message.length() > 0) {
-            std::cout << "; 🚨 WARNING: " << message << std::endl;
+            std::cout << "# 🚨 WARNING: " << message << std::endl;
         }
     }
 };
