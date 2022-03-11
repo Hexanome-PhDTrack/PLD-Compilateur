@@ -19,7 +19,10 @@ bool VariableManager::isTemp(std::string varName){
 ///////////////////////////////////////////////////////////////////////////
 
 VarData VariableManager::getVariable(std::string name){
-    return varDataCollection.find(name) -> second;
+    VarData toReturn = varDataCollection.at(name);
+    toReturn.WitnessUsage();//var used
+
+    return toReturn;
 }
 
 VarData VariableManager::addVariable(std::string varName, size_t lineNumber, TypeName typeName){

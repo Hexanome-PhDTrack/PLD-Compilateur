@@ -74,20 +74,19 @@ antlrcpp::Any CodeGenVisitor::visitVarDefine(ifccParser::VarDefineContext *ctx)
 
 antlrcpp::Any CodeGenVisitor::visitValue(ifccParser::ValueContext *ctx)
 {
-	VarData newVar = varManager.addVariable("#tmp", ctx->getStart()->getLine(), TYPE_INT); // variable temp to compute
-
 	if (ctx->VAR())
 	{
-		std::cout << "	movl " << varManager.getVariable(ctx->VAR()->getText()).GetIndex() << "(%rbp), %eax\n";
-		std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n";
+		// return the variable
+		return varManager.getVariable(ctx->VAR()->getText());
 	}
 
-	if (ctx->CONST())
+	else //ctx->CONST() -> vrai
 	{
-		std::cout << "	movl $" << stoi(ctx->CONST()->getText()) << ", " << newVar.GetIndex() << "(%rbp)\n";
+		// compute a temp variable with the constante
+		VarData newVar = varManager.addVariable("#tmp", ctx->getStart()->getLine(), TYPE_INT); // variable temp to compute
+		std::cout << "	movl $" << stoi(ctx->CONST()->getText()) << ", " << newVar.GetIndex() << "(%rbp)\n"; // store the cst
+		return newVar;
 	}
-
-	return newVar;
 }
 
 antlrcpp::Any CodeGenVisitor::visitAddSub(ifccParser::AddSubContext *ctx)
@@ -111,6 +110,7 @@ antlrcpp::Any CodeGenVisitor::visitAddSub(ifccParser::AddSubContext *ctx)
 
 	else if (operatorSymbol == "-")
 	{
+		// TODO : correct sub
 		std::cout << "	subl %eax, " << newVar.GetIndex() << "(%rbp)\n"; // substract eax and temp in temp
 	}
 

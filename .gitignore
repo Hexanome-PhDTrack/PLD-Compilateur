@@ -4,6 +4,7 @@ antlr.tmp/
 compiler/.antlr
 generated/
 build/
+.antlr/
 
 # compiled files
 compiler/build
