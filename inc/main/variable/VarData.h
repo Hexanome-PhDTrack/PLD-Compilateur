@@ -57,7 +57,7 @@ public:
         this->typeName = typeName;
     }
 
-    inline std::string ToString() {
+    inline std::string ToString() const{
         return "VarData: " + std::to_string(index) 
             + ", " + varName 
             + ", [" + std::to_string(lineNumber) + "]";

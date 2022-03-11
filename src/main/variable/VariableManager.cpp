@@ -12,24 +12,23 @@ int VariableManager::computeNextIndex(){
     }
 }
 
-bool VariableManager::isTemp(std::string varName){
+bool VariableManager::isTemp(std::string varName) const{
     return varName.substr(0, TEMP_BASE_NAME.size()) == TEMP_BASE_NAME;
 }
 
 ///////////////////////////////////////////////////////////////////////////
 
-const VarData& VariableManager::getVariable(std::string name){
-    VarData& toReturn = varDataCollection.at(name);
-    toReturn.WitnessUsage();//var used
+VarData VariableManager::getVariable(std::string name){
+    varDataCollection.at(name).WitnessUsage();//var used
 
-    return toReturn;
+    return varDataCollection.find(name) -> second;
 }
 
-const VarData& VariableManager::addVariable(std::string varName, size_t lineNumber, TypeName typeName){
+VarData VariableManager::addVariable(std::string varName, size_t lineNumber, TypeName typeName){
     // check if the name is already take
     std::map<std::string, VarData>::iterator it = varDataCollection.find(varName);
     if(it != varDataCollection.end()){
-        return varDataCollection.at(varName);
+        return it -> second;
     }else{
         int newIndex = computeNextIndex();
         // if temp var, update with nex index
@@ -49,7 +48,7 @@ const VarData& VariableManager::addVariable(std::string varName, size_t lineNumb
                 newVar
             )
         );
-        return varDataCollection.at(varName);
+        return newVar;
     }
 }
 
@@ -69,7 +68,7 @@ bool VariableManager::removeTempVariable(std::string varName){
     }
 }
 
-std::vector<VarData> VariableManager::getTempVariables(){
+std::vector<VarData> VariableManager::getTempVariables() const{
     std::vector<VarData> toReturn;
     for(auto elt : varDataCollection){
         VarData actu = elt.second;
@@ -80,7 +79,7 @@ std::vector<VarData> VariableManager::getTempVariables(){
     return toReturn;
 }
 
-std::vector<VarData> VariableManager::getNoTempVariables(){
+std::vector<VarData> VariableManager::getNoTempVariables() const{
     std::vector<VarData> toReturn;
     for(auto elt : varDataCollection){
         VarData actu = elt.second;

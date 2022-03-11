@@ -20,7 +20,7 @@ class VariableManager{
          * @param name the name of the variable
          * @return VarData the vardata
          */
-        const VarData& getVariable(std::string name);
+        VarData getVariable(std::string name);
         /**
          * @brief Add the Variable object with a computed index
          * 
@@ -29,7 +29,7 @@ class VariableManager{
          * @param typeName the type of the variable
          * @return VarData the new variable if the name hasn't already taken, the old one otherwise.
          */
-        const VarData& addVariable(std::string varName, size_t lineNumber, TypeName typeName);
+        VarData addVariable(std::string varName, size_t lineNumber, TypeName typeName);
         /**
          * @brief remove a variable temp
          * 
@@ -43,13 +43,13 @@ class VariableManager{
          * 
          * @return std::vector<VarData> all the temp variable
          */
-        std::vector<VarData> getTempVariables();
+        std::vector<VarData> getTempVariables() const;
         /**
          * @brief Get the No Temp Variable object
          * 
          * @return std::vector<VarData> all the no temp variable
          */
-        std::vector<VarData> getNoTempVariables();
+        std::vector<VarData> getNoTempVariables() const;
 
         VariableManager(){}
         virtual ~VariableManager() {}
@@ -85,5 +85,5 @@ class VariableManager{
          * @return true if the variable is temp
          * @return false 
          */
-        bool isTemp(std::string varName);
+        bool isTemp(std::string varName) const;
 };

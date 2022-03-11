@@ -101,9 +101,8 @@ antlrcpp::Any CodeGenVisitor::visitAddSub(ifccParser::AddSubContext *ctx)
 	std::string operatorSymbol = ctx->OP_ADD_SUB()->getText();
 	VarData leftVar = visit(ctx->computedValue(0)).as<VarData>();
 	VarData rightVar = visit(ctx->computedValue(1)).as<VarData>();
-
 	// put left var in tmp
-	std::cout << "	movl " << rightVar.GetIndex() << "(%rbp), %eax\n"; // get right var in eax
+	std::cout << "	movl " << rightVar.GetIndex() << "(%rbp), %eax \n"; // get right var in eax
 
 	if (operatorSymbol == "+")
 	{
@@ -113,7 +112,7 @@ antlrcpp::Any CodeGenVisitor::visitAddSub(ifccParser::AddSubContext *ctx)
 
 	else if (operatorSymbol == "-")
 	{
-		std::cout << "	subl " << newVar.GetIndex() << "(%rbp), %eax\n"; // substract leftvar and eax in eax
+		std::cout << "	subl " << leftVar.GetIndex() << "(%rbp), %eax\n"; // substract leftvar and eax in eax
 		std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n"; // move eax in tmp
 	}
 
@@ -128,7 +127,7 @@ antlrcpp::Any CodeGenVisitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 	VarData leftVar = visit(ctx->computedValue(0)).as<VarData>();
 	VarData rightVar = visit(ctx->computedValue(1)).as<VarData>();
 
-	std::cout << "	movl " << leftVar.GetIndex() << "(%rbp), %eax\n"; // get left var in eax
+	std::cout << "	movl " << leftVar.GetIndex() << "(%rbp), %eax \n"; // get left var in eax
 
 	if (operatorSymbol == "*")
 	{
@@ -144,4 +143,9 @@ antlrcpp::Any CodeGenVisitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 	}
 
 	return newVar;
+}
+
+antlrcpp::Any CodeGenVisitor::visitParenthesis(ifccParser::ParenthesisContext *ctx)
+{
+	return visit(ctx ->computedValue());
 }
