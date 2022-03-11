@@ -18,18 +18,18 @@ bool VariableManager::isTemp(std::string varName){
 
 ///////////////////////////////////////////////////////////////////////////
 
-VarData VariableManager::getVariable(std::string name){
-    VarData toReturn = varDataCollection.at(name);
+const VarData& VariableManager::getVariable(std::string name){
+    VarData& toReturn = varDataCollection.at(name);
     toReturn.WitnessUsage();//var used
 
     return toReturn;
 }
 
-VarData VariableManager::addVariable(std::string varName, size_t lineNumber, TypeName typeName){
+const VarData& VariableManager::addVariable(std::string varName, size_t lineNumber, TypeName typeName){
     // check if the name is already take
     std::map<std::string, VarData>::iterator it = varDataCollection.find(varName);
     if(it != varDataCollection.end()){
-        return it -> second;
+        return varDataCollection.at(varName);
     }else{
         int newIndex = computeNextIndex();
         // if temp var, update with nex index
@@ -49,7 +49,7 @@ VarData VariableManager::addVariable(std::string varName, size_t lineNumber, Typ
                 newVar
             )
         );
-        return newVar;
+        return varDataCollection.at(varName);
     }
 }
 
@@ -71,7 +71,7 @@ bool VariableManager::removeTempVariable(std::string varName){
 
 std::vector<VarData> VariableManager::getTempVariables(){
     std::vector<VarData> toReturn;
-    for(auto elt:varDataCollection){
+    for(auto elt : varDataCollection){
         VarData actu = elt.second;
         if(isTemp(actu.GetVarName())){
             toReturn.push_back(actu);
@@ -82,7 +82,7 @@ std::vector<VarData> VariableManager::getTempVariables(){
 
 std::vector<VarData> VariableManager::getNoTempVariables(){
     std::vector<VarData> toReturn;
-    for(auto elt:varDataCollection){
+    for(auto elt : varDataCollection){
         VarData actu = elt.second;
         if(!isTemp(actu.GetVarName())){
             toReturn.push_back(actu);

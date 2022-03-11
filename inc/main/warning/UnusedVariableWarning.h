@@ -6,7 +6,7 @@
 class UnusedVariableWarning : public Warning {
 public:
     UnusedVariableWarning(
-        VarData & varData
+        const VarData & varData
     ){
         message = "The variable " + varData.GetVarName() + " is unused";
     }

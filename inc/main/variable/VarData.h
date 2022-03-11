@@ -27,19 +27,19 @@ public:
     virtual ~VarData() {}
 
     inline void WitnessUsage() { isUsed = true; }
-    inline bool IsUsed() { return isUsed; }
+    inline bool IsUsed() const { return isUsed; }
 
     // getters
-    inline int GetIndex() {
+    inline int GetIndex() const{
         return index;
     }
-    inline std::string GetVarName() {
+    inline std::string GetVarName() const{
         return varName; 
     }
-    inline size_t GetLineNumber() {
+    inline size_t GetLineNumber() const{
         return lineNumber;
     }
-    inline TypeName GetTypeName() {
+    inline TypeName GetTypeName() const{
         return typeName;
     }
 

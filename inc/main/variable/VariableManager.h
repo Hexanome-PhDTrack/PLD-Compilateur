@@ -20,7 +20,7 @@ class VariableManager{
          * @param name the name of the variable
          * @return VarData the vardata
          */
-        VarData getVariable(std::string name);
+        const VarData& getVariable(std::string name);
         /**
          * @brief Add the Variable object with a computed index
          * 
@@ -29,7 +29,7 @@ class VariableManager{
          * @param typeName the type of the variable
          * @return VarData the new variable if the name hasn't already taken, the old one otherwise.
          */
-        VarData addVariable(std::string varName, size_t lineNumber, TypeName typeName);
+        const VarData& addVariable(std::string varName, size_t lineNumber, TypeName typeName);
         /**
          * @brief remove a variable temp
          * 
