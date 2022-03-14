@@ -66,6 +66,11 @@ class VariableManager{
          */
         int currentVarIndex = 0;
         /**
+         * @brief count all the temp var create
+         * 
+         */
+        int countAllTempVar = 0;
+        /**
          * @brief map variable map and variable data
          * 
          */

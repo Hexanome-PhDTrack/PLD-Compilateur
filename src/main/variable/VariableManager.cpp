@@ -33,7 +33,8 @@ VarData VariableManager::addVariable(std::string varName, size_t lineNumber, Typ
         int newIndex = computeNextIndex();
         // if temp var, update with nex index
         if(varName == TEMP_BASE_NAME){
-            varName += newIndex;
+            varName += countAllTempVar;
+            countAllTempVar ++;
         }
         VarData newVar = VarData(
                 newIndex,

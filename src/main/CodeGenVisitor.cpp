@@ -65,6 +65,7 @@ antlrcpp::Any CodeGenVisitor::visitVarDefine(ifccParser::VarDefineContext *ctx)
 	if(ctx->computedValue())
 	{
 		VarData computedVariable = visit(ctx->computedValue());
+		varManager.removeTempVariable(computedVariable.GetVarName());
 		std::cout << "	movl " << computedVariable.GetIndex() << "(%rbp), %eax\n";
 		std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n";
 	}
@@ -101,18 +102,22 @@ antlrcpp::Any CodeGenVisitor::visitAddSub(ifccParser::AddSubContext *ctx)
 	std::string operatorSymbol = ctx->OP_ADD_SUB()->getText();
 	VarData leftVar = visit(ctx->computedValue(0)).as<VarData>();
 	VarData rightVar = visit(ctx->computedValue(1)).as<VarData>();
+
+	varManager.removeTempVariable(leftVar.GetVarName());
+	varManager.removeTempVariable(rightVar.GetVarName());
+
 	// put left var in tmp
 	std::cout << "	movl " << leftVar.GetIndex() << "(%rbp), %eax \n"; // get right var in eax
 
 	if (operatorSymbol == "+")
 	{
-		std::cout << "	addl " << rightVar.GetIndex() << "(%rbp), %eax \n"; // add eax and left var in eax
+		std::cout << "	addl " << rightVar.GetIndex() << "(%rbp), %eax \n"; // add eax and right var in eax
 		std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n"; // move eax in temp
 	}
 
 	else if (operatorSymbol == "-")
 	{
-		std::cout << "	subl " << rightVar.GetIndex() << "(%rbp), %eax\n"; // substract leftvar and eax in eax
+		std::cout << "	subl " << rightVar.GetIndex() << "(%rbp), %eax\n"; // substract rightvar and eax (eax - rightvar) in eax
 		std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n"; // move eax in tmp
 	}
 
@@ -126,6 +131,9 @@ antlrcpp::Any CodeGenVisitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 	std::string operatorSymbol = ctx->OP_MUL_DIV()->getText();
 	VarData leftVar = visit(ctx->computedValue(0)).as<VarData>();
 	VarData rightVar = visit(ctx->computedValue(1)).as<VarData>();
+
+	varManager.removeTempVariable(leftVar.GetVarName());
+	varManager.removeTempVariable(rightVar.GetVarName());
 
 	std::cout << "	movl " << leftVar.GetIndex() << "(%rbp), %eax \n"; // get left var in eax
 
