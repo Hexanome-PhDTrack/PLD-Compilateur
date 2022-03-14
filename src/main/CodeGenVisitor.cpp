@@ -102,17 +102,17 @@ antlrcpp::Any CodeGenVisitor::visitAddSub(ifccParser::AddSubContext *ctx)
 	VarData leftVar = visit(ctx->computedValue(0)).as<VarData>();
 	VarData rightVar = visit(ctx->computedValue(1)).as<VarData>();
 	// put left var in tmp
-	std::cout << "	movl " << rightVar.GetIndex() << "(%rbp), %eax \n"; // get right var in eax
+	std::cout << "	movl " << leftVar.GetIndex() << "(%rbp), %eax \n"; // get right var in eax
 
 	if (operatorSymbol == "+")
 	{
-		std::cout << "	addl " << leftVar.GetIndex() << "(%rbp), %eax \n"; // add eax and left var in eax
+		std::cout << "	addl " << rightVar.GetIndex() << "(%rbp), %eax \n"; // add eax and left var in eax
 		std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n"; // move eax in temp
 	}
 
 	else if (operatorSymbol == "-")
 	{
-		std::cout << "	subl " << leftVar.GetIndex() << "(%rbp), %eax\n"; // substract leftvar and eax in eax
+		std::cout << "	subl " << rightVar.GetIndex() << "(%rbp), %eax\n"; // substract leftvar and eax in eax
 		std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n"; // move eax in tmp
 	}
 
