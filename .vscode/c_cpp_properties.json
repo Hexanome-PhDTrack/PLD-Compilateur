@@ -3,9 +3,12 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/compiler/*",
-                "${workspaceFolder}/compiler/generated/*",
-                "/usr/include/antlr4-runtime/*"
+                "${workspaceFolder}/inc/*",
+                "${workspaceFolder}/inc/main/*",
+                "${workspaceFolder}/src/*",
+                "${workspaceFolder}/src/main/*",
+                "/usr/include/antlr4-runtime/*",
+                "${workspaceFolder}/compiler"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
