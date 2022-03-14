@@ -52,6 +52,7 @@ antlrcpp::Any CodeGenVisitor::visitExpr(ifccParser::ExprContext *ctx)
 antlrcpp::Any CodeGenVisitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
 {
 	VarData computedVariable = visit(ctx->computedValue());
+	varManager.removeTempVariable(computedVariable);
 	VarData leftVar = varManager.getVariable(ctx->VAR()->getText());
 
 	std::cout << "	movl " << computedVariable.GetIndex() << "(%rbp), %eax\n"; // use eax => can't use movl on 2 stack pointer
@@ -65,7 +66,7 @@ antlrcpp::Any CodeGenVisitor::visitVarDefine(ifccParser::VarDefineContext *ctx)
 	if(ctx->computedValue())
 	{
 		VarData computedVariable = visit(ctx->computedValue());
-		varManager.removeTempVariable(computedVariable.GetVarName());
+		varManager.removeTempVariable(computedVariable);
 		std::cout << "	movl " << computedVariable.GetIndex() << "(%rbp), %eax\n";
 		std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n";
 	}
@@ -103,8 +104,8 @@ antlrcpp::Any CodeGenVisitor::visitAddSub(ifccParser::AddSubContext *ctx)
 	VarData leftVar = visit(ctx->computedValue(0)).as<VarData>();
 	VarData rightVar = visit(ctx->computedValue(1)).as<VarData>();
 
-	varManager.removeTempVariable(leftVar.GetVarName());
-	varManager.removeTempVariable(rightVar.GetVarName());
+	varManager.removeTempVariable(leftVar);
+	varManager.removeTempVariable(rightVar);
 
 	// put left var in tmp
 	std::cout << "	movl " << leftVar.GetIndex() << "(%rbp), %eax \n"; // get right var in eax
@@ -132,8 +133,8 @@ antlrcpp::Any CodeGenVisitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 	VarData leftVar = visit(ctx->computedValue(0)).as<VarData>();
 	VarData rightVar = visit(ctx->computedValue(1)).as<VarData>();
 
-	varManager.removeTempVariable(leftVar.GetVarName());
-	varManager.removeTempVariable(rightVar.GetVarName());
+	varManager.removeTempVariable(leftVar);
+	varManager.removeTempVariable(rightVar);
 
 	std::cout << "	movl " << leftVar.GetIndex() << "(%rbp), %eax \n"; // get left var in eax
 

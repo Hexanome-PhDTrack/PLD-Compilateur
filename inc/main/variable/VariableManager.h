@@ -31,13 +31,21 @@ class VariableManager{
          */
         VarData addVariable(std::string varName, size_t lineNumber, TypeName typeName);
         /**
-         * @brief remove a variable temp
+         * @brief remove a variable temp with the name
          * 
          * @param varName the varaible to remove
          * @return true if varName is a temp var and the remove success
          * @return false if varname is a user variable or the remove failed
          */
         bool removeTempVariable(std::string varName);
+        /**
+         * @brief remove a variable temp
+         * 
+         * @param var the varaible to remove
+         * @return true if varName is a temp var and the remove success
+         * @return false if varname is a user variable or the remove failed
+         */
+        bool removeTempVariable(VarData var);
         /**
          * @brief Get the Temp Variable object
          * 

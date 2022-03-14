@@ -69,6 +69,11 @@ bool VariableManager::removeTempVariable(std::string varName){
     }
 }
 
+bool VariableManager::removeTempVariable(VarData var){
+    return removeTempVariable(var.GetVarName());
+}
+
+
 std::vector<VarData> VariableManager::getTempVariables() const{
     std::vector<VarData> toReturn;
     for(auto elt : varDataCollection){
