@@ -23,7 +23,7 @@ TYPE: 'int';
 OP_MUL_DIV: ('*' | '/');
 OP_ADD_SUB: ('+' | '-');
 VAR: [a-zA-Z]+;
-CONST : [0-9]+ ;
+CONST : [-]?[0-9]+ ;
 COMMENT : '/*' .*? '*/' -> skip ;
 DIRECTIVE : '#' .*? '\n' -> skip ;
 WS    : [ \t\r\n] -> channel(HIDDEN);
