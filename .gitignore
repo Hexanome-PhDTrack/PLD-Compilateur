@@ -5,7 +5,10 @@ compiler/.antlr
 
 # compiled files
 compiler/build
-compiler/generated
+src/main/generated
+inc/main/generated
+generated/*
+bin/*
 *.o
 compiler/ifcc
 
