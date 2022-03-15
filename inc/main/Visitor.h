@@ -6,19 +6,22 @@
 #include "variable/VariableManager.h"
 #include "warning/WarningManager.h"
 #include "error/ErrorManager.h"
+#include "ir/flow/ControlFlowGraph.h"
 
 #include <map>
 
-class  CodeGenVisitor : public ifccBaseVisitor {
+class  Visitor : public ifccBaseVisitor {
 	private:
 		// https://stackoverflow.com/questions/9954518/stdunique-ptr-with-an-incomplete-type-wont-compile
 		VariableManager varManager;
 		WarningManager warningManager;
 		ErrorManager errorManager;
+		ControlFlowGraph cfg;
 
 	public:
-		CodeGenVisitor();
-		~CodeGenVisitor();
+		Visitor();
+		~Visitor();
+
 		virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override;
 		virtual antlrcpp::Any visitExpr(ifccParser::ExprContext *ctx) override;
 		virtual antlrcpp::Any visitVarAssign(ifccParser::VarAssignContext *ctx) override;

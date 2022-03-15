@@ -58,6 +58,7 @@
         "thread": "cpp",
         "typeinfo": "cpp",
         "cstring": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "stdio.h": "c"
     }
 }

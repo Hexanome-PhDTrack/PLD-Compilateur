@@ -2,7 +2,7 @@
 #include "generated/ifccLexer.h"
 #include "generated/ifccParser.h"
 #include "generated/ifccBaseVisitor.h"
-#include "CodeGenVisitor.h"
+#include "Visitor.h"
 
 #include <iostream>
 #include <fstream>
@@ -43,7 +43,7 @@ int main(int argn, const char **argv)
   }
 
   
-  CodeGenVisitor v;
+  Visitor v;
   v.visit(tree);
 
   return 0;

@@ -9,10 +9,17 @@
 #include <map>
 
 class ControlFlowGraph {
-public:
-    ControlFlowGraph(DefFonction* ast);
+protected:
+	std::map <std::string, TypeName> SymbolType; /**< part of the symbol table  */
+	std::map <std::string, int> SymbolIndex; /**< part of the symbol table  */
+	int nextFreeSymbolIndex; /**< to allocate new symbols in the symbol table */
+	int nextBBnumber; /**< just for naming */
+	
+	std::vector <Block*> blocks; /**< all the basic blocks of this CFG*/
 
-    DefFonction* ast; /**< The AST this CFG comes from */
+public:
+    ControlFlowGraph();
+    ~ControlFlowGraph();
 
     void add_bb(Block* bb); 
 
@@ -31,12 +38,4 @@ public:
     // basic block management
     std::string new_BB_name();
     Block* current_bb;
-
-protected:
-	std::map <std::string, TypeName> SymbolType; /**< part of the symbol table  */
-	std::map <std::string, int> SymbolIndex; /**< part of the symbol table  */
-	int nextFreeSymbolIndex; /**< to allocate new symbols in the symbol table */
-	int nextBBnumber; /**< just for naming */
-	
-	std::vector <Block*> bbs; /**< all the basic blocks of this CFG*/
 };

@@ -6,14 +6,14 @@ class BlockManager{
 public:
     BlockManager();
     ~BlockManager();
-    void addBlock(Block* block);
-    void removeBlock(Block* block);
-    void removeBlock(int index);
-    void removeBlock(std::string name);
-    Block* getBlock(int index);
-    Block* getBlock(std::string name);
-    int getBlockCount();
-    void clear();
+    void AddBlock(Block* block);
+    void RemoveBlock(Block* block);
+    void RemoveBlock(int index);
+    void RemoveBlock(std::string name);
+    Block* GetBlock(int index);
+    Block* GetBlock(std::string name);
+    int GetBlockCount();
+    void Clear();
 
 private:
     std::vector<Block*> blocks;

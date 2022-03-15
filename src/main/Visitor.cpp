@@ -1,14 +1,14 @@
-#include "CodeGenVisitor.h"
+#include "Visitor.h"
 
-CodeGenVisitor::CodeGenVisitor() {
-
-}
-
-CodeGenVisitor::~CodeGenVisitor() {
+Visitor::Visitor() {
 
 }
 
-antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
+Visitor::~Visitor() {
+
+}
+
+antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx)
 {
 	// USE TABS NOT SPACES YOU NERD
 #ifdef __APPLE__
@@ -44,12 +44,12 @@ antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
     return returnVar;
 }
 
-antlrcpp::Any CodeGenVisitor::visitExpr(ifccParser::ExprContext *ctx)
+antlrcpp::Any Visitor::visitExpr(ifccParser::ExprContext *ctx)
 {
 	return visitChildren(ctx);
 }
 
-antlrcpp::Any CodeGenVisitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
+antlrcpp::Any Visitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
 {
 	VarData computedVariable = visit(ctx->computedValue());
 	varManager.removeTempVariable(computedVariable);
@@ -60,7 +60,7 @@ antlrcpp::Any CodeGenVisitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
 	return leftVar;
 }
 
-antlrcpp::Any CodeGenVisitor::visitVarDefine(ifccParser::VarDefineContext *ctx)
+antlrcpp::Any Visitor::visitVarDefine(ifccParser::VarDefineContext *ctx)
 {
 	VarData newVar = varManager.addVariable(ctx->VAR()->getText(), ctx->getStart()->getLine(), TYPE_INT);
 	if(ctx->computedValue())
@@ -74,7 +74,7 @@ antlrcpp::Any CodeGenVisitor::visitVarDefine(ifccParser::VarDefineContext *ctx)
 	return newVar;
 }
 
-antlrcpp::Any CodeGenVisitor::visitValue(ifccParser::ValueContext *ctx)
+antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
 {
 	// compute the tmp variable
 	VarData newVar = varManager.addVariable("#tmp", ctx->getStart()->getLine(), TYPE_INT); // variable temp to compute
@@ -96,7 +96,7 @@ antlrcpp::Any CodeGenVisitor::visitValue(ifccParser::ValueContext *ctx)
 
 }
 
-antlrcpp::Any CodeGenVisitor::visitAddSub(ifccParser::AddSubContext *ctx)
+antlrcpp::Any Visitor::visitAddSub(ifccParser::AddSubContext *ctx)
 {
 	VarData newVar = varManager.addVariable("#tmp", ctx->getStart()->getLine(), TYPE_INT);
 	
@@ -125,7 +125,7 @@ antlrcpp::Any CodeGenVisitor::visitAddSub(ifccParser::AddSubContext *ctx)
 	return newVar;
 }
 
-antlrcpp::Any CodeGenVisitor::visitMulDiv(ifccParser::MulDivContext *ctx)
+antlrcpp::Any Visitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 {
 	VarData newVar = varManager.addVariable("#tmp", ctx->getStart()->getLine(), TYPE_INT);
 	
@@ -154,7 +154,7 @@ antlrcpp::Any CodeGenVisitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 	return newVar;
 }
 
-antlrcpp::Any CodeGenVisitor::visitParenthesis(ifccParser::ParenthesisContext *ctx)
+antlrcpp::Any Visitor::visitParenthesis(ifccParser::ParenthesisContext *ctx)
 {
 	return visit(ctx ->computedValue());
 }
