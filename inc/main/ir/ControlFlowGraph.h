@@ -1,6 +1,6 @@
 #pragma once
 
-#include "block/BasicBlock.h"
+#include "ir/block/BasicBlock.h"
 #include "variable/TypeName.h"
 
 #include <vector>

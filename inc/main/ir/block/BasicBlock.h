@@ -1,6 +1,7 @@
 #pragma once
 
-#include "ControlFlowGraph.h"
+#include "ir/ControlFlowGraph.h"
+#include "ir/instruction/IRInstr.h"
 
 #include <vector>
 #include <string>
