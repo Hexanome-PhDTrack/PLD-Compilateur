@@ -1,3 +1,5 @@
+#pragma once
+
 // enum of types
 enum TypeName {
     TYPE_INT,
