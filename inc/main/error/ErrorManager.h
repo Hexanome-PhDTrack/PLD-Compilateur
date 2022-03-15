@@ -18,4 +18,8 @@ public:
     inline void AddError(Error* error) {
         errors.push_back(error);
     }
+
+    inline bool hasErrors(){
+        return(errors.size()>0);
+    }
 };

@@ -6,15 +6,14 @@
 #include "variable/VariableManager.h"
 #include "warning/WarningManager.h"
 #include "error/ErrorManager.h"
+#include "BaseVisitor.h"
 
 #include <map>
 
-class  CodeGenVisitor : public ifccBaseVisitor {
+class  CodeGenVisitor : public BaseVisitor {
 	private:
 		// https://stackoverflow.com/questions/9954518/stdunique-ptr-with-an-incomplete-type-wont-compile
 		VariableManager varManager;
-		WarningManager warningManager;
-		ErrorManager errorManager;
 
 	public:
 		CodeGenVisitor();
@@ -28,7 +27,7 @@ class  CodeGenVisitor : public ifccBaseVisitor {
 		virtual antlrcpp::Any visitAddSub(ifccParser::AddSubContext *ctx) override;
 		virtual antlrcpp::Any visitMulDiv(ifccParser::MulDivContext *ctx) override;
 		virtual antlrcpp::Any visitParenthesis(ifccParser::ParenthesisContext *ctx) override;
-
+        virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *ctx) override;
 		// getters
 		VariableManager getManager() { return varManager; }
 };

@@ -8,6 +8,10 @@ CodeGenVisitor::~CodeGenVisitor() {
 
 }
 
+antlrcpp::Any CodeGenVisitor::visitAxiom(ifccParser::AxiomContext *ctx) {
+    return visit(ctx->prog());
+}
+
 antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
 {
 	// USE TABS NOT SPACES YOU NERD
@@ -15,7 +19,7 @@ antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
 	std::cout << ".globl _main\n"
 				 " _main: \n";
 #else
-	std::cout << ".globl	main\n"
+	std::cout << ".globl main\n"
 				 " main: \n";
 #endif
 	std::cout << "	# prologue\n"
@@ -35,13 +39,15 @@ antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
 				 "	ret # return to the caller (here the shell)\n";
 
 	// check and log warnings
-	warningManager.CheckWarnings(varManager);
-	warningManager.LogWarnings();
+	warningManager->CheckWarnings(varManager);
+	warningManager->LogWarnings();
 
 	// log errors
-	errorManager.LogErrors();
-	
-    return returnVar;
+	errorManager->LogErrors();
+    bool success=0;
+    if(errorManager->hasErrors()) {return 1;}
+
+    return success;
 }
 
 antlrcpp::Any CodeGenVisitor::visitExpr(ifccParser::ExprContext *ctx)
@@ -51,6 +57,10 @@ antlrcpp::Any CodeGenVisitor::visitExpr(ifccParser::ExprContext *ctx)
 
 antlrcpp::Any CodeGenVisitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
 {
+    std::string varName = ctx->VAR()->getText();
+    if(!varManager.checkVarExists(varName)){
+        throwError(new Error("Error : variable" + varName +"is not defined"));
+    }
 	VarData computedVariable = visit(ctx->computedValue());
 	varManager.removeTempVariable(computedVariable);
 	VarData leftVar = varManager.getVariable(ctx->VAR()->getText());
@@ -62,26 +72,31 @@ antlrcpp::Any CodeGenVisitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
 
 antlrcpp::Any CodeGenVisitor::visitVarDefine(ifccParser::VarDefineContext *ctx)
 {
-	for(auto varCtx : ctx->varDefineMember())
-	{
-		visitVarDefineMember(varCtx);
-	}
-	
-	return 0;
+    for(auto varCtx : ctx->varDefineMember())
+    {
+        visitVarDefineMember(varCtx);
+    }
+
+    return 0;
 }
 
 antlrcpp::Any CodeGenVisitor::visitVarDefineMember(ifccParser::VarDefineMemberContext *ctx)
 {
-	VarData newVar = varManager.addVariable(ctx->VAR()->getText(), ctx->getStart()->getLine(), TYPE_INT);
-	if(ctx->computedValue())
-	{
-		VarData computedVariable = visit(ctx->computedValue());
-		varManager.removeTempVariable(computedVariable);
-		std::cout << "	movl " << computedVariable.GetIndex() << "(%rbp), %eax\n";
-		std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n";
-	}
-	
-	return 0;
+    std::string varName = ctx->VAR()->getText();
+    //Check if the variable already exists, if yes we throw an error because it already exists.
+    if(varManager.checkVarExists(varName)){
+        throwError(new Error("Error : variable" + varName+"is already defined"));
+    }
+    VarData newVar = varManager.addVariable(ctx->VAR()->getText(), ctx->getStart()->getLine(), TYPE_INT);
+    if(ctx->computedValue())
+    {
+        VarData computedVariable = visit(ctx->computedValue());
+        varManager.removeTempVariable(computedVariable);
+        std::cout << "	movl " << computedVariable.GetIndex() << "(%rbp), %eax\n";
+        std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n";
+    }
+
+    return 0;
 }
 
 antlrcpp::Any CodeGenVisitor::visitValue(ifccParser::ValueContext *ctx)
@@ -155,7 +170,7 @@ antlrcpp::Any CodeGenVisitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 	}
 
 	else if (operatorSymbol == "/")
-	{	
+	{
 		// TODO: Ajouter vérification + warning si on divise par 0
 		std::cout << "	cltd\n";
 		std::cout << "	idivl " << rightVar.GetIndex() << "(%rbp)\n"; // divise eax by rightvar in eax

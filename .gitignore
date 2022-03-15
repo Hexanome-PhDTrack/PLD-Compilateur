@@ -25,6 +25,7 @@ venv
 CMakeLists.txt
 .history
 cmake-build-debug
+.DS_Store
 
 # assembly files
 *.s
