@@ -62,6 +62,16 @@ antlrcpp::Any CodeGenVisitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
 
 antlrcpp::Any CodeGenVisitor::visitVarDefine(ifccParser::VarDefineContext *ctx)
 {
+	for(auto varCtx : ctx->varDefineMember())
+	{
+		visitVarDefineMember(varCtx);
+	}
+	
+	return 0;
+}
+
+antlrcpp::Any CodeGenVisitor::visitVarDefineMember(ifccParser::VarDefineMemberContext *ctx)
+{
 	VarData newVar = varManager.addVariable(ctx->VAR()->getText(), ctx->getStart()->getLine(), TYPE_INT);
 	if(ctx->computedValue())
 	{
@@ -71,7 +81,7 @@ antlrcpp::Any CodeGenVisitor::visitVarDefine(ifccParser::VarDefineContext *ctx)
 		std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n";
 	}
 	
-	return newVar;
+	return 0;
 }
 
 antlrcpp::Any CodeGenVisitor::visitValue(ifccParser::ValueContext *ctx)
