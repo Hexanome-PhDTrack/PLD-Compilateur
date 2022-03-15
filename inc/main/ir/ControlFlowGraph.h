@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ir/block/BasicBlock.h"
+#include "ir/block/Block.h"
 #include "variable/TypeName.h"
 
 #include <vector>
@@ -14,7 +14,7 @@ public:
 
     DefFonction* ast; /**< The AST this CFG comes from */
 
-    void add_bb(BasicBlock* bb); 
+    void add_bb(Block* bb); 
 
     // x86 code generation: could be encapsulated in a processor class in a retargetable compiler
     void gen_asm(std::ostream& o);
@@ -30,7 +30,7 @@ public:
 
     // basic block management
     std::string new_BB_name();
-    BasicBlock* current_bb;
+    Block* current_bb;
 
 protected:
 	std::map <std::string, TypeName> SymbolType; /**< part of the symbol table  */
@@ -38,5 +38,5 @@ protected:
 	int nextFreeSymbolIndex; /**< to allocate new symbols in the symbol table */
 	int nextBBnumber; /**< just for naming */
 	
-	std::vector <BasicBlock*> bbs; /**< all the basic blocks of this CFG*/
+	std::vector <Block*> bbs; /**< all the basic blocks of this CFG*/
 };
