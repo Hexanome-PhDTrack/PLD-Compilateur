@@ -10,7 +10,8 @@ expr: varAssign
 
 varAssign: VAR '=' computedValue ';';
 
-varDefine: TYPE VAR ('=' computedValue)? ';';
+varDefine: TYPE varDefineMember (',' varDefineMember)* ';';
+varDefineMember: VAR ('=' computedValue)?;
 
 computedValue: '(' computedValue ')' # parenthesis
     | computedValue OP_MUL_DIV computedValue # mulDiv
