@@ -156,6 +156,7 @@ antlrcpp::Any CodeGenVisitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 
 	else if (operatorSymbol == "/")
 	{	
+		// TODO: Ajouter vérification + warning si on divise par 0
 		std::cout << "	cltd\n";
 		std::cout << "	idivl " << rightVar.GetIndex() << "(%rbp)\n"; // divise eax by rightvar in eax
 		std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n";
