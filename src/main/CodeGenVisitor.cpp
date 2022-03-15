@@ -8,6 +8,10 @@ CodeGenVisitor::~CodeGenVisitor() {
 
 }
 
+antlrcpp::Any CodeGenVisitor::visitAxiom(ifccParser::AxiomContext *ctx) {
+    return visit(ctx->prog());
+}
+
 antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
 {
 	// USE TABS NOT SPACES YOU NERD
@@ -40,10 +44,10 @@ antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
 
 	// log errors
 	errorManager->LogErrors();
+    bool success=0;
+    if(errorManager->hasErrors()) {return 1;}
 
-    if(errorManager->hasErrors()) {exit(1);}
-
-    return returnVar;
+    return success;
 }
 
 antlrcpp::Any CodeGenVisitor::visitExpr(ifccParser::ExprContext *ctx)
@@ -56,7 +60,6 @@ antlrcpp::Any CodeGenVisitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
     std::string varName = ctx->VAR()->getText();
     if(!varManager.checkVarExists(varName)){
         throwError(new Error("Error : variable" + varName +"is not defined"));
-        return nullptr;
     }
 	VarData computedVariable = visit(ctx->computedValue());
 	varManager.removeTempVariable(computedVariable);
@@ -83,7 +86,6 @@ antlrcpp::Any CodeGenVisitor::visitVarDefineMember(ifccParser::VarDefineMemberCo
     //Check if the variable already exists, if yes we throw an error because it already exists.
     if(varManager.checkVarExists(varName)){
         throwError(new Error("Error : variable" + varName+"is already defined"));
-        return nullptr;
     }
     VarData newVar = varManager.addVariable(ctx->VAR()->getText(), ctx->getStart()->getLine(), TYPE_INT);
     if(ctx->computedValue())
