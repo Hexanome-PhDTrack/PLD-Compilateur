@@ -21,6 +21,13 @@ import shutil
 import sys
 import subprocess
 
+class bcolors:
+    OK = '\033[92m' #GREEN correct program 
+    OK1= '\033[34m' #BLUE ifcc correctly rejects invalid program 
+    WARNING = '\033[93m' #YELLOW ifcc wrongly rejects valid program -> error
+    FAIL = '\033[91m' #RED ifcc wrongly accepts invalid program -> error
+    RESET = '\033[0m' #RESET COLOR
+
 def command(string, logfile=None):
     """execute `string` as a shell command, optionnaly logging stdout+stderr to a file. return exit status.)"""
     if args.verbose:
@@ -184,15 +191,17 @@ for jobname in jobs:
     
     if gccstatus != 0 and ifccstatus != 0:
         ## ifcc correctly rejects invalid program -> test-case ok
-        print("TEST OK")
+        
+        print(bcolors.OK1 +"TEST OK " + bcolors.RESET)
+
         continue
     elif gccstatus != 0 and ifccstatus == 0:
         ## ifcc wrongly accepts invalid program -> error
-        print("TEST FAIL (your compiler accepts an invalid program)")
+        print(bcolors.FAIL +"TEST FAIL (your compiler accepts an invalid program)" + bcolors.RESET)
         continue
     elif gccstatus == 0 and ifccstatus != 0:
         ## ifcc wrongly rejects valid program -> error
-        print("TEST FAIL (your compiler rejects a valid program)")
+        print(bcolors.WARNING +"TEST FAIL (your compiler rejects a valid program)"+ bcolors.RESET)
         if args.verbose:
             dumpfile("ifcc-compile.txt")
         continue
@@ -219,4 +228,4 @@ for jobname in jobs:
         continue
 
     ## last but not least
-    print("TEST OK")
+    print(bcolors.OK + "TEST OK"+ bcolors.RESET)
