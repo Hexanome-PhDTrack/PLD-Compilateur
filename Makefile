@@ -104,7 +104,7 @@ clean:
 
 run: $(BIN_MAIN)
 	$(ECHO) "$(TURQUOISE_COLOR)$(CONSTRUCTION_SIGN) Executing $(UNDERLINE)$(EXE)$(NO_COLOR)$(TURQUOISE_COLOR)...$(NO_COLOR)"
-	./$(BIN_MAIN)   
+	./$(BIN_MAIN)
 
 testvar:
 	@echo $(TARGET)
