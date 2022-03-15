@@ -3,8 +3,10 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/compiler/*",
-                "${workspaceFolder}/compiler/generated/*",
+                "${workspaceFolder}/inc/*",
+                "${workspaceFolder}/inc/main/*",
+                "${workspaceFolder}/src/*",
+                "${workspaceFolder}/src/main/*",
                 "/usr/include/antlr4-runtime/*"
             ],
             "defines": [],
