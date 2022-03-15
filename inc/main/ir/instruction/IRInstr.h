@@ -1,14 +1,21 @@
+#pragma once
 
+#include "ir/block/Block.h"
+#include "variable/TypeName.h"
+
+#include <vector>
+#include <string>
+#include <iostream>
 
 class IRInstr{
     public:
         /**  constructor */
-        IRInstr(BasicBlock* bb_, Operation op, Type t, vector<string> params);
+        IRInstr(Block* bb_, TypeName t, std::vector<std::string> params);
         
         /** Actual code generation */
-        void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
+        virtual void gen_asm(std::ostream &o) = 0; /**< x86 assembly code generation for this IR instruction */
     private:
-        BasicBlock* bb; /**< The BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
-        Type t;
-        vector<string> params;
-}
+        Block* bb; /**< The BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
+        TypeName t;
+        std::vector<std::string> params;
+};
