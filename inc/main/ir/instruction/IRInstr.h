@@ -10,11 +10,11 @@
 class IRInstr{
     public:
         /**  constructor */
-        IRInstr(Block* bb_, TypeName t, std::vector<std::string> params);
+        IRInstr(Block* bb, TypeName t, std::vector<std::string> params): bb(bb), t(t), params(params){};
         
         /** Actual code generation */
         virtual void gen_asm(std::ostream &o) = 0; /**< x86 assembly code generation for this IR instruction */
-    private:
+    protected:
         Block* bb; /**< The BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
         TypeName t;
         std::vector<std::string> params;
