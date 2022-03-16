@@ -18,10 +18,13 @@ bool VariableManager::isTemp(std::string varName) const{
 
 ///////////////////////////////////////////////////////////////////////////
 
+bool VariableManager::checkVarExists(std::string name){
+    std::map<std::string, VarData>::iterator it = varDataCollection.find(name);
+    return it != varDataCollection.end();
+}
 VarData VariableManager::getVariable(std::string name){
     varDataCollection.at(name).WitnessUsage();//var used
-
-    return varDataCollection.find(name) -> second;
+    return varDataCollection.find(name) -> second;    
 }
 
 VarData VariableManager::addVariable(std::string varName, size_t lineNumber, TypeName typeName){

@@ -8,7 +8,10 @@ build/
 
 # compiled files
 compiler/build
-compiler/generated
+src/main/generated
+inc/main/generated
+generated/*
+bin/*
 *.o
 compiler/ifcc
 bin/
@@ -23,6 +26,7 @@ venv
 CMakeLists.txt
 .history
 cmake-build-debug
+.DS_Store
 
 # assembly files
 *.s

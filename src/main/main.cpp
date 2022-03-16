@@ -12,39 +12,36 @@
 using namespace antlr4;
 using namespace std;
 
-int main(int argn, const char **argv)
-{
-  stringstream in;
-  if (argn==2)
-  {
-     ifstream lecture(argv[1]);
-     in << lecture.rdbuf();
-  }
-  else
-  {
-      cerr << "usage: ifcc path/to/file.c" << endl ;
-      exit(1);
-  }
-  
-  ANTLRInputStream input(in.str());
+int main(int argn, const char **argv) {
+    stringstream in;
+    if (argn==2)
+    {
+        ifstream lecture(argv[1]);
+        in << lecture.rdbuf();
+    }
+    else
+    {
+        cerr << "usage: ifcc path/to/file.c" << endl ;
+        exit(1);
+    }
+    
+    ANTLRInputStream input(in.str());
 
-  ifccLexer lexer(&input);
-  CommonTokenStream tokens(&lexer);
+    ifccLexer lexer(&input);
+    CommonTokenStream tokens(&lexer);
 
-  tokens.fill();
+    tokens.fill();
 
-  ifccParser parser(&tokens);
-  tree::ParseTree* tree = parser.axiom();
+    ifccParser parser(&tokens);
+    tree::ParseTree* tree = parser.axiom();
 
-  if(parser.getNumberOfSyntaxErrors() != 0)
-  {
-      cerr << "error: syntax error during parsing" << endl;
-      exit(1);
-  }
+    if(parser.getNumberOfSyntaxErrors() != 0)
+    {
+        cerr << "error: syntax error during parsing" << endl;
+        exit(1);
+    }
 
-  
-  Visitor v;
-  v.visit(tree);
-
-  return 0;
+    Visitor v;
+    int success = v.visit(tree).as<int>();
+    return success;
 }

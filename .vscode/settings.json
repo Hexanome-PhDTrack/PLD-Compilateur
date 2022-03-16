@@ -59,6 +59,7 @@
         "typeinfo": "cpp",
         "cstring": "cpp",
         "cinttypes": "cpp",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "cerrno": "cpp"
     }
 }
