@@ -1,13 +1,13 @@
 #pragma once
 
-#include "error/Error.h"
+#include "error/CustomError.h"
 #include "variable/VarData.h"
 
 #include <vector>
 
 class ErrorManager {
 private:
-    std::vector<Error*> errors;
+    std::vector<CustomError> errors;
 
 public:
     ErrorManager() {}
@@ -15,7 +15,7 @@ public:
 
     void LogErrors();
 
-    inline void AddError(Error* error) {
+    inline void AddError(CustomError error) {
         errors.push_back(error);
     }
 

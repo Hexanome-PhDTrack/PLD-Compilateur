@@ -16,7 +16,7 @@ public:
     BaseVisitor() { this->errorManager = new ErrorManager();
         this->warningManager = new WarningManager();
     }
-    void throwError(Error *error) { errorManager->AddError(error); }
+    void throwError(CustomError error) { errorManager->AddError(error); throw error; }
     void throwWarning(Warning *warning) {warningManager->AddWarning(warning);}
     ErrorManager *getErrorManager() { return errorManager; }
     WarningManager *getWarningManager(){return warningManager;}

@@ -14,40 +14,42 @@ antlrcpp::Any CodeGenVisitor::visitAxiom(ifccParser::AxiomContext *ctx) {
 
 antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
 {
-	// USE TABS NOT SPACES YOU NERD
-#ifdef __APPLE__
-	std::cout << ".globl _main\n"
-				 " _main: \n";
-#else
-	std::cout << ".globl main\n"
-				 " main: \n";
-#endif
-	std::cout << "	# prologue\n"
-				 "	pushq %rbp # save %rbp on the stack\n"
-				 "	movq %rsp, %rbp # define %rbp for the current function\n";
+	try{
+		// USE TABS NOT SPACES YOU NERD
+	#ifdef __APPLE__
+		std::cout << ".globl _main\n"
+					" _main: \n";
+	#else
+		std::cout << ".globl main\n"
+					" main: \n";
+	#endif
+		std::cout << "	# prologue\n"
+					"	pushq %rbp # save %rbp on the stack\n"
+					"	movq %rsp, %rbp # define %rbp for the current function\n";
 
-	for(auto expr : ctx->expr())
-	{
-		visit(expr);
+		for(auto expr : ctx->expr())
+		{
+			visit(expr);
+		}
+
+		VarData returnVar = visit(ctx->computedValue());
+		std::cout << "	movl " << returnVar.GetIndex() << "(%rbp), %eax\n";
+
+		std::cout << "	# epilogue\n"
+					"	popq %rbp # restore %rbp from the stack\n"
+					"	ret # return to the caller (here the shell)\n";
+	}catch(const CustomError& e){
+		// catch the error
 	}
-
-	VarData returnVar = visit(ctx->computedValue());
-	std::cout << "	movl " << returnVar.GetIndex() << "(%rbp), %eax\n";
-
-	std::cout << "	# epilogue\n"
-				 "	popq %rbp # restore %rbp from the stack\n"
-				 "	ret # return to the caller (here the shell)\n";
-
 	// check and log warnings
 	warningManager->CheckWarnings(varManager);
 	warningManager->LogWarnings();
 
 	// log errors
 	errorManager->LogErrors();
-    bool success=0;
     if(errorManager->hasErrors()) {return 1;}
 
-    return success;
+    return 0;
 }
 
 antlrcpp::Any CodeGenVisitor::visitExpr(ifccParser::ExprContext *ctx)
@@ -59,7 +61,8 @@ antlrcpp::Any CodeGenVisitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
 {
     std::string varName = ctx->VAR()->getText();
     if(!varManager.checkVarExists(varName)){
-        throwError(new Error("Error : variable" + varName +"is not defined"));
+        VarData toThrow = VarData(-1, varName, ctx->getStart()->getLine(), TYPE_INT);
+        throwError(UndeclaredVariableError(toThrow));
     }
 	VarData computedVariable = visit(ctx->computedValue());
 	varManager.removeTempVariable(computedVariable);
@@ -85,7 +88,8 @@ antlrcpp::Any CodeGenVisitor::visitVarDefineMember(ifccParser::VarDefineMemberCo
     std::string varName = ctx->VAR()->getText();
     //Check if the variable already exists, if yes we throw an error because it already exists.
     if(varManager.checkVarExists(varName)){
-        throwError(new Error("Error : variable" + varName+"is already defined"));
+		VarData toThrow = VarData(-1, varName, ctx->getStart()->getLine(), TYPE_INT);
+        throwError(UndeclaredVariableError(toThrow));
     }
     VarData newVar = varManager.addVariable(ctx->VAR()->getText(), ctx->getStart()->getLine(), TYPE_INT);
     if(ctx->computedValue())
@@ -106,9 +110,17 @@ antlrcpp::Any CodeGenVisitor::visitValue(ifccParser::ValueContext *ctx)
 
 	if (ctx->VAR())
 	{
-		// move var to tmp
-		std::cout << "	movl " << varManager.getVariable(ctx->VAR()->getText()).GetIndex() << "(%rbp), %eax\n";
-		std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n";
+		if(varManager.checkVarExists(ctx->VAR()->getText())){
+			VarData varData = varManager.getVariable(ctx->VAR()->getText());
+
+			// move var to tmp
+			std::cout << "	movl " << varData.GetIndex() << "(%rbp), %eax\n";
+			std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n";
+		}else{
+			VarData toThrow = VarData(-1, ctx->VAR()->getText(), ctx->getStart()->getLine(), TYPE_INT);
+
+			throwError(UndeclaredVariableError(toThrow));
+		}
 	}
 
 	if (ctx->CONST())

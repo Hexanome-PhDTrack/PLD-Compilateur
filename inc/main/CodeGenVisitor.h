@@ -7,6 +7,7 @@
 #include "warning/WarningManager.h"
 #include "error/ErrorManager.h"
 #include "BaseVisitor.h"
+#include "error/symbols/UndeclaredVariableError.h"
 
 #include <map>
 

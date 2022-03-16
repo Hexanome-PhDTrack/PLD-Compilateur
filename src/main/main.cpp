@@ -44,7 +44,7 @@ int main(int argn, const char **argv)
 
   
   CodeGenVisitor v;
-  bool success = v.visit(tree);
+  int success = v.visit(tree).as<int>();
 
   return success;
 }
