@@ -21,6 +21,7 @@ import shutil
 import sys
 import subprocess
 
+
 class bcolors:
     OK = '\033[92m' #GREEN correct program 
     OK1= '\033[34m' #BLUE ifcc correctly rejects invalid program 
@@ -138,7 +139,7 @@ if args.debug:
 
 jobs=[]
 
-for inputfilename in inputfilenames:
+for index,inputfilename in enumerate(inputfilenames):
     if args.debug>=2:
         print("debug: PREPARING "+inputfilename)
 
@@ -148,7 +149,7 @@ for inputfilename in inputfilenames:
     
     ## each test-case gets copied and processed in its own subdirectory:
     ## ../somedir/subdir/file.c becomes ./ifcc-test-output/somedir-subdir-file/input.c
-    subdir='ifcc-test-output/'+inputfilename.strip("./")[:-2].replace('/','-')
+    subdir='ifcc-test-output/'+str(index)+ "-"+inputfilename.strip("./")[:-2].replace('/','-')
     os.mkdir(subdir)
     shutil.copyfile(inputfilename, subdir+'/input.c')
     jobs.append(subdir)
@@ -170,7 +171,7 @@ if args.debug:
 ######################################################################################
 ## TEST step: actually compile all test-cases with both compilers
 
-for jobname in jobs:
+for jobindex, jobname in enumerate(jobs):
     os.chdir(orig_cwd)
 
     print('TEST-CASE: '+jobname)
@@ -192,16 +193,16 @@ for jobname in jobs:
     if gccstatus != 0 and ifccstatus != 0:
         ## ifcc correctly rejects invalid program -> test-case ok
         
-        print(bcolors.OK1 +"TEST OK " + bcolors.RESET)
+        print(bcolors.OK1 + str(jobindex) +" TEST OK "  + bcolors.RESET)
 
         continue
     elif gccstatus != 0 and ifccstatus == 0:
         ## ifcc wrongly accepts invalid program -> error
-        print(bcolors.FAIL +"TEST FAIL (your compiler accepts an invalid program)" + bcolors.RESET)
+        print(bcolors.FAIL+ str(jobindex) +" TEST FAIL (your compiler accepts an invalid program)"  + bcolors.RESET)
         continue
     elif gccstatus == 0 and ifccstatus != 0:
         ## ifcc wrongly rejects valid program -> error
-        print(bcolors.WARNING +"TEST FAIL (your compiler rejects a valid program)"+ bcolors.RESET)
+        print(bcolors.WARNING + str(jobindex)  +" TEST FAIL (your compiler rejects a valid program)"  + bcolors.RESET)
         if args.verbose:
             dumpfile("ifcc-compile.txt")
         continue
