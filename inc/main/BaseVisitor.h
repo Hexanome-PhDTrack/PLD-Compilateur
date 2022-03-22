@@ -13,17 +13,19 @@
 class BaseVisitor : public ifccBaseVisitor
 {
 public:
-    BaseVisitor() { this->errorManager = new ErrorManager();
-        this->warningManager = new WarningManager();
-    }
-    void throwError(CustomError error) { errorManager->AddError(error); throw error; }
-    void throwWarning(Warning *warning) {warningManager->AddWarning(warning);}
-    ErrorManager *getErrorManager() { return errorManager; }
-    WarningManager *getWarningManager(){return warningManager;}
+    BaseVisitor() { }
+    void throwError(CustomError *  error) { errorManager.AddError(error); throw error; }
+    void throwWarning(Warning *warning) {warningManager.AddWarning(warning);}
+    ErrorManager getErrorManager() { return errorManager; }
+    WarningManager getWarningManager(){return warningManager;}
 
 protected:
-    ErrorManager *errorManager;
-    WarningManager *warningManager;
+    ErrorManager errorManager;
+    WarningManager warningManager;
+    IntermediateRepresentation IR;
+
+    // indicator of the advancement in exploration
+    Function* currentFunction;
 };
 
 #endif //PLD_COMPILATEUR_BASEVISITOR_H

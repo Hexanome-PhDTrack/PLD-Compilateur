@@ -21,7 +21,7 @@ public:
     ControlFlowGraph();
     ~ControlFlowGraph();
 
-    void add_bb(Block* bb); 
+    void AddBlock(Block* bb); 
 
     // x86 code generation: could be encapsulated in a processor class in a retargetable compiler
     void gen_asm(std::ostream& o);
