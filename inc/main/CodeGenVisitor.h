@@ -19,9 +19,12 @@ class  CodeGenVisitor : public BaseVisitor {
 	public:
 		CodeGenVisitor();
 		~CodeGenVisitor();
-		virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override;
+        virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *ctx) override;
+        virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override;
         virtual antlrcpp::Any visitFunc(ifccParser::FuncContext *ctx) override;
-        virtual antlrcpp::Any visitExpr(ifccParser::ExprContext *ctx) override;
+        virtual antlrcpp::Any visitBlock(ifccParser::BlockContext *ctx) override;
+        virtual antlrcpp::Any visitInstr(ifccParser::InstrContext *ctx) override;
+        virtual antlrcpp::Any visitFuncReturn(ifccParser::FuncReturnContext *ctx) override;
 		virtual antlrcpp::Any visitVarAssign(ifccParser::VarAssignContext *ctx) override;
 		virtual antlrcpp::Any visitVarDefine(ifccParser::VarDefineContext *ctx) override;
 		virtual antlrcpp::Any visitVarDefineMember(ifccParser::VarDefineMemberContext *ctx) override;
@@ -29,7 +32,6 @@ class  CodeGenVisitor : public BaseVisitor {
 		virtual antlrcpp::Any visitAddSub(ifccParser::AddSubContext *ctx) override;
 		virtual antlrcpp::Any visitMulDiv(ifccParser::MulDivContext *ctx) override;
 		virtual antlrcpp::Any visitParenthesis(ifccParser::ParenthesisContext *ctx) override;
-        virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *ctx) override;
 		// getters
 		VariableManager getManager() { return varManager; }
 };

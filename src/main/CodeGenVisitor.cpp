@@ -28,8 +28,7 @@ antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
 					"	movq %rsp, %rbp # define %rbp for the current function\n";
 
         visitChildren(ctx);
-		VarData returnVar = visit(ctx->computedValue());
-		std::cout << "	movl " << returnVar.GetIndex() << "(%rbp), %eax\n";
+
 
 		std::cout << "	# epilogue\n"
 					"	popq %rbp # restore %rbp from the stack\n"
@@ -50,14 +49,44 @@ antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
 
 antlrcpp::Any CodeGenVisitor::visitFunc(ifccParser::FuncContext *ctx)
 {
+    std::vector<antlr4::tree::TerminalNode *> types = ctx->TYPE();
+    std::vector<antlr4::tree::TerminalNode *> names = ctx->VAR();
+    std::string funcType = types[0]->getText();
+    std::string funcName = names[0]->getText();
+
+    //if(!varManager.checkVarExists(funcName)){
+        //TODO add correct type
+        //VarData toThrow = VarData(-1, funcName, ctx->getStart()->getLine(), TYPE_INT);
+        //throwError(UndeclaredVariableError(toThrow));
+    //}
+    //VarData newVar = varManager.addVariable(funcName, ctx->getStart()->getLine(), TYPE_INT);
+    visitChildren(ctx);
+    return 0;
 
 }
 
-antlrcpp::Any CodeGenVisitor::visitExpr(ifccParser::ExprContext *ctx)
+antlrcpp::Any CodeGenVisitor::visitBlock(ifccParser::BlockContext *ctx)
+{
+    for(auto instr : ctx->instr())
+    {
+        visit(instr);
+    }
+    return 0;
+
+}
+
+antlrcpp::Any CodeGenVisitor::visitInstr(ifccParser::InstrContext *ctx)
 {
 	return visitChildren(ctx);
 }
 
+antlrcpp::Any CodeGenVisitor::visitFuncReturn(ifccParser::FuncReturnContext *ctx)
+{
+    VarData returnVar = visit(ctx->expr());
+    std::cout << "	movl " << returnVar.GetIndex() << "(%rbp), %eax\n";
+    return 0;
+
+}
 antlrcpp::Any CodeGenVisitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
 {
     std::string varName = ctx->VAR()->getText();
@@ -65,7 +94,7 @@ antlrcpp::Any CodeGenVisitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
         VarData toThrow = VarData(-1, varName, ctx->getStart()->getLine(), TYPE_INT);
         throwError(UndeclaredVariableError(toThrow));
     }
-	VarData computedVariable = visit(ctx->computedValue());
+	VarData computedVariable = visit(ctx->expr());
 	varManager.removeTempVariable(computedVariable);
 	VarData leftVar = varManager.getVariable(ctx->VAR()->getText());
 
@@ -93,9 +122,9 @@ antlrcpp::Any CodeGenVisitor::visitVarDefineMember(ifccParser::VarDefineMemberCo
         throwError(UndeclaredVariableError(toThrow));
     }
     VarData newVar = varManager.addVariable(ctx->VAR()->getText(), ctx->getStart()->getLine(), TYPE_INT);
-    if(ctx->computedValue())
+    if(ctx->expr())
     {
-        VarData computedVariable = visit(ctx->computedValue());
+        VarData computedVariable = visit(ctx->expr());
         varManager.removeTempVariable(computedVariable);
         std::cout << "	movl " << computedVariable.GetIndex() << "(%rbp), %eax\n";
         std::cout << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n";
@@ -139,8 +168,8 @@ antlrcpp::Any CodeGenVisitor::visitAddSub(ifccParser::AddSubContext *ctx)
 	VarData newVar = varManager.addVariable("#tmp", ctx->getStart()->getLine(), TYPE_INT);
 	
 	std::string operatorSymbol = ctx->OP_ADD_SUB()->getText();
-	VarData leftVar = visit(ctx->computedValue(0)).as<VarData>();
-	VarData rightVar = visit(ctx->computedValue(1)).as<VarData>();
+	VarData leftVar = visit(ctx->expr(0)).as<VarData>();
+	VarData rightVar = visit(ctx->expr(1)).as<VarData>();
 
 	varManager.removeTempVariable(leftVar);
 	varManager.removeTempVariable(rightVar);
@@ -168,8 +197,8 @@ antlrcpp::Any CodeGenVisitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 	VarData newVar = varManager.addVariable("#tmp", ctx->getStart()->getLine(), TYPE_INT);
 	
 	std::string operatorSymbol = ctx->OP_MUL_DIV()->getText();
-	VarData leftVar = visit(ctx->computedValue(0)).as<VarData>();
-	VarData rightVar = visit(ctx->computedValue(1)).as<VarData>();
+	VarData leftVar = visit(ctx->expr(0)).as<VarData>();
+	VarData rightVar = visit(ctx->expr(1)).as<VarData>();
 
 	varManager.removeTempVariable(leftVar);
 	varManager.removeTempVariable(rightVar);
@@ -195,5 +224,5 @@ antlrcpp::Any CodeGenVisitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 
 antlrcpp::Any CodeGenVisitor::visitParenthesis(ifccParser::ParenthesisContext *ctx)
 {
-	return visit(ctx ->computedValue());
+	return visit(ctx ->expr());
 }

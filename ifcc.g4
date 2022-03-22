@@ -5,28 +5,28 @@ axiom : prog ;
 prog: func*
     ;
 
-func : TYPE VAR '(' ')' block
-     | TYPE VAR '(' TYPE VAR (',' TYPE VAR)* ')' block
+func : TYPE VAR '(' (TYPE VAR (',' TYPE VAR)*)? ')' block
      ;
 
-block : '{' expr* '}'
+block : '{' instr* '}'
       ;
 
-expr: funcReturn
+instr: funcReturn
     | varAssign
     | varDefine
+    | block
     ;
 
-funcReturn : RETURN computedValue ';' ;
+funcReturn : RETURN expr ';' ;
 
-varAssign: VAR '=' computedValue ';';
+varAssign: VAR '=' expr ';';
 
 varDefine: TYPE varDefineMember (',' varDefineMember)* ';';
-varDefineMember: VAR ('=' computedValue)?;
+varDefineMember: VAR ('=' expr)?;
 
-computedValue: '(' computedValue ')' # parenthesis
-    | computedValue OP_MUL_DIV computedValue # mulDiv
-    | computedValue OP_ADD_SUB computedValue # addSub
+expr: '(' expr ')' # parenthesis
+    | expr OP_MUL_DIV expr # mulDiv
+    | expr OP_ADD_SUB expr # addSub
     | MINUS? (VAR | CONST) # value
     ;
 
