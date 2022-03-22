@@ -59,6 +59,8 @@
         "typeinfo": "cpp",
         "cstring": "cpp",
         "cinttypes": "cpp",
-        "cerrno": "cpp"
+        "cerrno": "cpp",
+        "regex": "cpp",
+        "shared_mutex": "cpp"
     }
 }
