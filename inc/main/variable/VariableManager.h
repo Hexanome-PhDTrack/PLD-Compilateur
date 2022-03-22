@@ -15,6 +15,14 @@ class VariableManager{
     public:
         static const std::string TEMP_BASE_NAME;
         /**
+         * @brief test if a variable exist
+         * 
+         * @param name the name
+         * @return true if the variable exist
+         * @return false 
+         */
+        bool isExist(std::string name);
+        /**
          * @brief Get the Variable object with the name
          * 
          * @param name the name of the variable

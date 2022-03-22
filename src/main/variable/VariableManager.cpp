@@ -18,6 +18,10 @@ bool VariableManager::isTemp(std::string varName) const{
 
 ///////////////////////////////////////////////////////////////////////////
 
+bool VariableManager::isExist(std::string name){
+    return varDataCollection.find(name) != varDataCollection.end();
+}
+
 VarData VariableManager::getVariable(std::string name){
     varDataCollection.at(name).WitnessUsage();//var used
 
