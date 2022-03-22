@@ -6,9 +6,16 @@
 #include "variable/TypeName.h"
 
 class Function {
-private:
-    VariableManager variableManager;
-    ControlFlowGraph cfg;
+    public:
+        VariableManager & getVariableManager() ;
+        ControlFlowGraph& getControlFlowGraph();
+        TypeName getReturnType();
 
-    TypeName returnType;
+        Function(TypeName returnType) : returnType(returnType){};
+
+    private:
+        VariableManager variableManager;
+        ControlFlowGraph cfg;
+
+        TypeName returnType;
 };
