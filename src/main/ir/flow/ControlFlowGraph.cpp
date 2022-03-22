@@ -6,15 +6,11 @@ ControlFlowGraph::ControlFlowGraph()
 
 ControlFlowGraph::~ControlFlowGraph()
 {
-    for (int i = 0; i < this->blocks.size(); i++)
-    {
-        delete this->blocks[i];
-    }
 }
 
 void ControlFlowGraph::add_bb(Block *bb)
 {
-    this->blocks.push_back(bb);
+    this->blockManager.AddBlock(bb);
 }
 
 void ControlFlowGraph::gen_asm(std::ostream &o)
