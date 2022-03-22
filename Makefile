@@ -59,7 +59,7 @@ CFLAGS=-I $(ANTLRINC) -I $(INC_MAIN) -I $(INC_GENERATED) -Wno-attributes $(PERSO
 LDLIBS=-L $(ANTLRLIB) -lantlr4-runtime $(GDB_DEBUGGER_FLAGS)
 LDFLAGS=--ansi --pedantic -Wall --std=c++17
 
-SRCS_MAIN=$(wildcard src/main/**/*.cpp) $(wildcard src/main/*.cpp)
+SRCS_MAIN=$(wildcard src/main/**/**/**/*.cpp) $(wildcard src/main/**/**/*.cpp) $(wildcard src/main/**/*.cpp) $(wildcard src/main/*.cpp)
 OBJS_MAIN=$(SRCS_MAIN:src/%.cpp=obj/%.o)
 
 # at linking, give access to main/ to test files excluding the main main.

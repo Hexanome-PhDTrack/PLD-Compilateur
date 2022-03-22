@@ -3,6 +3,7 @@
 #include "ir/block/Block.h"
 #include "variable/TypeName.h"
 #include "variable/VariableManager.h"
+#include "ir/block/BlockManager.h"
 
 #include <vector>
 #include <string>
@@ -14,7 +15,7 @@ protected:
 	VariableManager variableManager;
 	int nextBBnumber; /**< just for naming */
 	
-	std::vector <Block*> blocks; /**< all the basic blocks of this CFG*/
+	BlockManager blockManager;
 
 public:
     ControlFlowGraph();

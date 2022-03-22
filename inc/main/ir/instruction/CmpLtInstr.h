@@ -2,6 +2,7 @@
 
 #include "ir/block/Block.h"
 #include "variable/TypeName.h"
+#include "ir/instruction/IRInstr.h"
 
 #include <vector>
 #include <string>
