@@ -7,14 +7,12 @@
 
 class Function {
     public:
-        VariableManager & getVariableManager() ;
         ControlFlowGraph& getControlFlowGraph();
         TypeName getReturnType();
 
         Function(TypeName returnType) : returnType(returnType){};
 
     private:
-        VariableManager variableManager;
         ControlFlowGraph cfg;
 
         TypeName returnType;
