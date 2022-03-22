@@ -19,7 +19,7 @@ public:
      * @param params
      * var1 = var2 - var3; => first parameter -> var1 | second parameter -> var2 | third parameter -> var3
      */
-    SubInstr(Block *bb_, TypeName t, std::vector<std::string> params) : IRInstr(bb, t, params){};
+    SubInstr(Block *bb_, TypeName t, std::vector<VarData> params) : IRInstr(bb, t, params){};
 
     virtual void gen_asm(std::ostream &o);
 };

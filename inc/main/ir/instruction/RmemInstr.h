@@ -10,9 +10,17 @@
 
 class RmemInstr : public IRInstr
 {
-	public:
-		RmemInstr(Block* bb, TypeName t, std::vector<std::string> params) : IRInstr(bb, t, params) {};
+public:
+	/**
+	 * @brief Construct a new Rmem Instr object
+	 *
+	 * @param bb
+	 * @param t
+	 * @param params
+	 * var1 = *var2; => First parameter -> var1 | second parameter -> var 2
+	 */
+	RmemInstr(Block *bb, TypeName t, std::vector<VarData> params) : IRInstr(bb, t, params){};
 
-		/** Actual code generation */
-        virtual void gen_asm(std::ostream &o);
+	/** Actual code generation */
+	virtual void gen_asm(std::ostream &o);
 };

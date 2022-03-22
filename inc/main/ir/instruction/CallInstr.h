@@ -10,9 +10,9 @@
 
 class CallInstr : public IRInstr
 {
-	public:
-		CallInstr(Block* bb, TypeName t, std::vector<std::string> params) : IRInstr(bb, t, params) {};
+public:
+	CallInstr(Block *bb, TypeName t, std::vector<VarData> params) : IRInstr(bb, t, params){};
 
-		/** Actual code generation */
-        virtual void gen_asm(std::ostream &o);
+	/** Actual code generation */
+	virtual void gen_asm(std::ostream &o);
 };
