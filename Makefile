@@ -35,6 +35,11 @@ else ifeq ($(TARGET),fedora)
   ANTLRJAR=/usr/share/java/antlr4/antlr4.jar:/usr/share/java/antlr3-runtime.jar:/usr/share/java/antlr4/antlr4-runtime.jar:/usr/share/java/stringtemplate4/ST4.jar:/usr/share/java/treelayout/org.abego.treelayout.core.jar
   ANTLRINC=/usr/include/antlr4-runtime
   ANTLRLIB=/usr/lib64/libantlr4-runtime.so
+else ifeq ($(TARGET),mac)
+  $(info 🎯 TARGET set to $(TARGET).)
+  ANTLRJAR=./antlr/jar/antlr-4.9.2-complete.jar
+  ANTLRINC=./antlr/include
+  ANTLRLIB=./antlr/lib/
 endif
 
 # paths
@@ -48,7 +53,7 @@ ECHO = @echo # @echo hides this command in terminal, not its output
 
 CC=g++
 GDB_DEBUGGER_FLAGS=-g
-PERSONAL_COMPIL_FLAGS=-D DEBUG -D COLORS # use own flags, see util.hpp
+PERSONAL_COMPIL_FLAGS=-D DEBUG -D COLORS -std=c++17# use own flags, see util.hpp
 # use include files at compile time
 CFLAGS=-I $(ANTLRINC) -I $(INC_MAIN) -I $(INC_GENERATED) -Wno-attributes $(PERSONAL_COMPIL_FLAGS) $(GDB_DEBUGGER_FLAGS) # -Wno-defaulted-function-deleted -Wno-unknown-warning-option
 LDLIBS=-L $(ANTLRLIB) -lantlr4-runtime $(GDB_DEBUGGER_FLAGS)
@@ -99,7 +104,7 @@ clean:
 
 run: $(BIN_MAIN)
 	$(ECHO) "$(TURQUOISE_COLOR)$(CONSTRUCTION_SIGN) Executing $(UNDERLINE)$(EXE)$(NO_COLOR)$(TURQUOISE_COLOR)...$(NO_COLOR)"
-	./$(BIN_MAIN)   
+	./$(BIN_MAIN)
 
 testvar:
 	@echo $(TARGET)

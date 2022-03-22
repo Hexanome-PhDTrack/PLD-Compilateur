@@ -1,9 +1,9 @@
 #pragma once
 
-#include "error/Error.h"
+#include "error/CustomError.h"
 #include "variable/VarData.h"
 
-class MultipleDeclarationError : public Error {
+class MultipleDeclarationError : public CustomError {
 public:
     MultipleDeclarationError(
         VarData & varData
