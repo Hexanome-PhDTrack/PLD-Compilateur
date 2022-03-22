@@ -16,7 +16,7 @@
 class  Visitor : public BaseVisitor {
 	private:
 		// https://stackoverflow.com/questions/9954518/stdunique-ptr-with-an-incomplete-type-wont-compile
-		IntermediateRepresentation IR;
+		
 
 
 	public:
