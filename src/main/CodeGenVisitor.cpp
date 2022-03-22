@@ -1,4 +1,5 @@
 #include "CodeGenVisitor.h"
+#include "warning/DividingByZeroWarning.h"
 
 CodeGenVisitor::CodeGenVisitor() {
 
@@ -183,6 +184,10 @@ antlrcpp::Any CodeGenVisitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 	VarData leftVar = visit(ctx->computedValue(0)).as<VarData>();
 	VarData rightVar = visit(ctx->computedValue(1)).as<VarData>();
 
+	if(operatorSymbol == "/" && ctx->computedValue(1)->getText() == "0"){
+		warningManager->AddWarning(new DividingByZeroWarning(leftVar));
+	}
+
 	varManager.removeTempVariable(leftVar);
 	varManager.removeTempVariable(rightVar);
 
@@ -196,7 +201,6 @@ antlrcpp::Any CodeGenVisitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 
 	else if (operatorSymbol == "/")
 	{
-		// TODO: Ajouter vérification + warning si on divise par 0
 		*targetStream << "	cltd\n";
 		*targetStream << "	idivl " << rightVar.GetIndex() << "(%rbp)\n"; // divise eax by rightvar in eax
 		*targetStream << "	movl %eax, " << newVar.GetIndex() << "(%rbp)\n";
