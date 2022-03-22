@@ -10,11 +10,14 @@
 #include "error/symbols/UndeclaredVariableError.h"
 
 #include <map>
+#include <iostream>
+#include <fstream>
 
 class  CodeGenVisitor : public BaseVisitor {
 	private:
 		// https://stackoverflow.com/questions/9954518/stdunique-ptr-with-an-incomplete-type-wont-compile
 		VariableManager varManager;
+		std::ostream *targetStream = nullptr;
 
 	public:
 		CodeGenVisitor();
@@ -31,5 +34,8 @@ class  CodeGenVisitor : public BaseVisitor {
         virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *ctx) override;
 		// getters
 		VariableManager getManager() { return varManager; }
+
+		// setters
+		void setTargetFileBuffer(std::streambuf *fileBuffer);
 };
 
