@@ -2,29 +2,42 @@ grammar ifcc;
 
 axiom : prog ;
 
-prog : 'int' 'main' '(' ')' '{' expr* RETURN computedValue ';' '}' ;
-
-expr: varAssign
-    | varDefine
+prog: func*
     ;
 
-varAssign: VAR '=' computedValue ';';
+func : TYPE VAR '(' (TYPE VAR (',' TYPE VAR)*)? ')' block
+     ;
+
+block : '{' instr* '}'
+      ;
+
+instr: funcReturn
+    | varAssign
+    | varDefine
+    | block
+    ;
+
+funcReturn : RETURN expr ';' ;
+
+varAssign: VAR '=' expr ';';
 
 varDefine: TYPE varDefineMember (',' varDefineMember)* ';';
-varDefineMember: VAR ('=' computedValue)?;
+varDefineMember: VAR ('=' expr)?;
 
-computedValue: '(' computedValue ')' # parenthesis
-    | computedValue OP_MUL_DIV computedValue # mulDiv
-    | computedValue OP_ADD_SUB computedValue # addSub
-    | (VAR | CONST) # value
+expr: '(' expr ')' # parenthesis
+    | expr OP_MUL_DIV expr # mulDiv
+    | expr OP_ADD_SUB expr # addSub
+    | MINUS? (VAR | CONST) # value
     ;
+
+MINUS : ('-');
 
 RETURN : 'return' ;
 TYPE: 'int';
 OP_MUL_DIV: ('*' | '/');
 OP_ADD_SUB: ('+' | '-');
 VAR: [a-zA-Z]+;
-CONST : [-]?[0-9]+ ;
+CONST : [0-9]+ ;
 COMMENT : '/*' .*? '*/' -> skip ;
 DIRECTIVE : '#' .*? '\n' -> skip ;
 WS    : [ \t\r\n] -> channel(HIDDEN);

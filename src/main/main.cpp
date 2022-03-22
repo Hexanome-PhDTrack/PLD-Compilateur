@@ -8,6 +8,7 @@
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
+#include <regex>
 
 using namespace antlr4;
 using namespace std;

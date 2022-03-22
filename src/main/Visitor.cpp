@@ -17,7 +17,22 @@ antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx)
 
 }
 
-antlrcpp::Any Visitor::visitExpr(ifccParser::ExprContext *ctx)
+antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
+{
+
+}
+
+antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *ctx)
+{
+
+}
+
+antlrcpp::Any Visitor::visitInstr(ifccParser::InstrContext *ctx)
+{
+
+}
+
+antlrcpp::Any Visitor::visitFuncReturn(ifccParser::FuncReturnContext *ctx)
 {
 
 }

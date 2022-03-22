@@ -23,6 +23,14 @@ class VariableManager{
         bool checkVarExists(std::string name);
 
         /**
+         * @brief test if a variable exist
+         * 
+         * @param name the name
+         * @return true if the variable exist
+         * @return false 
+         */
+        bool isExist(std::string name);
+        /**
          * @brief Get the Variable object with the name
          *
          * @param name the name of the variable

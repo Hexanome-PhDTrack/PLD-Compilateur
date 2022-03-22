@@ -59,7 +59,9 @@
         "typeinfo": "cpp",
         "cstring": "cpp",
         "cinttypes": "cpp",
-        "stdio.h": "c",
-        "cerrno": "cpp"
+        "cerrno": "cpp",
+        "regex": "cpp",
+        "shared_mutex": "cpp",
+        "stdio.h": "c"
     }
 }

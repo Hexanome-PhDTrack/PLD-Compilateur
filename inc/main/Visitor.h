@@ -12,19 +12,24 @@
 #include "error/symbols/UndeclaredVariableError.h"
 
 #include <map>
+#include <iostream>
+#include <fstream>
 
 class  Visitor : public BaseVisitor {
 	private:
 		// https://stackoverflow.com/questions/9954518/stdunique-ptr-with-an-incomplete-type-wont-compile
-		
-
+		VariableManager varManager;
+		std::ostream *targetStream = nullptr;
 
 	public:
 		Visitor();
 		~Visitor();
-
-		virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override;
-		virtual antlrcpp::Any visitExpr(ifccParser::ExprContext *ctx) override;
+		virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *ctx) override;
+        virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override;
+        virtual antlrcpp::Any visitFunc(ifccParser::FuncContext *ctx) override;
+        virtual antlrcpp::Any visitBlock(ifccParser::BlockContext *ctx) override;
+        virtual antlrcpp::Any visitInstr(ifccParser::InstrContext *ctx) override;
+        virtual antlrcpp::Any visitFuncReturn(ifccParser::FuncReturnContext *ctx) override;
 		virtual antlrcpp::Any visitVarAssign(ifccParser::VarAssignContext *ctx) override;
 		virtual antlrcpp::Any visitVarDefine(ifccParser::VarDefineContext *ctx) override;
 		virtual antlrcpp::Any visitVarDefineMember(ifccParser::VarDefineMemberContext *ctx) override;
@@ -32,6 +37,9 @@ class  Visitor : public BaseVisitor {
 		virtual antlrcpp::Any visitAddSub(ifccParser::AddSubContext *ctx) override;
 		virtual antlrcpp::Any visitMulDiv(ifccParser::MulDivContext *ctx) override;
 		virtual antlrcpp::Any visitParenthesis(ifccParser::ParenthesisContext *ctx) override;
-        virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *ctx) override;
+		// getters
+
+		// setters
+		void setTargetFileBuffer(std::streambuf *fileBuffer);
 };
 
