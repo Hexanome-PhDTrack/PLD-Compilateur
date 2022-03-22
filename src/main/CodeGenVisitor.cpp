@@ -27,11 +27,7 @@ antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
 					"	pushq %rbp # save %rbp on the stack\n"
 					"	movq %rsp, %rbp # define %rbp for the current function\n";
 
-		for(auto expr : ctx->expr())
-		{
-			visit(expr);
-		}
-
+        visitChildren(ctx);
 		VarData returnVar = visit(ctx->computedValue());
 		std::cout << "	movl " << returnVar.GetIndex() << "(%rbp), %eax\n";
 
@@ -50,6 +46,11 @@ antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
     if(errorManager->hasErrors()) {return 1;}
 
     return 0;
+}
+
+antlrcpp::Any CodeGenVisitor::visitFunc(ifccParser::FuncContext *ctx)
+{
+
 }
 
 antlrcpp::Any CodeGenVisitor::visitExpr(ifccParser::ExprContext *ctx)
