@@ -8,6 +8,8 @@
 #include "error/ErrorManager.h"
 
 #include <map>
+#include <iostream>
+#include <fstream>
 
 class  CodeGenVisitor : public ifccBaseVisitor {
 	private:
@@ -15,6 +17,7 @@ class  CodeGenVisitor : public ifccBaseVisitor {
 		VariableManager varManager;
 		WarningManager warningManager;
 		ErrorManager errorManager;
+		std::ostream *targetStream = nullptr;
 
 	public:
 		CodeGenVisitor();
@@ -31,5 +34,8 @@ class  CodeGenVisitor : public ifccBaseVisitor {
 
 		// getters
 		VariableManager getManager() { return varManager; }
+
+		// setters
+		void setTargetFileBuffer(std::streambuf *fileBuffer);
 };
 
