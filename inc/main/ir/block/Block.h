@@ -10,8 +10,9 @@ class IRInstr; // circular import
 #include <iostream>
 
 enum BlockLabel {
-	BB_START,
-	BB_END
+	PROLOGUE,
+	BODY,
+	EPILOGUE
 };
 
 class Block {

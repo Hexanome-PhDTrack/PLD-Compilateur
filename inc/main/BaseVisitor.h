@@ -23,6 +23,9 @@ protected:
     ErrorManager errorManager;
     WarningManager warningManager;
     IntermediateRepresentation IR;
+
+    // indicator of the advancement in exploration
+    Function* currentFunction;
 };
 
 #endif //PLD_COMPILATEUR_BASEVISITOR_H

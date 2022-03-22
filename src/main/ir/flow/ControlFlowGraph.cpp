@@ -8,7 +8,7 @@ ControlFlowGraph::~ControlFlowGraph()
 {
 }
 
-void ControlFlowGraph::add_bb(Block *bb)
+void ControlFlowGraph::AddBlock(Block *bb)
 {
     this->blockManager.AddBlock(bb);
 }
