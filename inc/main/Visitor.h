@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ir/IntermediateRepresentation.h"
 #include "antlr4-runtime.h"
 #include "generated/ifccBaseVisitor.h"
 #include "variable/VarData.h"
@@ -15,8 +16,7 @@
 class  Visitor : public BaseVisitor {
 	private:
 		// https://stackoverflow.com/questions/9954518/stdunique-ptr-with-an-incomplete-type-wont-compile
-		VariableManager varManager;
-		ControlFlowGraph cfg;
+		IntermediateRepresentation IR;
 
 
 	public:
@@ -33,7 +33,5 @@ class  Visitor : public BaseVisitor {
 		virtual antlrcpp::Any visitMulDiv(ifccParser::MulDivContext *ctx) override;
 		virtual antlrcpp::Any visitParenthesis(ifccParser::ParenthesisContext *ctx) override;
         virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *ctx) override;
-		// getters
-		VariableManager getManager() { return varManager; }
 };
 

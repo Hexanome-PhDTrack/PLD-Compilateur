@@ -1,7 +1,9 @@
 #pragma once
 
-#include "ir/instruction/IRInstr.h"
 #include "variable/TypeName.h"
+
+//#include "ir/instruction/IRInstr.h"
+class IRInstr; // circular import
 
 #include <vector>
 #include <string>

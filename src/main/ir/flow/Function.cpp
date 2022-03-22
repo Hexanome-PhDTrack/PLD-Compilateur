@@ -1,7 +1,7 @@
 #include "ir/flow/Function.h"
 
-VariableManager & Function::getVariableManager() {
-    return variableManager;
+std::string Function::getName(){
+    return name;
 }
 
 ControlFlowGraph & Function::getControlFlowGraph() {

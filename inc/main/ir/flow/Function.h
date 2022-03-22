@@ -5,16 +5,21 @@
 #include "ir/flow/ControlFlowGraph.h"
 #include "variable/TypeName.h"
 
+#include <string>
+
 class Function {
     public:
-        VariableManager & getVariableManager() ;
         ControlFlowGraph& getControlFlowGraph();
+
+        std::string getName();
+
         TypeName getReturnType();
 
-        Function(TypeName returnType) : returnType(returnType){};
+        Function(std::string name, TypeName returnType) : name(name), returnType(returnType){};
 
     private:
-        VariableManager variableManager;
+        std::string name;
+
         ControlFlowGraph cfg;
 
         TypeName returnType;

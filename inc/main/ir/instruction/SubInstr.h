@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ir/instruction/IRInstr.h"
 #include "ir/block/Block.h"
+#include "ir/instruction/IRInstr.h"
 #include "variable/TypeName.h"
 
 #include <vector>
