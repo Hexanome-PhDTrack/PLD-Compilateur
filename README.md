@@ -73,3 +73,12 @@ To run the produced executables, run `./bin/ifcc <path/file.c>`.
 ### Cleaning
 
 1. `make clean` or `make clear` to delete generated, build and executable files.
+
+
+## Manual antlr4 and compiling
+
+> Tested on Ubuntu 20.04 LTS
+
+`antlr4 -visitor -no-listener -Dlanguage=Cpp ifcc.g4`: generate files using `antlr4`.
+
+`clang++ -I /usr/include/antlr4-runtime -o exe *.cpp -lantlr4-runtime`: compile C++ code with `antlr4` dependencies.

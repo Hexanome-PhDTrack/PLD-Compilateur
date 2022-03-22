@@ -61,6 +61,7 @@
         "cinttypes": "cpp",
         "cerrno": "cpp",
         "regex": "cpp",
-        "shared_mutex": "cpp"
+        "shared_mutex": "cpp",
+        "stdio.h": "c"
     }
 }

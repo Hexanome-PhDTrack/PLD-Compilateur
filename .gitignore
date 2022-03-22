@@ -18,6 +18,7 @@ bin/
 
 # exclude temporary files
 tmp/
+tmp0/
 
 # IDE files
 .idea
