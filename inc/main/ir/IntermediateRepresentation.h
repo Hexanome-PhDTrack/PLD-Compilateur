@@ -13,7 +13,7 @@ private:
 
 public:
     IntermediateRepresentation() {}
-    ~IntermediateRepresentation() {}
+    ~IntermediateRepresentation();
 
     void AddFunction(Function* function);
 
