@@ -10,8 +10,8 @@
 # The script is divided in three distinct steps:
 # - in the ARGPARSE step, we understand the command-line arguments
 # - in the PREPARE step, we copy all our test-cases into a single directory tree
-# - in the TEST step, we actually run GCC and IFCC on each test-case
-#
+# - in the TEST step, we actually run GCC and IFCC on each test-case 
+# test
 #
 
 import argparse
