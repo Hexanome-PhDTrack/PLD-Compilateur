@@ -16,7 +16,7 @@ enum BlockLabel {
     EPILOGUE
 };
 
-class Context;
+//class Context;
 
 class Block {
 protected:
@@ -26,11 +26,11 @@ protected:
     Block *exit_true;  /**< pointer to the next basic block, true branch. If nullptr, return from procedure. */
     Block *exit_false; /**< pointer to the next basic block, false branch. If null_ptr, the basic block ends with an unconditional jump. */
 
-    Context *context;
+    //Context *context;
 
 public:
 
-    Block(ControlFlowGraph *cfg, BlockLabel entry_label, Context *ctx);
+    Block(ControlFlowGraph *cfg, BlockLabel entry_label/*, Context *ctx*/);
 
     ~Block();
 
@@ -55,9 +55,9 @@ public:
         return label;
     }
 
-    Context *getContext() {
+    /*Context *getContext() {
         return context;
-    }
+    }*/
 
     std::vector<IRInstr *> getInstrs() {
         return instrs;
