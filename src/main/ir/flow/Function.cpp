@@ -4,7 +4,6 @@ Function::Function(
     std::string name, TypeName returnType
 ) : name(name), returnType(returnType) {
     cfg = new ControlFlowGraph();
-    std::cout << "Function: " << this->name << std::endl;
 };
 
 Function::~Function() {
@@ -32,8 +31,8 @@ void Function::gen_asm(std::ostream &o)
 
 void Function::gen_asm_prologue(std::ostream &o)
 {
-    o << ".globl "<< getName() <<"\n";
-    o << "main: "<< getName() <<"\n";
+    o << ".globl "<< name <<"\n";
+    o << name <<":\n";
     o << 
     "    # prologue\n"
     "    pushq %rbp # save %rbp on the stack\n"
