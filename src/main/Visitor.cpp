@@ -63,7 +63,8 @@ antlrcpp::Any Visitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
     std::string varName = ctx->VAR()->getText();
     if(!cfg->isExist(varName)){
         VarData toThrow = VarData(-1, varName, ctx->getStart()->getLine(), TYPE_INT, false);
-        throwError(new UndeclaredVariableError(toThrow));
+        UndeclaredVariableError * errorCustom = new UndeclaredVariableError(toThrow);
+        throwError(errorCustom);
     }
 	VarData computedVariable = visit(ctx->expr());
 	cfg->removeTempVariable(computedVariable);
@@ -73,7 +74,8 @@ antlrcpp::Any Visitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
     params.push_back(computedVariable);
     params.push_back(leftVar);
 
-	currentBlock->AddIRInstr(new CopyInstr(currentBlock, TYPE_INT, params));
+    CopyInstr* instr = new CopyInstr(currentBlock, TYPE_INT, params);
+	currentBlock->AddIRInstr(instr);
 	return leftVar;
 }
 
@@ -94,7 +96,8 @@ antlrcpp::Any Visitor::visitVarDefineMember(ifccParser::VarDefineMemberContext *
     //Check if the variable already exists, if yes we throw an error because it already exists.
     if(cfg->isExist(varName)){
 		VarData toThrow = VarData(-1, varName, ctx->getStart()->getLine(), TYPE_INT, false);
-        throwError(new UndeclaredVariableError(toThrow));
+        UndeclaredVariableError * errorCustom = new UndeclaredVariableError(toThrow);
+        throwError(errorCustom);
     }
     VarData newVar = cfg->add_to_symbol_table(ctx->VAR()->getText(), ctx->getStart()->getLine(), TYPE_INT);
     if(ctx->expr())
@@ -104,8 +107,8 @@ antlrcpp::Any Visitor::visitVarDefineMember(ifccParser::VarDefineMemberContext *
         std::vector<VarData> params;
         params.push_back(computedVariable);
         params.push_back(newVar);
-
-        currentBlock->AddIRInstr(new CopyInstr(currentBlock, TYPE_INT, params));
+        CopyInstr* instr = new CopyInstr(currentBlock, TYPE_INT, params);
+        currentBlock->AddIRInstr(instr);
     }
 
     return 0;
@@ -127,11 +130,12 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
             params.push_back(varData);
             params.push_back(newVar);
 
-            currentBlock->AddIRInstr(new CopyInstr(currentBlock, TYPE_INT, params));
+            CopyInstr * instr = new CopyInstr(currentBlock, TYPE_INT, params);
+            currentBlock->AddIRInstr(instr);
 		}else{
 			VarData toThrow = VarData(-1, ctx->VAR()->getText(), ctx->getStart()->getLine(), TYPE_INT, false);
-
-			throwError(new UndeclaredVariableError(toThrow));
+            UndeclaredVariableError* errorCustom = new UndeclaredVariableError(toThrow);
+			throwError(errorCustom);
 		}
 	}
 
@@ -142,7 +146,8 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
         std::vector<VarData> params;
         params.push_back(newVar);
         params.push_back(cst);
-        currentBlock->AddIRInstr(new LdconstInstr(currentBlock, TYPE_INT, params));
+        LdconstInstr* instr = new LdconstInstr(currentBlock, TYPE_INT, params);
+        currentBlock->AddIRInstr(instr);
 	}
 
 	return newVar;
@@ -166,7 +171,8 @@ antlrcpp::Any Visitor::visitAddSub(ifccParser::AddSubContext *ctx)
         params.push_back(newVar);
         params.push_back(leftVar);
         params.push_back(rightVar);
-        currentBlock->AddIRInstr(new AddInstr(currentBlock, TYPE_INT, params));
+        AddInstr* addInstr = new AddInstr(currentBlock, TYPE_INT, params);
+        currentBlock->AddIRInstr(addInstr);
 	}
 
 	else if (operatorSymbol == "-")
@@ -175,7 +181,8 @@ antlrcpp::Any Visitor::visitAddSub(ifccParser::AddSubContext *ctx)
         params.push_back(newVar);
         params.push_back(leftVar);
         params.push_back(rightVar);
-        currentBlock->AddIRInstr(new SubInstr(currentBlock, TYPE_INT, params));
+        SubInstr* subInstr = new SubInstr(currentBlock, TYPE_INT, params);
+        currentBlock->AddIRInstr(subInstr);
 	}
 
 	return newVar;
@@ -191,7 +198,8 @@ antlrcpp::Any Visitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 	VarData rightVar = visit(ctx->expr(1)).as<VarData>();
 
 	if(operatorSymbol == "/" && rightVar.IsConst() && rightVar.GetValue() == 0){
-		warningManager.AddWarning(new DividingByZeroWarning(leftVar));
+        DividingByZeroWarning* errorCustom = new DividingByZeroWarning(leftVar);
+		warningManager.AddWarning(errorCustom);
 	}
 
 	cfg->removeTempVariable(leftVar);
@@ -203,7 +211,8 @@ antlrcpp::Any Visitor::visitMulDiv(ifccParser::MulDivContext *ctx)
         params.push_back(newVar);
         params.push_back(leftVar);
         params.push_back(rightVar);
-        currentBlock->AddIRInstr(new MulInstr(currentBlock, TYPE_INT, params));
+        MulInstr* mulInstr = new MulInstr(currentBlock, TYPE_INT, params);
+        currentBlock->AddIRInstr(mulInstr);
 	}
 
 	else if (operatorSymbol == "/")
