@@ -9,18 +9,20 @@
 
 class Function {
     public:
-        ControlFlowGraph& getControlFlowGraph();
+        ControlFlowGraph * getControlFlowGraph();
 
         std::string getName();
 
         TypeName getReturnType();
 
-        Function(std::string name, TypeName returnType) : name(name), returnType(returnType){};
+        Function(std::string name, TypeName returnType) : name(name), returnType(returnType){
+            cfg = new ControlFlowGraph();
+        };
 
     private:
         std::string name;
 
-        ControlFlowGraph cfg;
+        ControlFlowGraph * cfg;
 
         TypeName returnType;
 };
