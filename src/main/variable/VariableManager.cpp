@@ -46,7 +46,7 @@ VarData VariableManager::addVariable(std::string varName, size_t lineNumber, Typ
     if(it != varDataCollection.end()){
         return it -> second;
     }else{
-        int newIndex = computeNextIndex();
+        int newIndex = computeNextIndex(typeName);
         // if temp var, update with nex index
         if(varName == TEMP_BASE_NAME){
             varName += countAllTempVar;
@@ -76,7 +76,7 @@ VarData VariableManager::addConst(std::string varName, size_t lineNumber, TypeNa
     if(it != varDataCollection.end()){
         return it -> second;
     }else{
-        int newIndex = computeNextIndex();
+        int newIndex = computeNextIndex(typeName);
         // if temp var, update with nex index
         if(varName == TEMP_BASE_NAME){
             varName += countAllTempVar;
