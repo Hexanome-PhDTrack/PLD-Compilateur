@@ -48,7 +48,7 @@ public:
     {
         return typeName;
     }
-    inline bool GetIsConst() const
+    inline bool IsConst() const
     {
         return isConst;
     }
@@ -73,6 +73,10 @@ public:
     inline void SetTypeName(TypeName typeName)
     {
         this->typeName = typeName;
+    }
+    inline void SetValue(int value)
+    {
+        this->value = value;
     }
 
     inline std::string ToString() const

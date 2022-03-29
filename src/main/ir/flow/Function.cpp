@@ -4,7 +4,7 @@ std::string Function::getName(){
     return name;
 }
 
-ControlFlowGraph & Function::getControlFlowGraph() {
+ControlFlowGraph * Function::getControlFlowGraph() {
     return cfg;
 }
 
