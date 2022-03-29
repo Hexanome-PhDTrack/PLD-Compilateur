@@ -106,8 +106,9 @@ class VariableManager{
          * @brief compute the next index and update freeIndex or currentVarIndex
          *
          * @return int the next index (considere to be used)
+         * @param type the type of the last variable
          */
-        int computeNextIndex();
+        int computeNextIndex(TypeName type);
 
         /**
          * @brief test if a var is a temp one

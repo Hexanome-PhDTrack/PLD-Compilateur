@@ -2,13 +2,26 @@
 
 const std::string VariableManager::TEMP_BASE_NAME = "#tmp";
 
-int VariableManager::computeNextIndex(){
+int VariableManager::computeNextIndex(TypeName type){
     if(freeIndex.size() > 0){
         int toReturn = freeIndex.top();
         freeIndex.pop();
         return toReturn;
     }else{
-        return (-4) * (++currentVarIndex);
+        switch(type){
+            case TYPE_CHAR:
+                return (currentVarIndex -= 1);
+
+            case TYPE_INT:
+            default:
+                if(currentVarIndex % 4 != 0)
+                {
+                    currentVarIndex = -currentVarIndex;
+                    currentVarIndex = (-1) * (currentVarIndex = (currentVarIndex - (currentVarIndex % 4) + 8));
+                    return currentVarIndex;
+                }
+                return (currentVarIndex -= 4);
+        }
     }
 }
 
