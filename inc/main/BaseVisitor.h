@@ -24,6 +24,7 @@ public:
     BaseVisitor() { }
     void throwError(CustomError *  error) { errorManager.AddError(error); throw error; }
     void throwWarning(Warning *warning) {warningManager.AddWarning(warning);}
+    Function * getFunction(){return currentFunction;};
     ErrorManager getErrorManager() { return errorManager; }
     WarningManager getWarningManager(){return warningManager;}
 
