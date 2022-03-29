@@ -122,10 +122,17 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
 	{
 		if(cfg->isExist(ctx->VAR()->getText())){
 			VarData varData = cfg->getVariable(ctx->VAR()->getText());
-
             std::vector<VarData> params;
             params.push_back(varData);
             params.push_back(newVar);
+
+            if(ctx->MINUS())
+            {
+                currentBlock->AddIRInstr(new NegInstr(currentBlock, TYPE_INT, params));
+            }
+            else{
+                currentBlock->AddIRInstr(new CopyInstr(currentBlock, TYPE_INT, params));
+            }
 
             currentBlock->AddIRInstr(new CopyInstr(currentBlock, TYPE_INT, params));
 		}else{
@@ -208,7 +215,11 @@ antlrcpp::Any Visitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 
 	else if (operatorSymbol == "/")
 	{
-
+        std::vector<VarData> params;
+        params.push_back(newVar);
+        params.push_back(leftVar);
+        params.push_back(rightVar);
+        currentBlock->AddIRInstr(new DivInstr(currentBlock, TYPE_INT, params));
 	}
 
 	return newVar;
@@ -217,4 +228,76 @@ antlrcpp::Any Visitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 antlrcpp::Any Visitor::visitParenthesis(ifccParser::ParenthesisContext *ctx)
 {
 	return visit(ctx ->expr());
+}
+
+antlrcpp::Any Visitor::visitBitwiseOp(ifccParser::BitwiseOpContext *ctx)
+{
+    ControlFlowGraph * cfg = currentFunction->getControlFlowGraph();
+	VarData newVar = cfg->add_to_symbol_table("#tmp", TYPE_INT);
+	
+	std::string operatorSymbol = ctx->OP_BITWISE()->getText();
+	VarData leftVar = visit(ctx->expr(0)).as<VarData>();
+	VarData rightVar = visit(ctx->expr(1)).as<VarData>();
+
+    std::vector<VarData> params;
+    params.push_back(newVar);
+    params.push_back(leftVar);
+    params.push_back(rightVar);
+
+    /* |, &,ˆ */
+    if (operatorSymbol == "|")
+    {
+        currentBlock->AddIRInstr(new BitOrInstr(currentBlock, TYPE_INT, params));
+    }
+    else if (operatorSymbol == "&")
+    {
+        currentBlock->AddIRInstr(new BitAndInstr(currentBlock, TYPE_INT, params));
+    }
+    else if (operatorSymbol == "^")
+    {
+        currentBlock->AddIRInstr(new BitXorInstr(currentBlock, TYPE_INT, params));
+    }
+}
+
+antlrcpp::Any Visitor::visitCompare(ifccParser::CompareContext *ctx)
+{
+    ControlFlowGraph * cfg = currentFunction->getControlFlowGraph();
+	VarData newVar = cfg->add_to_symbol_table("#tmp", TYPE_INT);
+	
+	std::string operatorSymbol = ctx->OP_COMPARE()->getText();
+	VarData leftVar = visit(ctx->expr(0)).as<VarData>();
+	VarData rightVar = visit(ctx->expr(1)).as<VarData>();
+
+    std::vector<VarData> params;
+    params.push_back(newVar);
+    params.push_back(leftVar);
+    params.push_back(rightVar);
+
+    /* '<' | '>' | '<=' | '>=' | '==' | '!=' */
+    if (operatorSymbol == "<")
+    {
+        currentBlock->AddIRInstr(new CmpLtInstr(currentBlock, TYPE_INT, params));
+    }
+    else if (operatorSymbol == ">")
+    {
+        currentBlock->AddIRInstr(new CmpGtInstr(currentBlock, TYPE_INT, params));
+    }
+    else if (operatorSymbol == "<=")
+    {
+        currentBlock->AddIRInstr(new CmpLeInstr(currentBlock, TYPE_INT, params));
+    }
+    else if (operatorSymbol == ">=")
+    {
+        currentBlock->AddIRInstr(new CmpGeInstr(currentBlock, TYPE_INT, params));
+    }
+    else if (operatorSymbol == "==")
+    {
+        currentBlock->AddIRInstr(new CmpEqInstr(currentBlock, TYPE_INT, params));
+    }
+    else if (operatorSymbol == "!=")
+    {
+        currentBlock->AddIRInstr(new CmpNeqInstr(currentBlock, TYPE_INT, params));
+    }
+
+    return newVar;
 }

@@ -39,6 +39,8 @@ class  Visitor : public BaseVisitor {
 		virtual antlrcpp::Any visitAddSub(ifccParser::AddSubContext *ctx) override;
 		virtual antlrcpp::Any visitMulDiv(ifccParser::MulDivContext *ctx) override;
 		virtual antlrcpp::Any visitParenthesis(ifccParser::ParenthesisContext *ctx) override;
+		virtual antlrcpp::Any visitCompare(ifccParser::CompareContext *ctx) override;
+		virtual antlrcpp::Any visitBitwiseOp(ifccParser::BitwiseOpContext *ctx) override;
 		// getters
 
 		// setters
