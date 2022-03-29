@@ -194,17 +194,17 @@ for jobindex, jobname in enumerate(jobs):
     if gccstatus != 0 and ifccstatus != 0:
         ## ifcc correctly rejects invalid program -> test-case ok
 
-        print(bcolors.OK1 + str(jobindex) +" TEST OK "  + bcolors.RESET)
+        print(bcolors.OK1 + "TEST " + str(jobindex) +": OK "  + bcolors.RESET)
         successCounter = successCounter + 1
 
         continue
     elif gccstatus != 0 and ifccstatus == 0:
         ## ifcc wrongly accepts invalid program -> error
-        print(bcolors.FAIL+ str(jobindex) +" TEST FAIL (your compiler accepts an invalid program)"  + bcolors.RESET)
+        print(bcolors.FAIL + "TEST " + str(jobindex) + ": FAIL (your compiler accepts an invalid program)"  + bcolors.RESET)
         continue
     elif gccstatus == 0 and ifccstatus != 0:
         ## ifcc wrongly rejects valid program -> error
-        print(bcolors.WARNING + str(jobindex)  +" TEST FAIL (your compiler rejects a valid program)"  + bcolors.RESET)
+        print(bcolors.WARNING + "TEST " + str(jobindex) + ": FAIL (your compiler rejects a valid program)"  + bcolors.RESET)
         if args.verbose:
             dumpfile("ifcc-compile.txt")
         continue
@@ -212,7 +212,7 @@ for jobindex, jobname in enumerate(jobs):
         ## ifcc accepts to compile valid program -> let's link it
         ldstatus=command("gcc -o exe-ifcc asm-ifcc.s", "ifcc-link.txt")
         if ldstatus:
-            print("TEST FAIL (your compiler produces incorrect assembly)")
+            print(bcolors.FAIL + "TEST " + str(jobindex) + ": FAIL (your compiler produces incorrect assembly)" + bcolors.RESET)
             if args.verbose:
                 dumpfile("ifcc-link.txt")
             continue
@@ -222,7 +222,7 @@ for jobindex, jobname in enumerate(jobs):
 
     command("./exe-ifcc","ifcc-execute.txt")
     if open("gcc-execute.txt").read() != open("ifcc-execute.txt").read() :
-        print("TEST FAIL (different results at execution)")
+        print(bcolors.FAIL + "TEST " + str(jobindex) + ": FAIL (different results at execution)" + bcolors.RESET)
         if args.verbose:
             print("GCC:")
             dumpfile("gcc-execute.txt")
@@ -231,7 +231,7 @@ for jobindex, jobname in enumerate(jobs):
         continue
 
     ## last but not least
-    print(bcolors.OK + "TEST OK"+ bcolors.RESET)
+    print(bcolors.OK + "TEST " + str(jobindex) + ": OK"+ bcolors.RESET)
     successCounter = successCounter + 1
 
 print("passed tests: " + str(successCounter) + ", total tests: " + str(len(jobs)))
