@@ -8,6 +8,14 @@
 #include "./generated/ifccBaseVisitor.h"
 #include "error/ErrorManager.h"
 #include "warning/WarningManager.h"
+#include "ir/block/Block.h"
+#include "ir/flow/Function.h"
+//instr
+#include "ir/instruction/CopyInstr.h"
+#include "ir/instruction/LdconstInstr.h"
+#include "ir/instruction/AddInstr.h"
+#include "ir/instruction/SubInstr.h"
+#include "ir/instruction/MulInstr.h"
 
 
 class BaseVisitor : public ifccBaseVisitor
@@ -26,6 +34,7 @@ protected:
 
     // indicator of the advancement in exploration
     Function* currentFunction;
+    Block* currentBlock;
 };
 
 #endif //PLD_COMPILATEUR_BASEVISITOR_H

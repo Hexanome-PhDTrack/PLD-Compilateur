@@ -18,9 +18,9 @@ void ControlFlowGraph::gen_asm(std::ostream &o)
     // TODO
 }
 
-std::string ControlFlowGraph::IR_reg_to_asm(std::string reg)
+std::string ControlFlowGraph::IR_reg_to_asm(std::string name)
 {
-    VarData var = this->variableManager.getVariable(reg);
+    VarData var = this->variableManager.getVariable(name);
     int index = var.GetIndex();
     std::string asm_result = index + "(%rbp)";
     return asm_result;
