@@ -37,7 +37,7 @@ int main(int argn, const char **argv) {
         cerr << "usage: ifcc path/to/file.c path/to/file.s" << endl ;
         exit(1);
     }
-    
+
     ANTLRInputStream input(in.str());
 
     ifccLexer lexer(&input);

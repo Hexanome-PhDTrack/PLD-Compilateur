@@ -48,12 +48,12 @@ antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *ctx)
 
 antlrcpp::Any Visitor::visitInstr(ifccParser::InstrContext *ctx)
 {
-    return visit(ctx);
+    return visitChildren(ctx);
 }
 
 antlrcpp::Any Visitor::visitFuncReturn(ifccParser::FuncReturnContext *ctx)
 {
-    return visit(ctx);
+    return visit(ctx -> expr());
 }
 
 antlrcpp::Any Visitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
