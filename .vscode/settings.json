@@ -58,6 +58,10 @@
         "thread": "cpp",
         "typeinfo": "cpp",
         "cstring": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "cerrno": "cpp",
+        "regex": "cpp",
+        "shared_mutex": "cpp",
+        "stdio.h": "c"
     }
 }

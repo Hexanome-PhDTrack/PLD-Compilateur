@@ -1,9 +1,9 @@
 #pragma once
 
-#include "error/Error.h"
+#include "error/CustomError.h"
 #include "variable/VarData.h"
 
-class UndeclaredVariableError : public Error {
+class UndeclaredVariableError : public CustomError {
 public:
     UndeclaredVariableError(
         VarData & varData

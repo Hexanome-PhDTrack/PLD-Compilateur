@@ -1,17 +1,18 @@
 #include "error/ErrorManager.h"
 
-ErrorManager::~ErrorManager() {
+ErrorManager::~ErrorManager(){
     if (errors.size() > 0) {
-        for (Error* error : errors) {
+        for (CustomError * error : errors) {
             delete error;
         }
     }
+    
 }
 
 void ErrorManager::LogErrors() {
     if (errors.size() > 0) {
-        for (Error* error : errors) {
-            error->Log();
+        for (CustomError * error : errors) {
+            error -> Log();
         }
     }
 }
