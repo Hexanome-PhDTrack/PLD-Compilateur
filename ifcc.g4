@@ -27,15 +27,19 @@ varDefineMember: VAR ('=' expr)?;
 expr: '(' expr ')' # parenthesis
     | expr OP_MUL_DIV expr # mulDiv
     | expr OP_ADD_SUB expr # addSub
-    | MINUS? (VAR | CONST) # value
+    | expr OP_COMPARE expr # compare
+    | expr OP_BITWISE expr # bitwiseOp
+    | (NOT | MINUS)? (VAR | CONST) # value
     ;
 
 MINUS : ('-');
-
+NOT: '!';
 RETURN : 'return' ;
 TYPE: 'int';
 OP_MUL_DIV: ('*' | '/');
 OP_ADD_SUB: ('+' | '-');
+OP_COMPARE: ('<' | '>' | '<=' | '>=' | '==' | '!=');
+OP_BITWISE: ('|' | '&' | '^');
 VAR: [a-zA-Z]+;
 CONST : [0-9]+ ;
 COMMENT : '/*' .*? '*/' -> skip ;
