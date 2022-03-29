@@ -13,5 +13,6 @@ enum TypeName {
     TYPE_STRUCT,
     TYPE_ENUM,
     TYPE_CLASS,
-    TYPE_UNKNOWN
+    TYPE_UNKNOWN,
+    TYPE_CHAR
 };

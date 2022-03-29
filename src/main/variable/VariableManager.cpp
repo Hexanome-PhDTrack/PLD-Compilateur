@@ -2,13 +2,26 @@
 
 const std::string VariableManager::TEMP_BASE_NAME = "#tmp";
 
-int VariableManager::computeNextIndex(){
+int VariableManager::computeNextIndex(TypeName type){
     if(freeIndex.size() > 0){
         int toReturn = freeIndex.top();
         freeIndex.pop();
         return toReturn;
     }else{
-        return (-4) * (++currentVarIndex);
+        switch(type){
+            case TYPE_CHAR:
+                return (currentVarIndex -= 1);
+
+            case TYPE_INT:
+            default:
+                if(currentVarIndex % 4 != 0)
+                {
+                    currentVarIndex = -currentVarIndex;
+                    currentVarIndex = (-1) * (currentVarIndex = (currentVarIndex - (currentVarIndex % 4) + 8));
+                    return currentVarIndex;
+                }
+                return (currentVarIndex -= 4);
+        }
     }
 }
 
@@ -33,7 +46,7 @@ VarData VariableManager::addVariable(std::string varName, size_t lineNumber, Typ
     if(it != varDataCollection.end()){
         return it -> second;
     }else{
-        int newIndex = computeNextIndex();
+        int newIndex = computeNextIndex(typeName);
         // if temp var, update with nex index
         if(varName == TEMP_BASE_NAME){
             varName += countAllTempVar;
@@ -63,7 +76,7 @@ VarData VariableManager::addConst(std::string varName, size_t lineNumber, TypeNa
     if(it != varDataCollection.end()){
         return it -> second;
     }else{
-        int newIndex = computeNextIndex();
+        int newIndex = computeNextIndex(typeName);
         // if temp var, update with nex index
         if(varName == TEMP_BASE_NAME){
             varName += countAllTempVar;
