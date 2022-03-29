@@ -29,5 +29,6 @@ Function * IntermediateRepresentation::getFunction(std::string name){
 }
 
 void IntermediateRepresentation::gen_asm(std::ostream &o){
-    getFunction("main") -> getControlFlowGraph() -> gen_asm(o);
+    //getFunction("main") -> getControlFlowGraph() -> gen_asm(o);
+    getFunction("main")->gen_asm(o);
 }

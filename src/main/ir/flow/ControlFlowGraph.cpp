@@ -19,9 +19,7 @@ void ControlFlowGraph::AddBlock(Block *block)
 
 void ControlFlowGraph::gen_asm(std::ostream &o)
 {
-    this->gen_asm_prologue(o);
     this->blockManager.gen_asm(o);
-    this->gen_asm_epilogue(o);
 }
 
 std::string ControlFlowGraph::IR_reg_to_asm(std::string name)
@@ -30,24 +28,6 @@ std::string ControlFlowGraph::IR_reg_to_asm(std::string name)
     int index = var.GetIndex();
     std::string asm_result = index + "(%rbp)";
     return asm_result;
-}
-
-void ControlFlowGraph::gen_asm_prologue(std::ostream &o)
-{
-    o << 
-    ".globl main\n"
-    "main: \n"
-    "    # prologue\n"
-    "    pushq %rbp # save %rbp on the stack\n"
-    "    movq %rsp, %rbp # define %rbp for the current function\n";
-}
-
-void ControlFlowGraph::gen_asm_epilogue(std::ostream &o)
-{
-    o << 
-    "    # epilogue\n"
-    "    popq %rbp # restore %rbp from the stack\n"
-    "    ret # return to the caller (here the shell)\n";
 }
 
 std::string ControlFlowGraph::new_BB_name()
