@@ -16,6 +16,7 @@
 #include "ir/instruction/AddInstr.h"
 #include "ir/instruction/SubInstr.h"
 #include "ir/instruction/MulInstr.h"
+#include "ir/instruction/ReturnInstr.h"
 
 
 class BaseVisitor : public ifccBaseVisitor
@@ -24,7 +25,7 @@ public:
     BaseVisitor() { }
     void throwError(CustomError *  error) { errorManager.AddError(error); throw error; }
     void throwWarning(Warning *warning) {warningManager.AddWarning(warning);}
-    Function * getFunction(){return currentFunction;};
+    IntermediateRepresentation& getIntermediateRepresentation(){return IR;};
     ErrorManager getErrorManager() { return errorManager; }
     WarningManager getWarningManager(){return warningManager;}
 

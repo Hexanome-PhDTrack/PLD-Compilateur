@@ -59,11 +59,11 @@ int main(int argn, const char **argv) {
 
     if(targetFileBuffer.is_open()){
         std::ostream os(&targetFileBuffer);
-        v.getFunction()->getControlFlowGraph()->gen_asm(os);
+        v.getIntermediateRepresentation().gen_asm(os);
     }
     else{
         std::ostream os(std::cout.rdbuf());
-        v.getFunction()->getControlFlowGraph()->gen_asm(os);
+        v.getIntermediateRepresentation().gen_asm(os);
     }
     
     if(targetFileBuffer.is_open()){

@@ -53,7 +53,13 @@ antlrcpp::Any Visitor::visitInstr(ifccParser::InstrContext *ctx)
 
 antlrcpp::Any Visitor::visitFuncReturn(ifccParser::FuncReturnContext *ctx)
 {
-    return visit(ctx -> expr());
+    VarData computedVariable = visit(ctx->expr());
+    std::vector<VarData> params;
+    params.push_back(computedVariable);
+
+    ReturnInstr* instr = new ReturnInstr(currentBlock, TYPE_INT, params);
+    currentBlock->AddIRInstr(instr);
+    return computedVariable;
 }
 
 antlrcpp::Any Visitor::visitVarAssign(ifccParser::VarAssignContext *ctx)

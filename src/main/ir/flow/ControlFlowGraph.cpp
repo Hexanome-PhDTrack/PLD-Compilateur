@@ -34,12 +34,20 @@ std::string ControlFlowGraph::IR_reg_to_asm(std::string name)
 
 void ControlFlowGraph::gen_asm_prologue(std::ostream &o)
 {
-    // TODO
+    o << 
+    ".globl main\n"
+    "main: \n"
+    "    # prologue\n"
+    "    pushq %rbp # save %rbp on the stack\n"
+    "    movq %rsp, %rbp # define %rbp for the current function\n";
 }
 
 void ControlFlowGraph::gen_asm_epilogue(std::ostream &o)
 {
-    // TODO
+    o << 
+    "    # epilogue\n"
+    "    popq %rbp # restore %rbp from the stack\n"
+    "    ret # return to the caller (here the shell)\n";
 }
 
 std::string ControlFlowGraph::new_BB_name()
