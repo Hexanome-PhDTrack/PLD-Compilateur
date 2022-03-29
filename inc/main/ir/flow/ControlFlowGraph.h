@@ -1,14 +1,11 @@
 #pragma once
 
-#include "ir/block/Block.h"
-#include "variable/VariableManager.h"
-#include "variable/TypeName.h"
-#include "ir/block/BlockManager.h"
-
 #include <vector>
 #include <string>
 #include <iostream>
 #include <map>
+#include "ir/block/BlockManager.h"
+
 
 class ControlFlowGraph {
 protected:
