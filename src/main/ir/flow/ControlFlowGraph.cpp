@@ -13,7 +13,7 @@ void ControlFlowGraph::AddBlock(Block *bb)
     this->blockManager.AddBlock(bb);
 }
 
-void ControlFlowGraph::gen_asm(std::ostream &o)
+void ControlFlowGraph::gen_x86_asm(std::ostream &o)
 {
     // TODO
 }

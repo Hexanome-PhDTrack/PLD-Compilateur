@@ -22,5 +22,6 @@ public:
 	CmpLtInstr(Block *bb, TypeName t, std::vector<VarData> params) : IRInstr(bb, t, params){};
 
 	/** Actual code generation */
-	virtual void gen_asm(std::ostream &o);
+	virtual void gen_x86_asm(std::ostream &o);
+	virtual void gen_arm_asm(std::ostream &o);
 };

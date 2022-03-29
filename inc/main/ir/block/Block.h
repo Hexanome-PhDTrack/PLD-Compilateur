@@ -27,7 +27,7 @@ public:
 	Block(BlockLabel entry_label);
 	~Block();
 
-	void gen_asm(std::ostream &o); /**< x86 assembly code generation for this basic block (very simple) */
+	void gen_x86_asm(std::ostream &o); /**< x86 assembly code generation for this basic block (very simple) */
 
 	BlockLabel GetBlockLabel() { return label; }
 	void SetBlockLabel(BlockLabel label) { this->label = label; }

@@ -24,7 +24,7 @@ public:
     void AddBlock(Block* bb); 
 
     // x86 code generation: could be encapsulated in a processor class in a retargetable compiler
-    void gen_asm(std::ostream& o);
+    void gen_x86_asm(std::ostream& o);
     std::string IR_reg_to_asm(std::string reg); /**< helper method: inputs a IR reg or input variable, returns e.g. "-24(%rbp)" for the proper value of 24 */
     void gen_asm_prologue(std::ostream& o);
     void gen_asm_epilogue(std::ostream& o);

@@ -1,6 +1,6 @@
 #include "ir/instruction/AddInstr.h"
 
-void AddInstr::gen_asm(std::ostream &o)
+void AddInstr::gen_x86_asm(std::ostream &o)
 {
   o << "	movl " << params.at(1).GetIndex() << "(%rbp), %edx \n";
   o << "	movl " << params.at(2).GetIndex() << "(%rbp), %eax \n";
@@ -9,3 +9,8 @@ void AddInstr::gen_asm(std::ostream &o)
   o << "	movl "
     << "%eax, " << params.at(0).GetIndex() << "(%rbp) \n";
 };
+
+void AddInstr::gen_arm_asm(std::ostream &o)
+{
+
+}
