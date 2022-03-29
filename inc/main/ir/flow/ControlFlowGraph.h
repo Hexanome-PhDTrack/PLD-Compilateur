@@ -5,6 +5,8 @@
 #include <iostream>
 #include <map>
 #include "ir/block/BlockManager.h"
+#include "variable/VarData.h"
+#include "variable/VariableManager.h"
 
 
 class ControlFlowGraph {
@@ -27,13 +29,12 @@ public:
     void gen_asm_epilogue(std::ostream& o);
 
     // symbol table methods
-    VarData add_to_symbol_table(std::string name, TypeName t);
-    VarData add_const_to_symbol_table(std::string name, TypeName t, int value);
+    VarData add_to_symbol_table(std::string name, size_t lineNumber, TypeName t);
+    VarData add_const_to_symbol_table(std::string name, size_t lineNumber, TypeName t, int value);
     VarData getVariable(std::string name);
-    std::string create_new_tempvar(TypeName t);
     bool isExist(std::string name);
     TypeName get_var_type(std::string name);
-    bool removeTempVariable(std::string varName);
+    bool removeTempVariable(VarData var);
 
     // basic block management
     std::string new_BB_name();

@@ -66,7 +66,7 @@ antlrcpp::Any Visitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
         throwError(new UndeclaredVariableError(toThrow));
     }
 	VarData computedVariable = visit(ctx->expr());
-	cfg->removeTempVariable(computedVariable.GetVarName());
+	cfg->removeTempVariable(computedVariable);
 	VarData leftVar = varManager.getVariable(ctx->VAR()->getText());
 
     std::vector<VarData> params;
@@ -96,11 +96,11 @@ antlrcpp::Any Visitor::visitVarDefineMember(ifccParser::VarDefineMemberContext *
 		VarData toThrow = VarData(-1, varName, ctx->getStart()->getLine(), TYPE_INT, false);
         throwError(new UndeclaredVariableError(toThrow));
     }
-    VarData newVar = cfg->add_to_symbol_table(ctx->VAR()->getText(), TYPE_INT);
+    VarData newVar = cfg->add_to_symbol_table(ctx->VAR()->getText(), ctx->getStart()->getLine(), TYPE_INT);
     if(ctx->expr())
     {
         VarData computedVariable = visit(ctx->expr());
-        cfg->removeTempVariable(computedVariable.GetVarName());
+        cfg->removeTempVariable(computedVariable);
         std::vector<VarData> params;
         params.push_back(computedVariable);
         params.push_back(newVar);
@@ -116,7 +116,7 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
 {
     ControlFlowGraph * cfg = currentFunction->getControlFlowGraph();
 	// compute the tmp variable
-	VarData newVar = cfg->add_to_symbol_table("#tmp", TYPE_INT); // variable temp to compute
+	VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT); // variable temp to compute
 
 	if (ctx->VAR())
 	{
@@ -137,7 +137,7 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
 
 	if (ctx->CONST())
 	{
-        VarData cst = cfg->add_const_to_symbol_table("#tmp", TYPE_INT, stoi(ctx->CONST()->getText()));
+        VarData cst = cfg->add_const_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT, stoi(ctx->CONST()->getText()));
 		// store cst to tmp
         std::vector<VarData> params;
         params.push_back(newVar);
@@ -151,14 +151,14 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
 antlrcpp::Any Visitor::visitAddSub(ifccParser::AddSubContext *ctx)
 {
     ControlFlowGraph * cfg = currentFunction->getControlFlowGraph();
-    VarData newVar = cfg->add_to_symbol_table("#tmp", TYPE_INT);
+    VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT);
 	
 	std::string operatorSymbol = ctx->OP_ADD_SUB()->getText();
 	VarData leftVar = visit(ctx->expr(0)).as<VarData>();
 	VarData rightVar = visit(ctx->expr(1)).as<VarData>();
 
-	cfg->removeTempVariable(leftVar.GetVarName());
-	cfg->removeTempVariable(rightVar.GetVarName());
+	cfg->removeTempVariable(leftVar);
+	cfg->removeTempVariable(rightVar);
 
 	if (operatorSymbol == "+")
 	{
@@ -184,7 +184,7 @@ antlrcpp::Any Visitor::visitAddSub(ifccParser::AddSubContext *ctx)
 antlrcpp::Any Visitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 {
     ControlFlowGraph * cfg = currentFunction->getControlFlowGraph();
-	VarData newVar = cfg->add_to_symbol_table("#tmp", TYPE_INT);
+	VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT);
 	
 	std::string operatorSymbol = ctx->OP_MUL_DIV()->getText();
 	VarData leftVar = visit(ctx->expr(0)).as<VarData>();
@@ -194,8 +194,8 @@ antlrcpp::Any Visitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 		warningManager.AddWarning(new DividingByZeroWarning(leftVar));
 	}
 
-	cfg->removeTempVariable(leftVar.GetVarName());
-	cfg->removeTempVariable(rightVar.GetVarName());
+	cfg->removeTempVariable(leftVar);
+	cfg->removeTempVariable(rightVar);
 
 	if (operatorSymbol == "*")
 	{

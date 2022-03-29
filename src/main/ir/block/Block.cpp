@@ -19,3 +19,7 @@ Block::~Block() {
 void Block::AddIRInstr(IRInstr * instruction) {
     instrs.push_back(instruction);
 }
+
+ void Block::gen_asm(std::ostream &o){
+
+ }

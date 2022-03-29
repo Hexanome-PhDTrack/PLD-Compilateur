@@ -43,8 +43,40 @@ VarData VariableManager::addVariable(std::string varName, size_t lineNumber, Typ
                 newIndex,
                 varName,
                 lineNumber,
-                typeName
+                typeName,
+                false
             );
+
+        varDataCollection.insert(
+            std::pair<std::string, VarData>(
+                varName,
+                newVar
+            )
+        );
+        return newVar;
+    }
+}
+
+VarData VariableManager::addConst(std::string varName, size_t lineNumber, TypeName typeName, int value){
+    // check if the name is already take
+    std::map<std::string, VarData>::iterator it = varDataCollection.find(varName);
+    if(it != varDataCollection.end()){
+        return it -> second;
+    }else{
+        int newIndex = computeNextIndex();
+        // if temp var, update with nex index
+        if(varName == TEMP_BASE_NAME){
+            varName += countAllTempVar;
+            countAllTempVar ++;
+        }
+        VarData newVar = VarData(
+                newIndex,
+                varName,
+                lineNumber,
+                typeName,
+                true
+            );
+        newVar.SetValue(value);
 
         varDataCollection.insert(
             std::pair<std::string, VarData>(
