@@ -16,7 +16,7 @@ Block::~Block() {
 }
 
 void Block::AddIRInstr(IRInstr *instruction) {
-    instrs.push_back(instruction);
+    this->instrs.push_back(instruction);
 }
 
 void Block::gen_asm(std::ostream &o) {

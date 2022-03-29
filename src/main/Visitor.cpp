@@ -33,7 +33,7 @@ antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
 antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *ctx)
 {
     ControlFlowGraph * cfg = currentFunction->getControlFlowGraph();
-    Block* currentBlock = new Block(
+    this->currentBlock = new Block(
         cfg,
         BODY
     );
