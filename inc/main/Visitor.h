@@ -10,6 +10,7 @@
 #include "ir/flow/ControlFlowGraph.h"
 #include "BaseVisitor.h"
 #include "error/symbols/UndeclaredVariableError.h"
+#include "warning/DividingByZeroWarning.h"
 #include "ir/block/Block.h"
 
 #include <map>

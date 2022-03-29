@@ -27,7 +27,9 @@ public:
     void gen_asm_epilogue(std::ostream& o);
 
     // symbol table methods
-    void add_to_symbol_table(std::string name, TypeName t);
+    VarData add_to_symbol_table(std::string name, TypeName t);
+    VarData add_const_to_symbol_table(std::string name, TypeName t, int value);
+    VarData getVariable(std::string name);
     std::string create_new_tempvar(TypeName t);
     bool isExist(std::string name);
     TypeName get_var_type(std::string name);
