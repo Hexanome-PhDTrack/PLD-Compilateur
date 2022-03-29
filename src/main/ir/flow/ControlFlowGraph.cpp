@@ -9,14 +9,19 @@ ControlFlowGraph::~ControlFlowGraph()
 {
 }
 
-void ControlFlowGraph::AddBlock(Block *bb)
+void ControlFlowGraph::AddBlock(Block *block)
 {
-    this->blockManager.AddBlock(bb);
+    if(blockManager.getBlocks().size()==0){
+        this->firstBlock=block;
+    }
+    this->blockManager.AddBlock(block);
 }
 
 void ControlFlowGraph::gen_asm(std::ostream &o)
 {
-    // TODO
+    this->gen_asm_prologue(o);
+    this->blockManager.gen_asm(o);
+    this->gen_asm_epilogue(o);
 }
 
 std::string ControlFlowGraph::IR_reg_to_asm(std::string name)
