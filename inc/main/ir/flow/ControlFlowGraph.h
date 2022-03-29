@@ -32,10 +32,9 @@ public:
     // symbol table methods
     void add_to_symbol_table(std::string name, TypeName t);
     std::string create_new_tempvar(TypeName t);
-    int get_var_index(std::string name);
+    bool isExist(std::string name);
     TypeName get_var_type(std::string name);
 
     // basic block management
     std::string new_BB_name();
-    Block* current_bb;
 };
