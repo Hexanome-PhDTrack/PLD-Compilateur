@@ -16,6 +16,17 @@
 #include "ir/instruction/AddInstr.h"
 #include "ir/instruction/SubInstr.h"
 #include "ir/instruction/MulInstr.h"
+#include "ir/instruction/BitAndInstr.h"
+#include "ir/instruction/BitOrInstr.h"
+#include "ir/instruction/BitXor.h"
+#include "ir/instruction/CmpGeInstr.h"
+#include "ir/instruction/CmpGtInstr.h"
+#include "ir/instruction/CmpNeqInstr.h"
+#include "ir/instruction/NegInstr.h"
+#include "ir/instruction/CmpLeInstr.h"
+#include "ir/instruction/CmpLtInstr.h"
+#include "ir/instruction/CmpEqInstr.h"
+#include "ir/instruction/DivInstr.h"
 
 
 class BaseVisitor : public ifccBaseVisitor
