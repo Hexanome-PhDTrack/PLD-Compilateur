@@ -232,7 +232,8 @@ for jobindex, jobname in enumerate(jobs):
 
     ## last but not least
     print(bcolors.OK + "TEST OK"+ bcolors.RESET)
+    successCounter = successCounter + 1
 
-print("passed tests: " + str(successCounter) + " total tests: " + str(len(jobs)))
+print("passed tests: " + str(successCounter) + ", total tests: " + str(len(jobs)))
 successRate = round((successCounter / len(jobs)) * 100)
-print("Success rate: " + str(successRate) + '%' )
+print("success rate: " + str(successRate) + '%' )
