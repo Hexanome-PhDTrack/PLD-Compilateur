@@ -8,20 +8,7 @@ int VariableManager::computeNextIndex(TypeName type){
         freeIndex.pop();
         return toReturn;
     }else{
-        switch(type){
-            case TYPE_CHAR:
-                return (currentVarIndex -= 1);
-
-            case TYPE_INT:
-            default:
-                if(currentVarIndex % 4 != 0)
-                {
-                    currentVarIndex = -currentVarIndex;
-                    currentVarIndex = (-1) * (currentVarIndex = (currentVarIndex - (currentVarIndex % 4) + 8));
-                    return currentVarIndex;
-                }
-                return (currentVarIndex -= 4);
-        }
+        return (-4) * (++currentVarIndex);
     }
 }
 
