@@ -74,11 +74,11 @@ antlrcpp::Any Visitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
     }
 	VarData computedVariable = visit(ctx->expr());
 	cfg->removeTempVariable(computedVariable);
-	VarData leftVar = varManager.getVariable(ctx->VAR()->getText());
+	VarData leftVar = cfg->getVariable(ctx->VAR()->getText());
 
     std::vector<VarData> params;
-    params.push_back(computedVariable);
     params.push_back(leftVar);
+    params.push_back(computedVariable);
 
     CopyInstr* instr = new CopyInstr(currentBlock, TYPE_INT, params);
 	currentBlock->AddIRInstr(instr);
@@ -111,8 +111,8 @@ antlrcpp::Any Visitor::visitVarDefineMember(ifccParser::VarDefineMemberContext *
         VarData computedVariable = visit(ctx->expr());
         cfg->removeTempVariable(computedVariable);
         std::vector<VarData> params;
-        params.push_back(computedVariable);
         params.push_back(newVar);
+        params.push_back(computedVariable);
         CopyInstr* instr = new CopyInstr(currentBlock, TYPE_INT, params);
         currentBlock->AddIRInstr(instr);
     }
@@ -133,8 +133,8 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
 			VarData varData = cfg->getVariable(ctx->VAR()->getText());
 
             std::vector<VarData> params;
-            params.push_back(varData);
             params.push_back(newVar);
+            params.push_back(varData);
 
             CopyInstr * instr = new CopyInstr(currentBlock, TYPE_INT, params);
             currentBlock->AddIRInstr(instr);
