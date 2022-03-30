@@ -53,7 +53,7 @@ ECHO = @echo # @echo hides this command in terminal, not its output
 
 CC=g++
 GDB_DEBUGGER_FLAGS=-g
-PERSONAL_COMPIL_FLAGS=-D DEBUG -D COLORS -std=c++17# use own flags, see util.hpp
+PERSONAL_COMPIL_FLAGS=-D DEBUG -Wall -D COLORS -std=c++17# use own flags, see util.hpp
 # use include files at compile time
 CFLAGS=-I $(ANTLRINC) -I $(INC_MAIN) -I $(INC_GENERATED) -Wno-attributes $(PERSONAL_COMPIL_FLAGS) $(GDB_DEBUGGER_FLAGS) # -Wno-defaulted-function-deleted -Wno-unknown-warning-option
 LDLIBS=-L $(ANTLRLIB) -lantlr4-runtime $(GDB_DEBUGGER_FLAGS)

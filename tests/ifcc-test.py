@@ -179,10 +179,10 @@ for jobindex, jobname in enumerate(jobs):
     os.chdir(jobname)
 
     ## Reference compiler = GCC
-    gccstatus=command("gcc -S -o asm-gcc.s input.c", "gcc-compile.txt")
+    gccstatus=command("gcc -S -Wall -o asm-gcc.s input.c", "gcc-compile.txt")
     if gccstatus == 0:
         # test-case is a valid program. we should run it
-        gccstatus=command("gcc -o exe-gcc asm-gcc.s", "gcc-link.txt")
+        gccstatus=command("gcc -Wall -o exe-gcc asm-gcc.s", "gcc-link.txt")
     if gccstatus == 0: # then both compile and link stage went well
         exegccstatus=command("./exe-gcc", "gcc-execute.txt")
         if args.verbose >=2:
@@ -210,7 +210,7 @@ for jobindex, jobname in enumerate(jobs):
         continue
     else:
         ## ifcc accepts to compile valid program -> let's link it
-        ldstatus=command("gcc -o exe-ifcc asm-ifcc.s", "ifcc-link.txt")
+        ldstatus=command("gcc -Wall -o exe-ifcc asm-ifcc.s", "ifcc-link.txt")
         if ldstatus:
             print(bcolors.FAIL + "TEST " + str(jobindex) + ": FAIL (your compiler produces incorrect assembly)" + bcolors.RESET)
             if args.verbose:
