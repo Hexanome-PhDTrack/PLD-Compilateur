@@ -33,7 +33,7 @@ expr: '(' expr ')' # parenthesis
 MINUS : ('-');
 
 RETURN : 'return' ;
-TYPE: 'int';
+TYPE: ('int' | 'char');
 OP_MUL_DIV: ('*' | '/');
 OP_ADD_SUB: ('+' | '-');
 VAR: [a-zA-Z]+;
