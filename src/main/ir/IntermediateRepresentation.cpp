@@ -1,7 +1,7 @@
 #include "ir/IntermediateRepresentation.h"
 
 IntermediateRepresentation::~IntermediateRepresentation() {
-    for(int i = 0; i < functionsToDelete.size(); i++){
+    for(int i = 0; i < (int)functionsToDelete.size(); i++){
         delete functionsToDelete[i];
     }
     // do not dete calls, all their data is deleted elsewhere
