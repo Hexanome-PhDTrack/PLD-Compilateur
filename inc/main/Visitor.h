@@ -21,7 +21,6 @@ class  Visitor : public BaseVisitor {
 	private:
 		// https://stackoverflow.com/questions/9954518/stdunique-ptr-with-an-incomplete-type-wont-compile
 		VariableManager varManager;
-		std::ostream *targetStream = nullptr;
 
 	public:
 		Visitor();
@@ -42,8 +41,5 @@ class  Visitor : public BaseVisitor {
 		virtual antlrcpp::Any visitCompare(ifccParser::CompareContext *ctx) override;
 		virtual antlrcpp::Any visitBitwiseOp(ifccParser::BitwiseOpContext *ctx) override;
 		// getters
-
-		// setters
-		void setTargetFileBuffer(std::streambuf *fileBuffer);
 };
 

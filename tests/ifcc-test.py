@@ -5,13 +5,13 @@
 # input: the test-cases are specified either as individual
 #         command-line arguments, or as part of a directory tree
 #
-# output: 
+# output:
 #
 # The script is divided in three distinct steps:
 # - in the ARGPARSE step, we understand the command-line arguments
 # - in the PREPARE step, we copy all our test-cases into a single directory tree
 # - in the TEST step, we actually run GCC and IFCC on each test-case
-#
+# test
 #
 
 import argparse
@@ -23,8 +23,8 @@ import subprocess
 
 
 class bcolors:
-    OK = '\033[92m' #GREEN correct program 
-    OK1= '\033[34m' #BLUE ifcc correctly rejects invalid program 
+    OK = '\033[92m' #GREEN correct program
+    OK1= '\033[34m' #BLUE ifcc correctly rejects invalid program
     WARNING = '\033[93m' #YELLOW ifcc wrongly rejects valid program -> error
     FAIL = '\033[91m' #RED ifcc wrongly accepts invalid program -> error
     RESET = '\033[0m' #RESET COLOR
@@ -78,12 +78,12 @@ orig_cwd=os.getcwd()
 if "ifcc-test-output" in orig_cwd:
     print('error: cannot run from within the output directory')
     exit(1)
-    
+
 if os.path.isdir('ifcc-test-output'):
     # cleanup previous output directory
     command('rm -rf ifcc-test-output')
 os.mkdir('ifcc-test-output')
-    
+
 ## Then we process the inputs arguments i.e. filenames or subtrees
 inputfilenames=[]
 for path in args.input:
@@ -133,7 +133,7 @@ if not os.path.isfile(wrapper):
 
 if args.debug:
     print("debug: wrapper path: "+wrapper)
-        
+
 ######################################################################################
 ## PREPARE step: copy all test-cases under ifcc-test-output
 
@@ -146,7 +146,7 @@ for index,inputfilename in enumerate(inputfilenames):
     if 'ifcc-test-output' in os.path.realpath(inputfilename):
         print('error: input filename is within output directory: '+inputfilename)
         exit(1)
-    
+
     ## each test-case gets copied and processed in its own subdirectory:
     ## ../somedir/subdir/file.c becomes ./ifcc-test-output/somedir-subdir-file/input.c
     subdir='ifcc-test-output/'+str(index)+ "-"+inputfilename.strip("./")[:-2].replace('/','-')
@@ -171,12 +171,13 @@ if args.debug:
 ######################################################################################
 ## TEST step: actually compile all test-cases with both compilers
 
+successCounter = 0
 for jobindex, jobname in enumerate(jobs):
     os.chdir(orig_cwd)
 
     print('TEST-CASE: '+jobname)
     os.chdir(jobname)
-    
+
     ## Reference compiler = GCC
     gccstatus=command("gcc -S -o asm-gcc.s input.c", "gcc-compile.txt")
     if gccstatus == 0:
@@ -186,23 +187,24 @@ for jobindex, jobname in enumerate(jobs):
         exegccstatus=command("./exe-gcc", "gcc-execute.txt")
         if args.verbose >=2:
             dumpfile("gcc-execute.txt")
-            
+
     ## IFCC compiler
     ifccstatus=command(wrapper+" asm-ifcc.s input.c", "ifcc-compile.txt")
-    
+
     if gccstatus != 0 and ifccstatus != 0:
         ## ifcc correctly rejects invalid program -> test-case ok
-        
-        print(bcolors.OK1 + str(jobindex) +" TEST OK "  + bcolors.RESET)
+
+        print(bcolors.OK1 + "TEST " + str(jobindex) +": OK "  + bcolors.RESET)
+        successCounter = successCounter + 1
 
         continue
     elif gccstatus != 0 and ifccstatus == 0:
         ## ifcc wrongly accepts invalid program -> error
-        print(bcolors.FAIL+ str(jobindex) +" TEST FAIL (your compiler accepts an invalid program)"  + bcolors.RESET)
+        print(bcolors.FAIL + "TEST " + str(jobindex) + ": FAIL (your compiler accepts an invalid program)"  + bcolors.RESET)
         continue
     elif gccstatus == 0 and ifccstatus != 0:
         ## ifcc wrongly rejects valid program -> error
-        print(bcolors.WARNING + str(jobindex)  +" TEST FAIL (your compiler rejects a valid program)"  + bcolors.RESET)
+        print(bcolors.WARNING + "TEST " + str(jobindex) + ": FAIL (your compiler rejects a valid program)"  + bcolors.RESET)
         if args.verbose:
             dumpfile("ifcc-compile.txt")
         continue
@@ -210,17 +212,17 @@ for jobindex, jobname in enumerate(jobs):
         ## ifcc accepts to compile valid program -> let's link it
         ldstatus=command("gcc -o exe-ifcc asm-ifcc.s", "ifcc-link.txt")
         if ldstatus:
-            print("TEST FAIL (your compiler produces incorrect assembly)")
+            print(bcolors.FAIL + "TEST " + str(jobindex) + ": FAIL (your compiler produces incorrect assembly)" + bcolors.RESET)
             if args.verbose:
                 dumpfile("ifcc-link.txt")
             continue
 
     ## both compilers  did produce an  executable, so now we  run both
     ## these executables and compare the results.
-        
+
     command("./exe-ifcc","ifcc-execute.txt")
     if open("gcc-execute.txt").read() != open("ifcc-execute.txt").read() :
-        print("TEST FAIL (different results at execution)")
+        print(bcolors.FAIL + "TEST " + str(jobindex) + ": FAIL (different results at execution)" + bcolors.RESET)
         if args.verbose:
             print("GCC:")
             dumpfile("gcc-execute.txt")
@@ -229,4 +231,9 @@ for jobindex, jobname in enumerate(jobs):
         continue
 
     ## last but not least
-    print(bcolors.OK + "TEST OK"+ bcolors.RESET)
+    print(bcolors.OK + "TEST " + str(jobindex) + ": OK"+ bcolors.RESET)
+    successCounter = successCounter + 1
+
+print("passed tests: " + str(successCounter) + ", total tests: " + str(len(jobs)))
+successRate = round((successCounter / len(jobs)) * 100)
+print("success rate: " + str(successRate) + '%' )

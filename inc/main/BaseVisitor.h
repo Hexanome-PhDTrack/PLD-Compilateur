@@ -27,6 +27,7 @@
 #include "ir/instruction/CmpLtInstr.h"
 #include "ir/instruction/CmpEqInstr.h"
 #include "ir/instruction/DivInstr.h"
+#include "ir/instruction/ReturnInstr.h"
 
 
 class BaseVisitor : public ifccBaseVisitor
@@ -35,6 +36,7 @@ public:
     BaseVisitor() { }
     void throwError(CustomError *  error) { errorManager.AddError(error); throw error; }
     void throwWarning(Warning *warning) {warningManager.AddWarning(warning);}
+    IntermediateRepresentation& getIntermediateRepresentation(){return IR;};
     ErrorManager getErrorManager() { return errorManager; }
     WarningManager getWarningManager(){return warningManager;}
 

@@ -33,7 +33,7 @@ antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
 antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *ctx)
 {
     ControlFlowGraph * cfg = currentFunction->getControlFlowGraph();
-    Block* currentBlock = new Block(
+    this->currentBlock = new Block(
         cfg,
         BODY
     );
@@ -48,12 +48,18 @@ antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *ctx)
 
 antlrcpp::Any Visitor::visitInstr(ifccParser::InstrContext *ctx)
 {
-    return visit(ctx);
+    return visitChildren(ctx);
 }
 
 antlrcpp::Any Visitor::visitFuncReturn(ifccParser::FuncReturnContext *ctx)
 {
-    return visit(ctx);
+    VarData computedVariable = visit(ctx->expr());
+    std::vector<VarData> params;
+    params.push_back(computedVariable);
+
+    ReturnInstr* instr = new ReturnInstr(currentBlock, TYPE_INT, params);
+    currentBlock->AddIRInstr(instr);
+    return computedVariable;
 }
 
 antlrcpp::Any Visitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
@@ -63,17 +69,19 @@ antlrcpp::Any Visitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
     std::string varName = ctx->VAR()->getText();
     if(!cfg->isExist(varName)){
         VarData toThrow = VarData(-1, varName, ctx->getStart()->getLine(), TYPE_INT, false);
-        throwError(new UndeclaredVariableError(toThrow));
+        UndeclaredVariableError * errorCustom = new UndeclaredVariableError(toThrow);
+        throwError(errorCustom);
     }
 	VarData computedVariable = visit(ctx->expr());
-	cfg->removeTempVariable(computedVariable.GetVarName());
+	cfg->removeTempVariable(computedVariable);
 	VarData leftVar = varManager.getVariable(ctx->VAR()->getText());
 
     std::vector<VarData> params;
     params.push_back(computedVariable);
     params.push_back(leftVar);
 
-	currentBlock->AddIRInstr(new CopyInstr(currentBlock, TYPE_INT, params));
+    CopyInstr* instr = new CopyInstr(currentBlock, TYPE_INT, params);
+	currentBlock->AddIRInstr(instr);
 	return leftVar;
 }
 
@@ -94,18 +102,19 @@ antlrcpp::Any Visitor::visitVarDefineMember(ifccParser::VarDefineMemberContext *
     //Check if the variable already exists, if yes we throw an error because it already exists.
     if(cfg->isExist(varName)){
 		VarData toThrow = VarData(-1, varName, ctx->getStart()->getLine(), TYPE_INT, false);
-        throwError(new UndeclaredVariableError(toThrow));
+        UndeclaredVariableError * errorCustom = new UndeclaredVariableError(toThrow);
+        throwError(errorCustom);
     }
-    VarData newVar = cfg->add_to_symbol_table(ctx->VAR()->getText(), TYPE_INT);
+    VarData newVar = cfg->add_to_symbol_table(ctx->VAR()->getText(), ctx->getStart()->getLine(), TYPE_INT);
     if(ctx->expr())
     {
         VarData computedVariable = visit(ctx->expr());
-        cfg->removeTempVariable(computedVariable.GetVarName());
+        cfg->removeTempVariable(computedVariable);
         std::vector<VarData> params;
         params.push_back(computedVariable);
         params.push_back(newVar);
-
-        currentBlock->AddIRInstr(new CopyInstr(currentBlock, TYPE_INT, params));
+        CopyInstr* instr = new CopyInstr(currentBlock, TYPE_INT, params);
+        currentBlock->AddIRInstr(instr);
     }
 
     return 0;
@@ -116,7 +125,7 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
 {
     ControlFlowGraph * cfg = currentFunction->getControlFlowGraph();
 	// compute the tmp variable
-	VarData newVar = cfg->add_to_symbol_table("#tmp", TYPE_INT); // variable temp to compute
+	VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT); // variable temp to compute
 
 	if (ctx->VAR())
 	{
@@ -126,30 +135,30 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
             params.push_back(varData);
             params.push_back(newVar);
 
-            if(ctx->MINUS())
-            {
+            if(ctx->MINUS()) {
                 currentBlock->AddIRInstr(new NegInstr(currentBlock, TYPE_INT, params));
             }
-            else{
+            else {
                 currentBlock->AddIRInstr(new CopyInstr(currentBlock, TYPE_INT, params));
             }
 
             currentBlock->AddIRInstr(new CopyInstr(currentBlock, TYPE_INT, params));
-		}else{
+		} else {
 			VarData toThrow = VarData(-1, ctx->VAR()->getText(), ctx->getStart()->getLine(), TYPE_INT, false);
-
-			throwError(new UndeclaredVariableError(toThrow));
+            UndeclaredVariableError* errorCustom = new UndeclaredVariableError(toThrow);
+			throwError(errorCustom);
 		}
 	}
 
 	if (ctx->CONST())
 	{
-        VarData cst = cfg->add_const_to_symbol_table("#tmp", TYPE_INT, stoi(ctx->CONST()->getText()));
+        VarData cst = cfg->add_const_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT, stoi(ctx->CONST()->getText()));
 		// store cst to tmp
         std::vector<VarData> params;
         params.push_back(newVar);
         params.push_back(cst);
-        currentBlock->AddIRInstr(new LdconstInstr(currentBlock, TYPE_INT, params));
+        LdconstInstr* instr = new LdconstInstr(currentBlock, TYPE_INT, params);
+        currentBlock->AddIRInstr(instr);
 	}
 
 	return newVar;
@@ -158,14 +167,14 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
 antlrcpp::Any Visitor::visitAddSub(ifccParser::AddSubContext *ctx)
 {
     ControlFlowGraph * cfg = currentFunction->getControlFlowGraph();
-    VarData newVar = cfg->add_to_symbol_table("#tmp", TYPE_INT);
+    VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT);
 	
 	std::string operatorSymbol = ctx->OP_ADD_SUB()->getText();
 	VarData leftVar = visit(ctx->expr(0)).as<VarData>();
 	VarData rightVar = visit(ctx->expr(1)).as<VarData>();
 
-	cfg->removeTempVariable(leftVar.GetVarName());
-	cfg->removeTempVariable(rightVar.GetVarName());
+	cfg->removeTempVariable(leftVar);
+	cfg->removeTempVariable(rightVar);
 
 	if (operatorSymbol == "+")
 	{
@@ -173,7 +182,8 @@ antlrcpp::Any Visitor::visitAddSub(ifccParser::AddSubContext *ctx)
         params.push_back(newVar);
         params.push_back(leftVar);
         params.push_back(rightVar);
-        currentBlock->AddIRInstr(new AddInstr(currentBlock, TYPE_INT, params));
+        AddInstr* addInstr = new AddInstr(currentBlock, TYPE_INT, params);
+        currentBlock->AddIRInstr(addInstr);
 	}
 
 	else if (operatorSymbol == "-")
@@ -182,7 +192,8 @@ antlrcpp::Any Visitor::visitAddSub(ifccParser::AddSubContext *ctx)
         params.push_back(newVar);
         params.push_back(leftVar);
         params.push_back(rightVar);
-        currentBlock->AddIRInstr(new SubInstr(currentBlock, TYPE_INT, params));
+        SubInstr* subInstr = new SubInstr(currentBlock, TYPE_INT, params);
+        currentBlock->AddIRInstr(subInstr);
 	}
 
 	return newVar;
@@ -191,18 +202,19 @@ antlrcpp::Any Visitor::visitAddSub(ifccParser::AddSubContext *ctx)
 antlrcpp::Any Visitor::visitMulDiv(ifccParser::MulDivContext *ctx)
 {
     ControlFlowGraph * cfg = currentFunction->getControlFlowGraph();
-	VarData newVar = cfg->add_to_symbol_table("#tmp", TYPE_INT);
+	VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT);
 	
 	std::string operatorSymbol = ctx->OP_MUL_DIV()->getText();
 	VarData leftVar = visit(ctx->expr(0)).as<VarData>();
 	VarData rightVar = visit(ctx->expr(1)).as<VarData>();
 
 	if(operatorSymbol == "/" && rightVar.IsConst() && rightVar.GetValue() == 0){
-		warningManager.AddWarning(new DividingByZeroWarning(leftVar));
+        DividingByZeroWarning* errorCustom = new DividingByZeroWarning(leftVar);
+		warningManager.AddWarning(errorCustom);
 	}
 
-	cfg->removeTempVariable(leftVar.GetVarName());
-	cfg->removeTempVariable(rightVar.GetVarName());
+	cfg->removeTempVariable(leftVar);
+	cfg->removeTempVariable(rightVar);
 
 	if (operatorSymbol == "*")
 	{
@@ -210,7 +222,8 @@ antlrcpp::Any Visitor::visitMulDiv(ifccParser::MulDivContext *ctx)
         params.push_back(newVar);
         params.push_back(leftVar);
         params.push_back(rightVar);
-        currentBlock->AddIRInstr(new MulInstr(currentBlock, TYPE_INT, params));
+        MulInstr* mulInstr = new MulInstr(currentBlock, TYPE_INT, params);
+        currentBlock->AddIRInstr(mulInstr);
 	}
 
 	else if (operatorSymbol == "/")

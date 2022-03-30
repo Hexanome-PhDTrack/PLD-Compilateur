@@ -29,4 +29,6 @@ public:
      * @return Function* 
      */
     Function * getFunction(std::string name);
+
+    void gen_asm(std::ostream &o);
 };
