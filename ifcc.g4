@@ -35,7 +35,7 @@ expr: '(' expr ')' # parenthesis
 MINUS : ('-');
 NOT: '!';
 RETURN : 'return' ;
-TYPE: 'int';
+TYPE: ('int' | 'char');
 OP_MUL_DIV: ('*' | '/');
 OP_ADD_SUB: ('+' | '-');
 OP_COMPARE: ('<' | '>' | '<=' | '>=' | '==' | '!=');
