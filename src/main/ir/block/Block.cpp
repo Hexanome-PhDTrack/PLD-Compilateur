@@ -10,7 +10,7 @@ Block::Block(ControlFlowGraph *cfg, BlockLabel entry_label/*, Context *ctx*/) {
 }
 
 Block::~Block() {
-    for (int i = 0; i < instrs.size(); i++) {
+    for (int i = 0; i < (int)instrs.size(); i++) {
         delete instrs[i];
     }
 }
