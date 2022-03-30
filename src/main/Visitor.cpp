@@ -246,7 +246,7 @@ antlrcpp::Any Visitor::visitParenthesis(ifccParser::ParenthesisContext *ctx)
 antlrcpp::Any Visitor::visitBitwiseOp(ifccParser::BitwiseOpContext *ctx)
 {
     ControlFlowGraph * cfg = currentFunction->getControlFlowGraph();
-	VarData newVar = cfg->add_to_symbol_table("#tmp", TYPE_INT);
+	VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT);
 	
 	std::string operatorSymbol = ctx->OP_BITWISE()->getText();
 	VarData leftVar = visit(ctx->expr(0)).as<VarData>();
@@ -275,7 +275,7 @@ antlrcpp::Any Visitor::visitBitwiseOp(ifccParser::BitwiseOpContext *ctx)
 antlrcpp::Any Visitor::visitCompare(ifccParser::CompareContext *ctx)
 {
     ControlFlowGraph * cfg = currentFunction->getControlFlowGraph();
-	VarData newVar = cfg->add_to_symbol_table("#tmp", TYPE_INT);
+	VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT);
 	
 	std::string operatorSymbol = ctx->OP_COMPARE()->getText();
 	VarData leftVar = visit(ctx->expr(0)).as<VarData>();
