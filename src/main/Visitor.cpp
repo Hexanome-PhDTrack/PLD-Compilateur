@@ -270,6 +270,7 @@ antlrcpp::Any Visitor::visitBitwiseOp(ifccParser::BitwiseOpContext *ctx)
     {
         currentBlock->AddIRInstr(new BitXorInstr(currentBlock, TYPE_INT, params));
     }
+    return newVar;
 }
 
 antlrcpp::Any Visitor::visitCompare(ifccParser::CompareContext *ctx)
