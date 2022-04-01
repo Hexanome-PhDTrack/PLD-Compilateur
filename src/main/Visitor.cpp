@@ -11,6 +11,7 @@ Visitor::~Visitor() {
 antlrcpp::Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx) {
     try{
         visit(ctx->prog());
+        warningManager.CheckWarnings(IR);
         warningManager.LogWarnings();
     }catch(CustomError* e){
         errorManager.LogErrors();
