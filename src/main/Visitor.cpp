@@ -122,7 +122,11 @@ antlrcpp::Any Visitor::visitVarDefineMember(ifccParser::VarDefineMemberContext *
         throwError(errorCustom);
     }
 
-    VarData newVar = cfg->add_to_symbol_table(ctx->VAR()->getText(), ctx->getStart()->getLine(), TYPE_INT);
+    ifccParser::VarDefineContext *varDefCtx = (ifccParser::VarDefineContext *)(ctx->parent);
+    TypeName newVarType = getTypeNameFromString(varDefCtx->TYPE()->getText());
+    std::cout << "New variable of type " << varDefCtx->TYPE()->getText() << std::endl;
+    VarData newVar = cfg->add_to_symbol_table(ctx->VAR()->getText(), ctx->getStart()->getLine(), newVarType);
+    std::cout << "TypeName: " << newVar.GetTypeName() << std::endl;
     if (ctx->expr())
     {
         VarData computedVariable = visit(ctx->expr());
@@ -132,8 +136,6 @@ antlrcpp::Any Visitor::visitVarDefineMember(ifccParser::VarDefineMemberContext *
         params.push_back(computedVariable);
 
         IRInstr *instr;
-        ifccParser::VarDefineContext *varDefCtx = (ifccParser::VarDefineContext *)(ctx->parent);
-        TypeName newVarType = getTypeNameFromString(varDefCtx->TYPE()->getText());
         switch (newVarType)
         {
         case TYPE_CHAR:
@@ -198,7 +200,11 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
 
     if (ctx->CONST())
     {
-        VarData cst = cfg->add_const_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT, stoi(ctx->CONST()->getText()));
+        std::string constValue = ctx->CONST()->getText();
+        if(ctx->MINUS()){
+            constValue = "-" + constValue;
+        }
+        VarData cst = cfg->add_const_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT, stoi(constValue));
         // store cst to tmp
         std::vector<VarData> params;
         params.push_back(newVar);
