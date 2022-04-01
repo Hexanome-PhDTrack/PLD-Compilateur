@@ -29,6 +29,7 @@
 #include "ir/instruction/CallInstr.h"
 #include "ir/instruction/MoveFunctionParamInstr.h"
 #include "ir/instruction/AddToRSPInstr.h"
+#include "ir/instruction/SubToRSPInstr.h"
 
 class BaseVisitor : public ifccBaseVisitor
 {

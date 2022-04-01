@@ -376,15 +376,37 @@ antlrcpp::Any Visitor::visitCompare(ifccParser::CompareContext *ctx)
 
 antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
 {
+    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
+
     std::string functionName = ctx->getText();
     functionName = functionName.substr(0, functionName.find('(')); // remove all characters starting with first '('
 
+    // get all parameters
     std::vector<VarData> params;
-
     for (int i = 0; i < (int)ctx->expr().size(); i++)
     {
         VarData param = visit(ctx->expr(i)).as<VarData>();
         params.push_back(param);
+    }
+
+    // 16 bit alignment: determine if a shift is needed to complete alignment
+    int nbOfPushedParams = params.size() - 6;
+    bool isStackAligned = true; // at 6 params or less, stack is already aligned
+    if (nbOfPushedParams > 0) 
+    {
+        // check if stack is aligned
+        if ((nbOfPushedParams*8) % 16 != 0) 
+        {
+            isStackAligned = false;
+
+            // misaligned: need to shift 8 bytes to align
+            // add tmp var to pass nbToAddToRSP to AddToRSPInstr
+            std::vector<VarData> paramsSTRI;
+            VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT);
+            newVar.SetValue(8); // shift 8 bytes
+            paramsSTRI.push_back(newVar);
+            currentBlock->AddIRInstr(new SubToRSPInstr(currentBlock, paramsSTRI));
+        }
     }
 
     // move first 6 params to registers
@@ -430,24 +452,22 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
     currentBlock->AddIRInstr(new CallInstr(currentBlock, functionName, params));
 
     // remove (clean) extra params from stack (every push is a quad (8 bytes))
-    int nbOfPushedParams = params.size() - 6; // +1 since 0 means 1 param pushed
     if (nbOfPushedParams > 0)
     {
         // compute closest power of 16 (alignment) to nb of pushed params to stack
         int nbToAddToRSP;
-        if ((nbOfPushedParams*8) % 16 == 0) {
+        if (isStackAligned) {
             nbToAddToRSP = nbOfPushedParams*8;
         } else {
             nbToAddToRSP = (nbOfPushedParams + 1)*8;
         }
 
-        std::vector<VarData> params;
+        std::vector<VarData> paramsATRI;
         // add tmp var to pass nbToAddToRSP to AddToRSPInstr
-        ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
         VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT);
         newVar.SetValue(nbToAddToRSP);
-        params.push_back(newVar);
-        currentBlock->AddIRInstr(new AddToRSPInstr(currentBlock, params));
+        paramsATRI.push_back(newVar);
+        currentBlock->AddIRInstr(new AddToRSPInstr(currentBlock, paramsATRI));
     }
 
     return 0;
