@@ -19,7 +19,10 @@ public:
      * @param params
      * return var1 -> first paramater : var1
      */
-    ReturnInstr(Block *bb, TypeName t, std::vector<VarData> params) : IRInstr(bb, t, params){};
+    ReturnInstr(
+        Block *bb, 
+        std::vector<VarData> params
+    ) : IRInstr(bb, IR_ReturnInstr, params) {};
 
     virtual void gen_asm(std::ostream &o);
 };

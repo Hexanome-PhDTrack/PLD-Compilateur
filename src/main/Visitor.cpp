@@ -65,7 +65,7 @@ antlrcpp::Any Visitor::visitFuncReturn(ifccParser::FuncReturnContext *ctx)
     std::vector<VarData> params;
     params.push_back(computedVariable);
 
-    ReturnInstr *instr = new ReturnInstr(currentBlock, TYPE_INT, params);
+    ReturnInstr *instr = new ReturnInstr(currentBlock, params);
     currentBlock->AddIRInstr(instr);
     return computedVariable;
 }
@@ -94,12 +94,12 @@ antlrcpp::Any Visitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
     switch (leftVarType)
     {
     case TYPE_CHAR:
-        instr = new CastIntToCharInstr(currentBlock, TYPE_INT, params);
+        instr = new CastIntToCharInstr(currentBlock, params);
         break;
 
     case TYPE_INT:
     default:
-        instr = new CopyInstr(currentBlock, TYPE_INT, params);
+        instr = new CopyInstr(currentBlock, params);
         break;
     }
     currentBlock->AddIRInstr(instr);
@@ -144,12 +144,12 @@ antlrcpp::Any Visitor::visitVarDefineMember(ifccParser::VarDefineMemberContext *
         switch (newVarType)
         {
         case TYPE_CHAR:
-            instr = new CastIntToCharInstr(currentBlock, TYPE_INT, params);
+            instr = new CastIntToCharInstr(currentBlock, params);
             break;
 
         case TYPE_INT:
         default:
-            instr = new CopyInstr(currentBlock, TYPE_INT, params);
+            instr = new CopyInstr(currentBlock, params);
             break;
         }
         currentBlock->AddIRInstr(instr);
@@ -178,18 +178,18 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
             switch (varType)
             {
                 case TYPE_CHAR:
-                    instr = new CastCharToIntInstr(currentBlock, TYPE_INT, params);
+                    instr = new CastCharToIntInstr(currentBlock, params);
                     break;
 
                 case TYPE_INT:
                 default:
                     if (ctx->MINUS())
                     {
-                        instr = new NegInstr(currentBlock, TYPE_INT, params);
+                        instr = new NegInstr(currentBlock, params);
                     }
                     else
                     {
-                        instr = new CopyInstr(currentBlock, TYPE_INT, params);
+                        instr = new CopyInstr(currentBlock, params);
                     }
                     break;
             }
@@ -214,7 +214,7 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
         std::vector<VarData> params;
         params.push_back(newVar);
         params.push_back(cst);
-        LdconstInstr *instr = new LdconstInstr(currentBlock, TYPE_INT, params);
+        LdconstInstr *instr = new LdconstInstr(currentBlock, params);
         currentBlock->AddIRInstr(instr);
     }
 
@@ -239,7 +239,7 @@ antlrcpp::Any Visitor::visitAddSub(ifccParser::AddSubContext *ctx)
         params.push_back(newVar);
         params.push_back(leftVar);
         params.push_back(rightVar);
-        AddInstr *addInstr = new AddInstr(currentBlock, TYPE_INT, params);
+        AddInstr *addInstr = new AddInstr(currentBlock, params);
         currentBlock->AddIRInstr(addInstr);
     }
 
@@ -249,7 +249,7 @@ antlrcpp::Any Visitor::visitAddSub(ifccParser::AddSubContext *ctx)
         params.push_back(newVar);
         params.push_back(leftVar);
         params.push_back(rightVar);
-        SubInstr *subInstr = new SubInstr(currentBlock, TYPE_INT, params);
+        SubInstr *subInstr = new SubInstr(currentBlock, params);
         currentBlock->AddIRInstr(subInstr);
     }
 
@@ -280,7 +280,7 @@ antlrcpp::Any Visitor::visitMulDiv(ifccParser::MulDivContext *ctx)
         params.push_back(newVar);
         params.push_back(leftVar);
         params.push_back(rightVar);
-        MulInstr *mulInstr = new MulInstr(currentBlock, TYPE_INT, params);
+        MulInstr *mulInstr = new MulInstr(currentBlock, params);
         currentBlock->AddIRInstr(mulInstr);
     }
 
@@ -290,7 +290,7 @@ antlrcpp::Any Visitor::visitMulDiv(ifccParser::MulDivContext *ctx)
         params.push_back(newVar);
         params.push_back(leftVar);
         params.push_back(rightVar);
-        currentBlock->AddIRInstr(new DivInstr(currentBlock, TYPE_INT, params));
+        currentBlock->AddIRInstr(new DivInstr(currentBlock, params));
     }
 
     return newVar;
@@ -318,15 +318,15 @@ antlrcpp::Any Visitor::visitBitwiseOp(ifccParser::BitwiseOpContext *ctx)
     /* |, &,ˆ */
     if (operatorSymbol == "|")
     {
-        currentBlock->AddIRInstr(new BitOrInstr(currentBlock, TYPE_INT, params));
+        currentBlock->AddIRInstr(new BitOrInstr(currentBlock, params));
     }
     else if (operatorSymbol == "&")
     {
-        currentBlock->AddIRInstr(new BitAndInstr(currentBlock, TYPE_INT, params));
+        currentBlock->AddIRInstr(new BitAndInstr(currentBlock, params));
     }
     else if (operatorSymbol == "^")
     {
-        currentBlock->AddIRInstr(new BitXorInstr(currentBlock, TYPE_INT, params));
+        currentBlock->AddIRInstr(new BitXorInstr(currentBlock, params));
     }
     return newVar;
 }
@@ -348,27 +348,27 @@ antlrcpp::Any Visitor::visitCompare(ifccParser::CompareContext *ctx)
     /* '<' | '>' | '<=' | '>=' | '==' | '!=' */
     if (operatorSymbol == "<")
     {
-        currentBlock->AddIRInstr(new CmpLtInstr(currentBlock, TYPE_INT, params));
+        currentBlock->AddIRInstr(new CmpLtInstr(currentBlock, params));
     }
     else if (operatorSymbol == ">")
     {
-        currentBlock->AddIRInstr(new CmpGtInstr(currentBlock, TYPE_INT, params));
+        currentBlock->AddIRInstr(new CmpGtInstr(currentBlock, params));
     }
     else if (operatorSymbol == "<=")
     {
-        currentBlock->AddIRInstr(new CmpLeInstr(currentBlock, TYPE_INT, params));
+        currentBlock->AddIRInstr(new CmpLeInstr(currentBlock, params));
     }
     else if (operatorSymbol == ">=")
     {
-        currentBlock->AddIRInstr(new CmpGeInstr(currentBlock, TYPE_INT, params));
+        currentBlock->AddIRInstr(new CmpGeInstr(currentBlock, params));
     }
     else if (operatorSymbol == "==")
     {
-        currentBlock->AddIRInstr(new CmpEqInstr(currentBlock, TYPE_INT, params));
+        currentBlock->AddIRInstr(new CmpEqInstr(currentBlock, params));
     }
     else if (operatorSymbol == "!=")
     {
-        currentBlock->AddIRInstr(new CmpNeqInstr(currentBlock, TYPE_INT, params));
+        currentBlock->AddIRInstr(new CmpNeqInstr(currentBlock, params));
     }
 
     return newVar;
@@ -401,7 +401,7 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
             currentBlock->AddIRInstr(
                 new MoveFunctionParamInstr(
                     currentBlock, 
-                    TYPE_INT, 
+                    
                     moveParams, 
                     false, // flags indicate that we want to move param to register
                     registers[counter]
@@ -416,7 +416,7 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
             currentBlock->AddIRInstr(
                 new MoveFunctionParamInstr(
                     currentBlock, 
-                    TYPE_INT, 
+                    
                     moveParams, 
                     true, // indicates that we want to move param through stack
                     "" // no register can be used while adding params to stack

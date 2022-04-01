@@ -26,11 +26,10 @@ public:
 	 */
 	MoveFunctionParamInstr(
 		Block *bb,
-        TypeName t,
 		std::vector<VarData> params,
         bool isMovingOnStack,
         std::string argumentRegister
-	) : IRInstr(bb, TYPE_FUNCTION, params),
+	) : IRInstr(bb, IR_MoveFunctionParamInstr, params),
         isMovingOnStack(isMovingOnStack), 
         argumentRegister(argumentRegister) {};
 

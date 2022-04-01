@@ -19,7 +19,10 @@ public:
 	 * @param params
 	 * *var1 = var2; => first parameter -> var1 | second parameter -> var2
 	 */
-	WmemInstr(Block *bb, TypeName t, std::vector<VarData> params) : IRInstr(bb, t, params){};
+	WmemInstr(
+		Block *bb, 
+		std::vector<VarData> params
+	) : IRInstr(bb, IR_WmemInstr, params) {};
 
 	/** Actual code generation */
 	virtual void gen_asm(std::ostream &o);

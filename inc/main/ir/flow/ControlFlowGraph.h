@@ -3,6 +3,7 @@
 #include "ir/block/BlockManager.h"
 #include "variable/VarData.h"
 #include "variable/VariableManager.h"
+#include "variable/TypeName.h"
 
 #include <vector>
 #include <string>

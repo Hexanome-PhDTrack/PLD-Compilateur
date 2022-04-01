@@ -18,8 +18,10 @@ class CastCharToIntInstr : public IRInstr {
      * @param params
      * var1 = (int)var2; => first parameter -> var1 | second parameter -> var2
      */
-    CastCharToIntInstr(Block *bb, TypeName t, std::vector<VarData> params)
-        : IRInstr(bb, t, params){};
+    CastCharToIntInstr(
+        Block *bb, 
+        std::vector<VarData> params
+    ) : IRInstr(bb, IR_CastCharToIntInstr, params) {};
 
     virtual void gen_asm(std::ostream &o);
 };

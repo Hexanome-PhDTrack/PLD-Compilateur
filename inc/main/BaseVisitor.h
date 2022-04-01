@@ -6,6 +6,7 @@
 #include "ir/block/Block.h"
 #include "ir/flow/Function.h"
 
+#include "ir/instruction/TypeIRInstr.h"
 //instr
 #include "ir/instruction/CopyInstr.h"
 #include "ir/instruction/LdconstInstr.h"

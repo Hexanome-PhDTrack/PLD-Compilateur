@@ -19,7 +19,10 @@ public:
 	 * @param params
 	 * var1 = *var2; => First parameter -> var1 | second parameter -> var 2
 	 */
-	RmemInstr(Block *bb, TypeName t, std::vector<VarData> params) : IRInstr(bb, t, params){};
+	RmemInstr(
+		Block *bb, 
+		std::vector<VarData> params
+	) : IRInstr(bb, IR_RmemInstr, params) {};
 
 	/** Actual code generation */
 	virtual void gen_asm(std::ostream &o);

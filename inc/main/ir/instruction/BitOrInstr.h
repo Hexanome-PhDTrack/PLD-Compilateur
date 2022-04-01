@@ -19,7 +19,10 @@ public:
 	 * @param params
 	 * var1 = var2 | var3; => first parameter -> var1 | second parameter -> var2 | third parameter -> var3
 	 */
-	BitOrInstr(Block *bb, TypeName t, std::vector<VarData> params) : IRInstr(bb, t, params){};
+	BitOrInstr(
+		Block *bb, 
+		std::vector<VarData> params
+	) : IRInstr(bb, IR_BitOrInstr, params){};
 
 	/** Actual code generation */
 	virtual void gen_asm(std::ostream &o);

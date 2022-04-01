@@ -19,7 +19,10 @@ public:
      * @param params
      * var1 = var2; => First parameter -> var1 | second parameter -> var2
      */
-    CopyInstr(Block *bb, TypeName t, std::vector<VarData> params) : IRInstr(bb, t, params){};
+    CopyInstr(
+        Block *bb, 
+        std::vector<VarData> params
+    ) : IRInstr(bb, IR_CopyInstr, params) {};
 
     virtual void gen_asm(std::ostream &o);
 };

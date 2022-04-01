@@ -19,7 +19,10 @@ public:
      * @param params
      * var = const; => first parameter -> var | second parameter -> const
      */
-    LdconstInstr(Block *bb, TypeName t, std::vector<VarData> params) : IRInstr(bb, t, params){};
+    LdconstInstr(
+        Block *bb, 
+        std::vector<VarData> params
+    ) : IRInstr(bb, IR_LdconstInstr, params) {};
 
     virtual void gen_asm(std::ostream &o);
 };

@@ -21,11 +21,13 @@ public:
         std::string varName,
         size_t lineNumber,
         TypeName typeName,
-        bool isConst) : index(index),
-                        varName(varName),
-                        lineNumber(lineNumber),
-                        typeName(typeName),
-                        isConst(isConst){};
+        bool isConst
+    ) : index(index),
+        varName(varName),
+        lineNumber(lineNumber),
+        typeName(typeName),
+        isConst(isConst)
+    {};
     virtual ~VarData() {}
 
     inline void WitnessUsage() { isUsed = true; }

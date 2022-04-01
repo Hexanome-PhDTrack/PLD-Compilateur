@@ -21,7 +21,7 @@ public:
 	AddToRSPInstr(
 		Block *bb,
         std::vector<VarData> params
-	) : IRInstr(bb, TYPE_FUNCTION, params) {};
+	) : IRInstr(bb, IR_AddToRSPInstr, params) {};
 
 	/** Actual code generation */
 	virtual void gen_asm(std::ostream &o);

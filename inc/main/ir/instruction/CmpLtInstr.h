@@ -19,7 +19,10 @@ public:
 	 * @param params
 	 * var1 = (var2 < var3); => first parameter -> var1 | second parameter -> var2 | third parameter -> var3
 	 */
-	CmpLtInstr(Block *bb, TypeName t, std::vector<VarData> params) : IRInstr(bb, t, params){};
+	CmpLtInstr(
+		Block *bb, 
+		std::vector<VarData> params
+	) : IRInstr(bb, IR_CmpLtInstr, params) {};
 
 	/** Actual code generation */
 	virtual void gen_asm(std::ostream &o);

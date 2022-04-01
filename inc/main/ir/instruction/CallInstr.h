@@ -25,7 +25,7 @@ public:
 		Block *bb, 
 		std::string functionName, 
 		std::vector<VarData> params
-	) : IRInstr(bb, TYPE_FUNCTION, params),
+	) : IRInstr(bb, IR_CallInstr, params),
 		functionName(functionName) {};
 
 	/** Actual code generation */
