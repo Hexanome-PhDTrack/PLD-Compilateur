@@ -28,6 +28,7 @@
 #include "ir/instruction/CastIntToCharInstr.h"
 #include "ir/instruction/CallInstr.h"
 #include "ir/instruction/MoveFunctionParamInstr.h"
+#include "ir/instruction/AddToRSPInstr.h"
 
 class BaseVisitor : public ifccBaseVisitor
 {

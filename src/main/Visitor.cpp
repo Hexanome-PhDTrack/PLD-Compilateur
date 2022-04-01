@@ -328,6 +328,7 @@ antlrcpp::Any Visitor::visitBitwiseOp(ifccParser::BitwiseOpContext *ctx)
     {
         currentBlock->AddIRInstr(new BitXorInstr(currentBlock, TYPE_INT, params));
     }
+    return newVar;
 }
 
 antlrcpp::Any Visitor::visitCompare(ifccParser::CompareContext *ctx)
@@ -375,10 +376,9 @@ antlrcpp::Any Visitor::visitCompare(ifccParser::CompareContext *ctx)
 
 antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
 {
-    //ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
-    //VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT);
-
     std::string functionName = ctx->getText();
+    functionName = functionName.substr(0, functionName.find('(')); // remove all characters starting with first '('
+
     std::vector<VarData> params;
 
     for (int i = 0; i < (int)ctx->expr().size(); i++)
@@ -389,18 +389,66 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
 
     // move first 6 params to registers
     std::vector<std::string> registers = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
-    for (int i = 0; i < 6; i++)
+    int counter = 0;
+    for (VarData currentParam : params)
     {
         std::vector<VarData> moveParams;
-        moveParams.push_back(params[i]);
-        currentBlock->AddIRInstr(new MoveFunctionParamInstr(currentBlock, TYPE_INT, moveParams, registers[i]));
+        moveParams.push_back(currentParam);
+
+        if (counter < 6)
+        {
+            // pass 6 first params to registers
+            currentBlock->AddIRInstr(
+                new MoveFunctionParamInstr(
+                    currentBlock, 
+                    TYPE_INT, 
+                    moveParams, 
+                    false, // flags indicate that we want to move param to register
+                    registers[counter]
+                )
+            );
+        }
+        else
+        {
+            // pass extra params to stack
+            std::vector<VarData> moveParams;
+            moveParams.push_back(currentParam);
+            currentBlock->AddIRInstr(
+                new MoveFunctionParamInstr(
+                    currentBlock, 
+                    TYPE_INT, 
+                    moveParams, 
+                    true, // indicates that we want to move param through stack
+                    "" // no register can be used while adding params to stack
+                )
+            );
+        }
+        counter++;
     }
 
-    // TODO: add extra params to stack
-
+    // call function
     currentBlock->AddIRInstr(new CallInstr(currentBlock, functionName, params));
 
-    // TODO: remove (clean) extra params from stack
+    // remove (clean) extra params from stack (every push is a quad (8 bytes))
+    int nbOfPushedParams = params.size() - 6 + 1; // +1 since 0 means 1 param pushed
+    if (nbOfPushedParams > 6)
+    {
+        // compute closest power of 16 (alignment) to nb of pushed params to stack
+        int nbToAddToRSP;
+        if ((nbOfPushedParams*8) % 16 == 0) {
+            nbToAddToRSP = nbOfPushedParams*8;
+        } else {
+            nbToAddToRSP = (nbOfPushedParams + 1)*8;
+        }
+
+        std::vector<VarData> params;
+        // add tmp var to pass nbToAddToRSP to AddToRSPInstr
+        ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
+        VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT);
+        newVar.SetValue(nbToAddToRSP);
+        params.push_back(newVar);
+        currentBlock->AddIRInstr(new AddToRSPInstr(currentBlock, params));
+    }
 
     return 0;
 }

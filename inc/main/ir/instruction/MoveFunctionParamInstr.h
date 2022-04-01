@@ -11,6 +11,7 @@
 class MoveFunctionParamInstr : public IRInstr
 {
 private:
+    bool isMovingOnStack;
 	std::string argumentRegister;
 	
 public:
@@ -20,13 +21,17 @@ public:
 	 * @param bb
      * @param t the type of the instruction
 	 * @param params
+     * @param isMovingOnStack whether the variable is moving on stack or not (via register)
+     * @param argumentRegister the register to store the argument in, if needed (moving via register)
 	 */
 	MoveFunctionParamInstr(
 		Block *bb,
         TypeName t,
 		std::vector<VarData> params,
+        bool isMovingOnStack,
         std::string argumentRegister
-	) : IRInstr(bb, TYPE_FUNCTION, params), 
+	) : IRInstr(bb, TYPE_FUNCTION, params),
+        isMovingOnStack(isMovingOnStack), 
         argumentRegister(argumentRegister) {};
 
 	/** Actual code generation */
