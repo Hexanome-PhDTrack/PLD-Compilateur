@@ -430,8 +430,8 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
     currentBlock->AddIRInstr(new CallInstr(currentBlock, functionName, params));
 
     // remove (clean) extra params from stack (every push is a quad (8 bytes))
-    int nbOfPushedParams = params.size() - 6 + 1; // +1 since 0 means 1 param pushed
-    if (nbOfPushedParams > 6)
+    int nbOfPushedParams = params.size() - 6; // +1 since 0 means 1 param pushed
+    if (nbOfPushedParams > 0)
     {
         // compute closest power of 16 (alignment) to nb of pushed params to stack
         int nbToAddToRSP;
