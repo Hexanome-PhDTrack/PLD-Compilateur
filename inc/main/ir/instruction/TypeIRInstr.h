@@ -35,5 +35,6 @@ enum TypeIRInstr {
     IR_ReturnInstr,
     IR_RmemInstr,
     IR_SubInstr,
-    IR_WmemInstr,
+    IR_SubToRSPInstr,
+    IR_WmemInstr
 };
