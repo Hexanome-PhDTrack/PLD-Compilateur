@@ -9,7 +9,15 @@ Visitor::~Visitor() {
 }
 
 antlrcpp::Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx) {
-  return visit(ctx->prog());
+    try{
+        visit(ctx->prog());
+        warningManager.CheckWarnings(IR);
+        warningManager.LogWarnings();
+    }catch(CustomError* e){
+        errorManager.LogErrors();
+        return 1;
+    }
+    return 0;
 }
 
 antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx)
@@ -102,7 +110,7 @@ antlrcpp::Any Visitor::visitVarDefineMember(ifccParser::VarDefineMemberContext *
     //Check if the variable already exists, if yes we throw an error because it already exists.
     if(cfg->isExist(varName)){
 		VarData toThrow = VarData(-1, varName, ctx->getStart()->getLine(), TYPE_INT, false);
-        UndeclaredVariableError * errorCustom = new UndeclaredVariableError(toThrow);
+        MultipleDeclarationError * errorCustom = new MultipleDeclarationError(toThrow);
         throwError(errorCustom);
     }
     VarData newVar = cfg->add_to_symbol_table(ctx->VAR()->getText(), ctx->getStart()->getLine(), TYPE_INT);

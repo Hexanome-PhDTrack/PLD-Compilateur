@@ -30,6 +30,10 @@ std::string ControlFlowGraph::IR_reg_to_asm(std::string name)
     return asm_result;
 }
 
+VariableManager ControlFlowGraph::getVariableManager(){
+    return variableManager;
+}
+
 std::string ControlFlowGraph::new_BB_name()
 {
     // TODO

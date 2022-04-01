@@ -25,6 +25,7 @@ public:
     std::string IR_reg_to_asm(std::string name); /**< helper method: inputs a IR reg or input variable, returns e.g. "-24(%rbp)" for the proper value of 24 */
     
     // symbol table methods
+    VariableManager getVariableManager();
     VarData add_to_symbol_table(std::string name, size_t lineNumber, TypeName t);
     VarData add_const_to_symbol_table(std::string name, size_t lineNumber, TypeName t, int value);
     VarData getVariable(std::string name);

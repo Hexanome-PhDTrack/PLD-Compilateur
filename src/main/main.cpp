@@ -62,17 +62,21 @@ int main(int argn, const char **argv) {
     }
 
     Visitor v;
-    int success = v.visit(tree).as<int>();
-
-    if(targetFileBuffer.is_open()){
-        std::ostream os(&targetFileBuffer);
-        v.getIntermediateRepresentation().gen_asm(os);
-    }
-    else{
-        std::ostream os(std::cout.rdbuf());
-        v.getIntermediateRepresentation().gen_asm(os);
-    }
+    int success = 1;
+    success = v.visit(tree).as<int>();
     
+
+    if(success == 0){
+        if(targetFileBuffer.is_open()){
+            std::ostream os(&targetFileBuffer);
+            v.getIntermediateRepresentation().gen_asm(os);
+        }
+        else{
+            std::ostream os(std::cout.rdbuf());
+            v.getIntermediateRepresentation().gen_asm(os);
+        }
+    }
+
     if(targetFileBuffer.is_open()){
         targetFileBuffer.close();
     }

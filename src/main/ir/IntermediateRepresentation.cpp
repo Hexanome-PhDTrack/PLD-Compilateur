@@ -28,6 +28,10 @@ Function * IntermediateRepresentation::getFunction(std::string name){
     return functions.find(name)->second;
 }
 
+std::vector<Function*> IntermediateRepresentation::getAllFunctions(){
+    return functionsToDelete;
+}
+
 void IntermediateRepresentation::gen_asm(std::ostream &o){
     //getFunction("main") -> getControlFlowGraph() -> gen_asm(o);
     getFunction("main")->gen_asm(o);
