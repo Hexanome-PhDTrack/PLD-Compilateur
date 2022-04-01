@@ -372,3 +372,35 @@ antlrcpp::Any Visitor::visitCompare(ifccParser::CompareContext *ctx)
 
     return newVar;
 }
+
+antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
+{
+    //ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
+    //VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT);
+
+    std::string functionName = ctx->getText();
+    std::vector<VarData> params;
+
+    for (int i = 0; i < (int)ctx->expr().size(); i++)
+    {
+        VarData param = visit(ctx->expr(i)).as<VarData>();
+        params.push_back(param);
+    }
+
+    // move first 6 params to registers
+    std::vector<std::string> registers = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+    for (int i = 0; i < 6; i++)
+    {
+        std::vector<VarData> moveParams;
+        moveParams.push_back(params[i]);
+        currentBlock->AddIRInstr(new MoveFunctionParamInstr(currentBlock, TYPE_INT, moveParams, registers[i]));
+    }
+
+    // TODO: add extra params to stack
+
+    currentBlock->AddIRInstr(new CallInstr(currentBlock, functionName, params));
+
+    // TODO: remove (clean) extra params from stack
+
+    return 0;
+}

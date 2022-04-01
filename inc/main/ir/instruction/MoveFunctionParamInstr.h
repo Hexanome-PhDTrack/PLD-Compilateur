@@ -8,24 +8,26 @@
 #include <string>
 #include <iostream>
 
-class CallInstr : public IRInstr
+class MoveFunctionParamInstr : public IRInstr
 {
 private:
-	std::string functionName;
-
+	std::string argumentRegister;
+	
 public:
 /**
 	 * @brief Construct a new Bit Xor Instr object
 	 *
 	 * @param bb
-	 * @param functionName
+     * @param t the type of the instruction
 	 * @param params
 	 */
-	CallInstr(
-		Block *bb, 
-		std::string functionName, 
-		std::vector<VarData> params
-	) : IRInstr(bb, TYPE_FUNCTION, params){};
+	MoveFunctionParamInstr(
+		Block *bb,
+        TypeName t,
+		std::vector<VarData> params,
+        std::string argumentRegister
+	) : IRInstr(bb, TYPE_FUNCTION, params), 
+        argumentRegister(argumentRegister) {};
 
 	/** Actual code generation */
 	virtual void gen_asm(std::ostream &o);

@@ -1,5 +1,5 @@
 #include "ir/instruction/CallInstr.h"
 
 void CallInstr::gen_asm(std::ostream &o){
-	// TODO
+	o << "\tcall " << functionName << std::endl;
 };

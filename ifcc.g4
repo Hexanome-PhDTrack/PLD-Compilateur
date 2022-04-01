@@ -15,6 +15,7 @@ instr: funcReturn
     | varAssign
     | varDefine
     | block
+    | functionCall
     ;
 
 funcReturn : RETURN expr ';' ;
@@ -23,6 +24,8 @@ varAssign: VAR '=' expr ';';
 
 varDefine: TYPE varDefineMember (',' varDefineMember)* ';';
 varDefineMember: VAR ('=' expr)?;
+
+functionCall: VAR '(' (expr (',' expr)*)? ')' ';';
 
 expr: '(' expr ')' # parenthesis
     | expr OP_MUL_DIV expr # mulDiv
