@@ -8,7 +8,7 @@
 #include <string>
 #include <iostream>
 
-class AddToRSPInstr : public IRInstr
+class SubToRSPInstr : public IRInstr
 {
 public:
 /**
@@ -17,10 +17,10 @@ public:
 	 * @param bb
 	 * @param params
      */
-	AddToRSPInstr(
+	SubToRSPInstr(
 		Block *bb,
         std::vector<VarData> params
-	) : IRInstr(bb, IR_AddToRSPInstr, params) {};
+	) : IRInstr(bb, TYPE_FUNCTION, params) {};
 
 	/** Actual code generation */
 	virtual void gen_asm(std::ostream &o);
