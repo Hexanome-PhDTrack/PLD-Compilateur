@@ -16,7 +16,7 @@ class CastCharToIntInstr : public IRInstr {
      * @param bb
      * @param t
      * @param params
-     * var1 = (char)var2; => first parameter -> var1 | second parameter -> var2
+     * var1 = (int)var2; => first parameter -> var1 | second parameter -> var2
      */
     CastCharToIntInstr(Block *bb, TypeName t, std::vector<VarData> params)
         : IRInstr(bb, t, params){};

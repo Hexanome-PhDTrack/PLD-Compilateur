@@ -24,6 +24,8 @@
 #include "ir/instruction/CmpEqInstr.h"
 #include "ir/instruction/DivInstr.h"
 #include "ir/instruction/ReturnInstr.h"
+#include "ir/instruction/CastCharToIntInstr.h"
+#include "ir/instruction/CastIntToCharInstr.h"
 
 
 class BaseVisitor : public ifccBaseVisitor
