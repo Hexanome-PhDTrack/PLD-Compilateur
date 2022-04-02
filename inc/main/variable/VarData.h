@@ -11,6 +11,7 @@ private:
     std::string varName;
     size_t lineNumber = 0;
     bool isUsed = false;
+    bool isReturnedFromFunction = false;
     TypeName typeName;
     bool isConst;
     int value;
@@ -54,9 +55,13 @@ public:
     {
         return isConst;
     }
-    int GetValue()
+    inline int GetValue()
     {
         return value;
+    }
+    inline bool IsReturnedFromFunction()
+    {
+        return isReturnedFromFunction;
     }
 
     // setters
@@ -79,6 +84,10 @@ public:
     inline void SetValue(int value)
     {
         this->value = value;
+    }
+    inline void SetReturnedFromFunction(bool isReturnedFromFunction)
+    {
+        this->isReturnedFromFunction = isReturnedFromFunction;
     }
 
     inline std::string ToString() const

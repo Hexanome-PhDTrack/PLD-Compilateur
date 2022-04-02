@@ -383,24 +383,20 @@ antlrcpp::Any Visitor::visitCall(ifccParser::CallContext *ctx)
 
 antlrcpp::Any Visitor::visitCallAndGet(ifccParser::CallAndGetContext *ctx)
 {
-    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
-
-    // check function is not void: visit children, get function name, check if function is void
+    // check function is not void: visit children, get return value, check if return value is void
     VarData returnedVar = visitFunctionCall(ctx->functionCall());
-    // TODO: use returnedVar to check if function is void instead of name
+    
+    // check if returnedVar is void
+    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
     std::string functionName = ctx->functionCall()->VAR()->getText();
     Function * function = IR.getFunction(functionName);
-    if (function->getReturnType() == TYPE_VOID)
+    if (returnedVar.GetTypeName() == TYPE_VOID)
     {
         VoidFunctionCallError * errorCustom = new VoidFunctionCallError(*function);
         throwError(errorCustom);
     }
 
-    // TODO: should we add instruction to save eax to the stack?
-
-    // return new tmp var with type of return value
-    VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), function->getReturnType());
-    return newVar;
+    return returnedVar;
 }
 
 antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
@@ -508,5 +504,6 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
 
     // return new tmp var with type of return value
     VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), function->getReturnType());
+    newVar.SetReturnedFromFunction(true); // indicates that this var is returned from function
     return newVar;
 }
