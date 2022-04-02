@@ -36,7 +36,9 @@ VariableManager ControlFlowGraph::getVariableManager(){
 
 std::string ControlFlowGraph::new_BB_name()
 {
-    // TODO
+    std::string returnValue = "Block" + nextBBnumber;
+    nextBBnumber++;
+    return returnValue;
 }
 
 VarData ControlFlowGraph::add_to_symbol_table(std::string name, size_t lineNumber, TypeName t){

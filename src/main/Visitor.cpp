@@ -41,9 +41,19 @@ antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
 antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *ctx)
 {
     ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
-    this->currentBlock = new Block(
-        cfg,
-        BODY);
+    if(currentBlock == nullptr){
+        this->currentBlock = new Block(
+            cfg,
+            cfg->new_BB_name());
+    }else{
+        Block* newBlock = new Block(
+            cfg,
+            cfg->new_BB_name()
+        );
+        (this->currentBlock)->setExitTrue(newBlock);
+        this->currentBlock = newBlock;
+    }
+    
     cfg->AddBlock(currentBlock);
 
     for (auto instr : ctx->instr())
@@ -471,4 +481,36 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
     }
 
     return 0;
+}
+
+antlrcpp::Any Visitor::visitIfElseStatement(ifccParser::IfElseStatementContext *ctx) {
+    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
+    visit(ctx -> expr());
+    
+    Block* lastBlock = currentBlock;
+    Block * ifBlock = new Block(
+        cfg,
+        cfg ->new_BB_name()
+    );
+    lastBlock-> setExitTrue(ifBlock);
+
+    Block * endIfBlock = new Block(
+        cfg,
+        cfg ->new_BB_name()
+    );
+    ifBlock->setExitTrue(endIfBlock);
+
+    currentBlock = ifBlock;
+    visit(ctx->block(0));
+    if(ctx->ELSE()){
+        Block * elseBlock = new Block(
+            cfg,
+            cfg->new_BB_name()
+        );
+        elseBlock-> setExitTrue(endIfBlock);
+        lastBlock-> setExitFalse(elseBlock);
+        currentBlock = elseBlock;
+        visit(ctx->block(1));
+    }
+    currentBlock = endIfBlock;
 }

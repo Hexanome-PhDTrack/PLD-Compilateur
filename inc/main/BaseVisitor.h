@@ -34,7 +34,7 @@
 class BaseVisitor : public ifccBaseVisitor
 {
 public:
-    BaseVisitor() { }
+    BaseVisitor() { currentBlock = nullptr;}
     void throwError(CustomError *  error) { errorManager.AddError(error); throw error; }
     void throwWarning(Warning *warning) {warningManager.AddWarning(warning);}
     IntermediateRepresentation& getIntermediateRepresentation(){return IR;};

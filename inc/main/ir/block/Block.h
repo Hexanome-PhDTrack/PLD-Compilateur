@@ -10,17 +10,11 @@ class ControlFlowGraph;
 #include <string>
 #include <iostream>
 
-enum BlockLabel {
-    PROLOGUE,
-    BODY,
-    EPILOGUE
-};
-
 //class Context;
 
 class Block {
 protected:
-    BlockLabel label; /**< label of the BB, also will be the label in the generated code. */
+    std::string label; /**< label of the BB, also will be the label in the generated code. */
     std::vector<IRInstr *> instrs; /**< the instructions themselves. */
     ControlFlowGraph *cfg; /**< pointer to the CFG this block belongs to. */
     Block *exit_true;  /**< pointer to the next basic block, true branch. If nullptr, return from procedure. */
@@ -30,15 +24,15 @@ protected:
 
 public:
 
-    Block(ControlFlowGraph *cfg, BlockLabel entry_label/*, Context *ctx*/);
+    Block(ControlFlowGraph *cfg, std::string entry_label/*, Context *ctx*/);
 
     ~Block();
 
     void gen_asm(std::ostream &o); /**< x86 assembly code generation for this basic block (very simple) */
 
-    BlockLabel GetBlockLabel() { return label; }
+    std::string GetBlockLabel() { return label; }
 
-    void SetBlockLabel(BlockLabel label) { this->label = label; }
+    void SetBlockLabel(std::string label) { this->label = label; }
 
     void AddIRInstr(IRInstr *instruction);
 
@@ -51,7 +45,7 @@ public:
         return exit_false;
     }
 
-    BlockLabel getBlockLabel() {
+    std::string getBlockLabel() {
         return label;
     }
 

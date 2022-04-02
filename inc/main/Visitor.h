@@ -30,6 +30,7 @@ class  Visitor : public BaseVisitor {
         virtual antlrcpp::Any visitBlock(ifccParser::BlockContext *ctx) override;
         virtual antlrcpp::Any visitInstr(ifccParser::InstrContext *ctx) override;
         virtual antlrcpp::Any visitFuncReturn(ifccParser::FuncReturnContext *ctx) override;
+		virtual antlrcpp::Any visitIfElseStatement(ifccParser::IfElseStatementContext *ctx) override;
 		virtual antlrcpp::Any visitVarAssign(ifccParser::VarAssignContext *ctx) override;
 		virtual antlrcpp::Any visitVarDefine(ifccParser::VarDefineContext *ctx) override;
 		virtual antlrcpp::Any visitVarDefineMember(ifccParser::VarDefineMemberContext *ctx) override;

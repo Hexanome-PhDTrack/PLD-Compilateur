@@ -15,8 +15,11 @@ instr: funcReturn
     | varAssign
     | varDefine
     | block
+    | ifElseStatement
     | functionCall
     ;
+
+ifElseStatement: IF '(' expr ')' block (ELSE block)?;
 
 funcReturn : RETURN expr ';' ;
 
@@ -35,6 +38,8 @@ expr: '(' expr ')' # parenthesis
     | (NOT | MINUS)? (VAR | CONST) # value
     ;
 
+IF : 'if' ;
+ELSE : 'else' ;
 MINUS : ('-');
 NOT: '!';
 RETURN : 'return' ;
