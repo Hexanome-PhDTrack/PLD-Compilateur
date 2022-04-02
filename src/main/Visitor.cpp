@@ -32,6 +32,7 @@ antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx)
 antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
 {
     currentFunction = new Function((ctx->VAR()[0])->getText(), TYPE_INT);
+    currentBlock = nullptr;// reset the block
     IR.AddFunction(
         (ctx->VAR()[0])->getText(),
         currentFunction);
@@ -41,24 +42,31 @@ antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
 antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *ctx)
 {
     ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
-    if(currentBlock == nullptr){
-        this->currentBlock = new Block(
-            cfg,
-            cfg->new_BB_name());
-    }else{
-        Block* newBlock = new Block(
+
+    Block* newBlock = new Block( // on crée un nouveau block
             cfg,
             cfg->new_BB_name()
-        );
+    );
+
+    if(currentBlock != nullptr){    // on l"enchaine si ce n'est pas le premier    
         (this->currentBlock)->setExitTrue(newBlock);
-        this->currentBlock = newBlock;
     }
+
+    this->currentBlock = newBlock;
     
     cfg->AddBlock(currentBlock);
 
     for (auto instr : ctx->instr())
     {
         visit(instr);
+        if(instr -> block()){// si on rencontre un block, on doit continuer dans un nouveau block enchainé au block rencontré
+            Block* suite = new Block( // on crée un nouveau block
+                cfg,
+                cfg->new_BB_name()
+            );
+            currentBlock->setExitTrue(suite);
+            currentBlock = suite;
+        }
     }
 
     return 0;
@@ -488,17 +496,17 @@ antlrcpp::Any Visitor::visitIfElseStatement(ifccParser::IfElseStatementContext *
     visit(ctx -> expr());
     
     Block* lastBlock = currentBlock;
-    Block * ifBlock = new Block(
+    Block * ifBlock = new Block(// true block
         cfg,
         cfg ->new_BB_name()
     );
-    lastBlock-> setExitTrue(ifBlock);
+    lastBlock-> setExitTrue(ifBlock);// link the block
 
-    Block * endIfBlock = new Block(
+    Block * endIfBlock = new Block(// end if block
         cfg,
         cfg ->new_BB_name()
     );
-    ifBlock->setExitTrue(endIfBlock);
+    ifBlock->setExitTrue(endIfBlock); // link the block
 
     currentBlock = ifBlock;
     visit(ctx->block(0));
