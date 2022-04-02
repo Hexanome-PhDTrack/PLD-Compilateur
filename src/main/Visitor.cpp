@@ -387,7 +387,6 @@ antlrcpp::Any Visitor::visitCallAndGet(ifccParser::CallAndGetContext *ctx)
     VarData returnedVar = visitFunctionCall(ctx->functionCall());
     
     // check if returnedVar is void
-    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
     std::string functionName = ctx->functionCall()->VAR()->getText();
     Function * function = IR.getFunction(functionName);
     if (returnedVar.GetTypeName() == TYPE_VOID)

@@ -80,6 +80,12 @@ class VariableManager{
         VariableManager(){}
         virtual ~VariableManager() {}
 
+        // getters
+        inline int GetStackFrameByteSize() const
+        {
+            return stackFrameByteSize;
+        }
+
     private:
         /**
          * @brief the free index available
@@ -101,6 +107,8 @@ class VariableManager{
          *
          */
         std::map<std::string, VarData> varDataCollection;
+        // size in byte of all allocated local variables
+        int stackFrameByteSize = 0; 
 
         /**
          * @brief compute the next index and update freeIndex or currentVarIndex

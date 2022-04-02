@@ -37,12 +37,27 @@ void Function::gen_asm_prologue(std::ostream &o)
     "    # prologue\n"
     "    pushq %rbp # save %rbp on the stack\n"
     "    movq %rsp, %rbp # define %rbp for the current function\n";
+
+    // determine the size of the stack frame
+    int stackFrameByteSize = cfg->getVariableManager().GetStackFrameByteSize();
+
+    // compute upper closest power of 16 (alignment) to nb of pushed params to stack
+    int nbToSubToRSP = 0;
+    if (stackFrameByteSize % 16 != 0) {
+        // compute next power of 16
+        nbToSubToRSP = 16*(stackFrameByteSize/16 + 1);
+    }
+
+    // substract the size of the stack frame from the stack pointer
+    if (nbToSubToRSP > 0) {
+        o << "\tsubq $" << nbToSubToRSP << ", %rsp\n";
+    }
 }
 
 void Function::gen_asm_epilogue(std::ostream &o)
 {
     o << 
     "    # epilogue\n"
-    "    popq %rbp # restore %rbp from the stack\n"
+    "    leave # restore %rbp from the stack\n"
     "    ret # return to the caller (here the shell)\n";
 }

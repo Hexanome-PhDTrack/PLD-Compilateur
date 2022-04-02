@@ -80,8 +80,24 @@ VarData VariableManager::addVariable(std::string varName, size_t lineNumber, Typ
 
         varDataCollection.insert(
             std::pair<std::string, VarData>(
-                varName,
-                newVar));
+                varName, 
+                newVar
+            )
+        );
+        
+        // before returning, update the stack frame size
+        switch(newVar.GetTypeName())
+        {
+            case TYPE_CHAR:
+                stackFrameByteSize += 1;
+                break;
+            case TYPE_INT:
+                stackFrameByteSize += 4;
+                break;
+            default:
+                break;
+        }
+
         return newVar;
     }
 }
