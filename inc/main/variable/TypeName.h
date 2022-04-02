@@ -7,8 +7,7 @@ enum TypeName {
     TYPE_INT,
     TYPE_VOID,
     TYPE_ARRAY,
-    TYPE_CHAR,
-    TYPE_FUNCTION
+    TYPE_CHAR
 };
 
 TypeName getTypeNameFromString(std::string typeName);

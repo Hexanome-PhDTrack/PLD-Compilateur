@@ -22,7 +22,7 @@ class Function {
         void gen_asm_prologue(std::ostream& o);
         void gen_asm_epilogue(std::ostream& o);
 
-        std::string getName();
+        std::string GetName();
 
         TypeName getReturnType();
 

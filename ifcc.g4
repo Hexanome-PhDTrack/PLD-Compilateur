@@ -15,7 +15,7 @@ instr: funcReturn
     | varAssign
     | varDefine
     | block
-    | functionCall
+    | call
     ;
 
 funcReturn : RETURN expr ';' ;
@@ -25,7 +25,8 @@ varAssign: VAR '=' expr ';';
 varDefine: TYPE varDefineMember (',' varDefineMember)* ';';
 varDefineMember: VAR ('=' expr)?;
 
-functionCall: VAR '(' (expr (',' expr)*)? ')' ';';
+call: functionCall ';';
+functionCall: VAR '(' (expr (',' expr)*)? ')';
 
 expr: '(' expr ')' # parenthesis
     | expr OP_MUL_DIV expr # mulDiv
@@ -33,6 +34,7 @@ expr: '(' expr ')' # parenthesis
     | expr OP_COMPARE expr # compare
     | expr OP_BITWISE expr # bitwiseOp
     | (NOT | MINUS)? (VAR | CONST) # value
+    | functionCall # callAndGet
     ;
 
 MINUS : ('-');

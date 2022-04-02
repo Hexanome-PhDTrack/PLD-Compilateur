@@ -11,6 +11,7 @@
 #include "BaseVisitor.h"
 #include "error/symbols/MultipleDeclarationError.h"
 #include "error/symbols/UndeclaredVariableError.h"
+#include "error/function/VoidFunctionCallError.h"
 #include "warning/DividingByZeroWarning.h"
 #include "ir/block/Block.h"
 
@@ -19,8 +20,6 @@
 #include <fstream>
 
 class  Visitor : public BaseVisitor {
-	private:
-
 	public:
 		Visitor();
 		~Visitor();
@@ -39,7 +38,8 @@ class  Visitor : public BaseVisitor {
 		virtual antlrcpp::Any visitParenthesis(ifccParser::ParenthesisContext *ctx) override;
 		virtual antlrcpp::Any visitCompare(ifccParser::CompareContext *ctx) override;
 		virtual antlrcpp::Any visitBitwiseOp(ifccParser::BitwiseOpContext *ctx) override;
-		virtual antlrcpp::Any visitFunctionCall(ifccParser::FunctionCallContext *context) override;
-		// getters
+		virtual antlrcpp::Any visitCall(ifccParser::CallContext *context) override;
+		virtual antlrcpp::Any visitFunctionCall(ifccParser::FunctionCallContext *ctx) override;
+		virtual antlrcpp::Any visitCallAndGet(ifccParser::CallAndGetContext *ctx) override;
 };
 

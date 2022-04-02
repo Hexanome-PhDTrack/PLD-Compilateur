@@ -1,5 +1,16 @@
 #include "ir/IntermediateRepresentation.h"
 
+IntermediateRepresentation::IntermediateRepresentation() {
+    // add known functions
+    // add putchar
+    Function * putchar = new Function("putchar", TYPE_VOID);
+    AddFunction("putchar", putchar);
+
+    // add getchar
+    Function * getchar = new Function("getchar", TYPE_CHAR);
+    AddFunction("getchar", getchar);
+}
+
 IntermediateRepresentation::~IntermediateRepresentation() {
     for(int i = 0; i < (int)functionsToDelete.size(); i++){
         delete functionsToDelete[i];

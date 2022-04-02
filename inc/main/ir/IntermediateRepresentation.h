@@ -15,7 +15,7 @@ private:
     std::vector<CallData*> calls; // deleted elsewhere
 
 public:
-    IntermediateRepresentation() {}
+    IntermediateRepresentation(); // initialize known functions
     ~IntermediateRepresentation();
 
     void AddFunction(std::string name, Function* function);

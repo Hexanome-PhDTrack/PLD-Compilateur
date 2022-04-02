@@ -120,6 +120,7 @@ antlrcpp::Any Visitor::visitVarDefineMember(ifccParser::VarDefineMemberContext *
 {
     ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
     std::string varName = ctx->VAR()->getText();
+
     //Check if the variable already exists, if yes we throw an error because it already exists.
     if(cfg->isExist(varName)){
 		VarData toThrow = VarData(-1, varName, ctx->getStart()->getLine(), TYPE_INT, false);
@@ -374,12 +375,45 @@ antlrcpp::Any Visitor::visitCompare(ifccParser::CompareContext *ctx)
     return newVar;
 }
 
+antlrcpp::Any Visitor::visitCall(ifccParser::CallContext *ctx)
+{
+    visitFunctionCall(ctx->functionCall());
+    return 0;
+}
+
+antlrcpp::Any Visitor::visitCallAndGet(ifccParser::CallAndGetContext *ctx)
+{
+    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
+
+    // check function is not void: visit children, get function name, check if function is void
+    VarData returnedVar = visitFunctionCall(ctx->functionCall());
+    // TODO: use returnedVar to check if function is void instead of name
+    std::string functionName = ctx->functionCall()->VAR()->getText();
+    Function * function = IR.getFunction(functionName);
+    if (function->getReturnType() == TYPE_VOID)
+    {
+        VoidFunctionCallError * errorCustom = new VoidFunctionCallError(*function);
+        throwError(errorCustom);
+    }
+
+    // TODO: should we add instruction to save eax to the stack?
+
+    // return new tmp var with type of return value
+    VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), function->getReturnType());
+    return newVar;
+}
+
 antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
 {
     ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
 
-    std::string functionName = ctx->getText();
-    functionName = functionName.substr(0, functionName.find('(')); // remove all characters starting with first '('
+    //std::string functionName = ctx->getText();
+    //functionName = functionName.substr(0, functionName.find('(')); // remove all characters starting with first '('
+
+    // TODO: check if function is defined (already known)
+    // NOTE: putchar and getchar are always defined
+    std::string functionName = ctx->VAR()->getText();
+    Function * function = IR.getFunction(functionName); // TODO: check if function is defined
 
     // get all parameters
     std::vector<VarData> params;
@@ -388,6 +422,8 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
         VarData param = visit(ctx->expr(i)).as<VarData>();
         params.push_back(param);
     }
+
+    // TODO: check params types are correct
 
     // 16 bit alignment: determine if a shift is needed to complete alignment
     int nbOfPushedParams = params.size() - 6;
@@ -470,5 +506,7 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
         currentBlock->AddIRInstr(new AddToRSPInstr(currentBlock, paramsATRI));
     }
 
-    return 0;
+    // return new tmp var with type of return value
+    VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), function->getReturnType());
+    return newVar;
 }

@@ -10,7 +10,7 @@ Function::~Function() {
     delete cfg;
 };
 
-std::string Function::getName(){
+std::string Function::GetName(){
     return name;
 }
 
