@@ -103,7 +103,7 @@ class VariableManager{
          */
         int countAllTempVar = 0;
         /**
-         * @brief map variable map and variable data
+         * @brief map variable name and variable data
          *
          */
         std::map<std::string, VarData> varDataCollection;

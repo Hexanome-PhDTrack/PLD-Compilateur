@@ -61,3 +61,27 @@ void Function::gen_asm_epilogue(std::ostream &o)
     "    leave # restore %rbp from the stack\n"
     "    ret # return to the caller (here the shell)\n";
 }
+
+void Function::AddArgument(std::string arg, size_t lineNumber, TypeName type)
+{
+    argumentNames.push_back(arg);
+    cfg->getVariableManager().addVariable(arg, lineNumber, type);
+}
+
+std::vector<std::string> Function::GetArgumentNames()
+{
+    return argumentNames;
+}
+
+std::vector<std::pair<std::string, VarData>> Function::GetArguments()
+{
+    std::vector<std::pair<std::string, VarData>> args;
+    for (std::string arg : argumentNames) {
+        std::pair<std::string, VarData> argPair(
+            arg, 
+            cfg->getVariableManager().getVariable(arg)
+        );
+        args.push_back(argPair);
+    }
+    return args;
+}

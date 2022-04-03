@@ -7,6 +7,8 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
+#include <utility>
 
 class Function {
     private:
@@ -14,6 +16,7 @@ class Function {
 
         ControlFlowGraph * cfg;
 
+        std::vector<std::string> argumentNames;
         TypeName returnType;
         
     public:
@@ -23,6 +26,9 @@ class Function {
         void gen_asm_epilogue(std::ostream& o);
 
         std::string GetName();
+        void AddArgument(std::string arg, size_t lineNumber, TypeName type);
+        std::vector<std::string> GetArgumentNames();
+        std::vector<std::pair<std::string, VarData>> GetArguments();
 
         TypeName getReturnType();
 
