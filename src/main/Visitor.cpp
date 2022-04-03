@@ -65,6 +65,15 @@ antlrcpp::Any Visitor::visitFuncReturn(ifccParser::FuncReturnContext *ctx)
     std::vector<VarData> params;
     params.push_back(computedVariable);
 
+    // check that the return type is the same as the function return type
+    if (computedVariable.GetTypeName() != currentFunction->getReturnType())
+    {
+        throwWarning(new ReturnTypeWarning(*currentFunction));
+    }
+
+    // if function is void, force nop instruction
+    
+
     ReturnInstr *instr = new ReturnInstr(currentBlock, params);
     currentBlock->AddIRInstr(instr);
     return computedVariable;

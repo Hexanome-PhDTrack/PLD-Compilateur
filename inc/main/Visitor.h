@@ -13,6 +13,7 @@
 #include "error/symbols/UndeclaredVariableError.h"
 #include "error/function/VoidFunctionCallError.h"
 #include "warning/DividingByZeroWarning.h"
+#include "warning/function/ReturnTypeWarning.h"
 #include "ir/block/Block.h"
 
 #include <map>

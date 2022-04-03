@@ -13,8 +13,12 @@
 class IRInstr
 {
 public:
-    /**  constructor */
-    IRInstr(Block *bb, TypeIRInstr t, std::vector<VarData> params) : bb(bb), t(t), params(params){};
+    IRInstr() {}; // default constructor
+    IRInstr(
+        Block *bb, 
+        TypeIRInstr t, 
+        std::vector<VarData> params
+    ) : bb(bb), t(t), params(params) {};
     virtual ~IRInstr() = default; // WARN: Needed, make sure the destructor of the derived class is called
 
     /** Actual code generation */
