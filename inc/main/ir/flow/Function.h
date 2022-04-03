@@ -27,6 +27,8 @@ class Function {
 
         std::string GetName();
         void AddArgument(std::string arg, size_t lineNumber, TypeName type);
+        VarData GetArgument(std::string arg);
+        size_t GetArgumentIndex(std::string arg);
         std::vector<std::string> GetArgumentNames();
         std::vector<std::pair<std::string, VarData>> GetArguments();
 

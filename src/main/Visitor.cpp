@@ -32,9 +32,50 @@ antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx)
 antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
 {
     currentFunction = new Function((ctx->VAR()[0])->getText(), TYPE_INT);
+
+    // create PROLOGUE block
+    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
+    currentBlock = new Block(
+        cfg,
+        PROLOGUE
+    );
+    cfg->AddBlock(currentBlock);
+
+    for (int i = 1; i < ctx->VAR().size(); i++) // skip first VAR (function name)
+    {
+        // add function arguments, and associate them with local variables
+        std::string varName = ctx->VAR()[i]->getText();
+
+        currentFunction->AddArgument(
+            varName,
+            ctx->getStart()->getLine(),
+            getTypeNameFromString(ctx->TYPE()[i]->getText())
+        );
+
+        // get the register used to store the argument
+        std::vector<std::string> registers = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+        size_t argIndex = currentFunction->GetArgumentIndex(varName);
+        std::string fromRegister = argIndex < 6 ? registers[argIndex] : "";
+
+        // add instructions to move arguments to local variables
+        std::vector<VarData> params;
+        params.push_back(currentFunction->GetArgument(varName));
+
+        currentBlock->AddIRInstr(
+            new MoveFunctionArgInstr(
+                currentBlock,
+                params,
+                fromRegister, // only used when argument is passed in a register
+                argIndex
+            )
+        );
+    }
+    
     IR.AddFunction(
         (ctx->VAR()[0])->getText(),
-        currentFunction);
+        currentFunction
+    );
+    
     return visit(ctx->block());
 }
 
@@ -72,7 +113,7 @@ antlrcpp::Any Visitor::visitFuncReturn(ifccParser::FuncReturnContext *ctx)
     }
 
     // if function is void, force nop instruction
-    
+
 
     ReturnInstr *instr = new ReturnInstr(currentBlock, params);
     currentBlock->AddIRInstr(instr);
@@ -457,13 +498,13 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
         std::vector<VarData> moveParams;
         moveParams.push_back(currentParam);
 
+        // TODO: refactor this to be shorter
         if (counter < 6)
         {
             // pass 6 first params to registers
             currentBlock->AddIRInstr(
                 new MoveFunctionParamInstr(
                     currentBlock, 
-                    
                     moveParams, 
                     false, // flags indicate that we want to move param to register
                     registers[counter]
@@ -478,7 +519,6 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
             currentBlock->AddIRInstr(
                 new MoveFunctionParamInstr(
                     currentBlock, 
-                    
                     moveParams, 
                     true, // indicates that we want to move param through stack
                     "" // no register can be used while adding params to stack

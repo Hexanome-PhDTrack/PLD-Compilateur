@@ -24,6 +24,11 @@ TypeName Function::getReturnType(){
 
 void Function::gen_asm(std::ostream &o)
 {
+    // do not generate code for putchar and getchar
+    if (name == "putchar" || name == "getchar") {
+        return;
+    }
+
     this->gen_asm_prologue(o);
     this->cfg->gen_asm(o);
     this->gen_asm_epilogue(o);
@@ -66,6 +71,21 @@ void Function::AddArgument(std::string arg, size_t lineNumber, TypeName type)
 {
     argumentNames.push_back(arg);
     cfg->getVariableManager().addVariable(arg, lineNumber, type);
+}
+
+VarData Function::GetArgument(std::string arg)
+{
+    return cfg->getVariableManager().getVariable(arg);
+}
+
+size_t Function::GetArgumentIndex(std::string arg)
+{
+    for (size_t i = 0; i < argumentNames.size(); i++) {
+        if (argumentNames.at(i) == arg) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 std::vector<std::string> Function::GetArgumentNames()

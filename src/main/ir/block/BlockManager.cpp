@@ -5,8 +5,8 @@ BlockManager::BlockManager() {
 }
 
 BlockManager::~BlockManager() {
-    for (int i = 0; i < (int)blocks.size(); i++) {
-        delete blocks[i];
+    for (auto block : blocks) {
+        delete block;
     }
 }
 
@@ -15,7 +15,7 @@ void BlockManager::AddBlock(Block *block) {
 }
 
 void BlockManager::gen_asm(std::ostream &o) {
-    for (int i = 0; i < (int)blocks.size(); ++i) {
-        blocks[i]->gen_asm(o);
+    for (auto block : blocks) {
+        block->gen_asm(o);
     }
 }
