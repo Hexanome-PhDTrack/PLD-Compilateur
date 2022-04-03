@@ -36,7 +36,4 @@ public:
     Block* getFirstBlock(){
         return firstBlock;
     }
-
-    // basic block management
-    std::string new_BB_name();
 };

@@ -34,11 +34,6 @@ VariableManager ControlFlowGraph::getVariableManager(){
     return variableManager;
 }
 
-std::string ControlFlowGraph::new_BB_name()
-{
-    // TODO
-}
-
 VarData ControlFlowGraph::add_to_symbol_table(std::string name, size_t lineNumber, TypeName t){
     return variableManager.addVariable(name, lineNumber, t);
 }

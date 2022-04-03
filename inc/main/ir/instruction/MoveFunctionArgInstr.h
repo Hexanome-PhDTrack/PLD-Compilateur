@@ -11,7 +11,7 @@
 class MoveFunctionArgInstr : public IRInstr
 {
 private:
-    bool isMovingOnStack = false;
+    bool isMovingOnStack = false; // whether the variable is moving on stack or not (via register)
 	std::string fromParamRegister;
     size_t argIndex; // mandatory for args moving on stack, to retreive their address
 	
@@ -22,17 +22,16 @@ public:
 	 * @param bb
      * @param t the type of the instruction
 	 * @param params
-     * @param isMovingOnStack whether the variable is moving on stack or not (via register)
+     * @param isMovingOnStack 
      * @param fromParamRegister the register to get the argument from, if needed (moving via register)
      * @param argIndex the index of the argument, if needed (moving via stack)
 	 */
 	MoveFunctionArgInstr(
 		Block *bb,
 		std::vector<VarData> params,
-        std::string argumentRegister,
+        std::string fromParamRegister,
         size_t argIndex
-	) : IRInstr(bb, IR_MoveFunctionArgInstr, params),
-        isMovingOnStack(isMovingOnStack), 
+	) : IRInstr(bb, IR_MoveFunctionArgInstr, params), 
         fromParamRegister(fromParamRegister),
         argIndex(argIndex) 
     {

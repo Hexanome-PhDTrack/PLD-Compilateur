@@ -41,7 +41,7 @@ antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
     );
     cfg->AddBlock(currentBlock);
 
-    for (int i = 1; i < ctx->VAR().size(); i++) // skip first VAR (function name)
+    for (size_t i = 1; i < ctx->VAR().size(); i++) // skip first VAR (function name)
     {
         // add function arguments, and associate them with local variables
         std::string varName = ctx->VAR()[i]->getText();
@@ -75,7 +75,7 @@ antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
         (ctx->VAR()[0])->getText(),
         currentFunction
     );
-    
+
     return visit(ctx->block());
 }
 
