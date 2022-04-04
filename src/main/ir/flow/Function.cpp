@@ -44,7 +44,7 @@ void Function::gen_asm_prologue(std::ostream &o)
     "    movq %rsp, %rbp # define %rbp for the current function\n";
 
     // determine the size of the stack frame
-    int stackFrameByteSize = cfg->getVariableManager().GetStackFrameByteSize();
+    int stackFrameByteSize = cfg->getVariableManager()->GetStackFrameByteSize();
 
     // compute upper closest power of 16 (alignment) to nb of pushed params to stack
     int nbToSubToRSP = 0;
@@ -67,15 +67,18 @@ void Function::gen_asm_epilogue(std::ostream &o)
     "    ret # return to the caller (here the shell)\n";
 }
 
-void Function::AddArgument(std::string arg, size_t lineNumber, TypeName type)
-{
+VarData Function::AddArgument(
+    std::string arg, 
+    size_t lineNumber, 
+    TypeName type
+) {
     argumentNames.push_back(arg);
-    cfg->getVariableManager().addVariable(arg, lineNumber, type);
+    return cfg->getVariableManager()->addVariable(arg, lineNumber, type);
 }
 
 VarData Function::GetArgument(std::string arg)
 {
-    return cfg->getVariableManager().getVariable(arg);
+    return cfg->getVariableManager()->getVariable(arg);
 }
 
 size_t Function::GetArgumentIndex(std::string arg)
@@ -99,7 +102,7 @@ std::vector<std::pair<std::string, VarData>> Function::GetArguments()
     for (std::string arg : argumentNames) {
         std::pair<std::string, VarData> argPair(
             arg, 
-            cfg->getVariableManager().getVariable(arg)
+            cfg->getVariableManager()->getVariable(arg)
         );
         args.push_back(argPair);
     }

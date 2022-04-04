@@ -2,11 +2,12 @@
 
 ControlFlowGraph::ControlFlowGraph()
 {
-    this->nextBBnumber=0;
+    this->variableManager = new VariableManager();
 }
 
 ControlFlowGraph::~ControlFlowGraph()
 {
+    delete variableManager;
 }
 
 void ControlFlowGraph::AddBlock(Block *block)
@@ -24,36 +25,36 @@ void ControlFlowGraph::gen_asm(std::ostream &o)
 
 std::string ControlFlowGraph::IR_reg_to_asm(std::string name)
 {
-    VarData var = this->variableManager.getVariable(name);
+    VarData var = this->variableManager->getVariable(name);
     int index = var.GetIndex();
     std::string asm_result = index + "(%rbp)";
     return asm_result;
 }
 
-VariableManager ControlFlowGraph::getVariableManager(){
+VariableManager * ControlFlowGraph::getVariableManager(){
     return variableManager;
 }
 
 VarData ControlFlowGraph::add_to_symbol_table(std::string name, size_t lineNumber, TypeName t){
-    return variableManager.addVariable(name, lineNumber, t);
+    return variableManager->addVariable(name, lineNumber, t);
 }
 
 VarData ControlFlowGraph::add_const_to_symbol_table(std::string name, size_t lineNumber, TypeName t, int value){
-    return variableManager.addConst(name,lineNumber,t,value);
+    return variableManager->addConst(name,lineNumber,t,value);
 }
 
 VarData ControlFlowGraph::getVariable(std::string name){
-    return variableManager.getVariable(name);
+    return variableManager->getVariable(name);
 }
 
 bool ControlFlowGraph::isExist(std::string name){
-    return variableManager.checkVarExists(name);
+    return variableManager->checkVarExists(name);
 }
 
 TypeName ControlFlowGraph::get_var_type(std::string name){
-    return variableManager.getVariable(name).GetTypeName();
+    return variableManager->getVariable(name).GetTypeName();
 }
 
 bool ControlFlowGraph::removeTempVariable(VarData var){
-    return variableManager.removeTempVariable(var);
+    return variableManager->removeTempVariable(var);
 }

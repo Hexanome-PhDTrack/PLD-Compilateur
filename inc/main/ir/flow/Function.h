@@ -26,7 +26,11 @@ class Function {
         void gen_asm_epilogue(std::ostream& o);
 
         std::string GetName();
-        void AddArgument(std::string arg, size_t lineNumber, TypeName type);
+        VarData AddArgument(
+            std::string arg, 
+            size_t lineNumber, 
+            TypeName type
+        );
         VarData GetArgument(std::string arg);
         size_t GetArgumentIndex(std::string arg);
         std::vector<std::string> GetArgumentNames();

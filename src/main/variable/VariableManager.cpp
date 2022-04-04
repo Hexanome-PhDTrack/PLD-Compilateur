@@ -48,12 +48,16 @@ bool VariableManager::checkVarExists(std::string name)
 }
 VarData VariableManager::getVariable(std::string name)
 {
+    // TODO: refactor, this function has a huge edge effect
     varDataCollection.at(name).WitnessUsage(); // var used
     return varDataCollection.find(name)->second;
 }
 
-VarData VariableManager::addVariable(std::string varName, size_t lineNumber, TypeName typeName)
-{
+VarData VariableManager::addVariable(
+    std::string varName, 
+    size_t lineNumber, 
+    TypeName typeName
+) {
     std::cout << "Adding to VariableManager with typename " << typeName << std::endl;
     // check if the name is already take
     std::map<std::string, VarData>::iterator it = varDataCollection.find(varName);

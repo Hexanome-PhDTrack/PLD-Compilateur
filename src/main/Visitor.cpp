@@ -31,7 +31,12 @@ antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx)
 
 antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
 {
+    // create current function
     currentFunction = new Function((ctx->VAR()[0])->getText(), TYPE_INT);
+    IR.AddFunction(
+        (ctx->VAR()[0])->getText(),
+        currentFunction
+    );
 
     // create PROLOGUE block
     ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
@@ -45,21 +50,23 @@ antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
     {
         // add function arguments, and associate them with local variables
         std::string varName = ctx->VAR()[i]->getText();
+        size_t lineNumber = ctx->VAR()[i]->getSymbol()->getLine();
+        TypeName varType = getTypeNameFromString(ctx->TYPE()[i]->getText());
 
-        currentFunction->AddArgument(
+        VarData argument = currentFunction->AddArgument(
             varName,
-            ctx->getStart()->getLine(),
-            getTypeNameFromString(ctx->TYPE()[i]->getText())
+            lineNumber, //ctx->getStart()->getLine()
+            varType
         );
 
         // get the register used to store the argument
-        std::vector<std::string> registers = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+        std::vector<std::string> registers = {"edi", "esi", "edx", "ecx", "r8d", "r9d"};
         size_t argIndex = currentFunction->GetArgumentIndex(varName);
         std::string fromRegister = argIndex < 6 ? registers[argIndex] : "";
 
         // add instructions to move arguments to local variables
         std::vector<VarData> params;
-        params.push_back(currentFunction->GetArgument(varName));
+        params.push_back(argument);
 
         currentBlock->AddIRInstr(
             new MoveFunctionArgInstr(
@@ -70,11 +77,6 @@ antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
             )
         );
     }
-    
-    IR.AddFunction(
-        (ctx->VAR()[0])->getText(),
-        currentFunction
-    );
 
     return visit(ctx->block());
 }
