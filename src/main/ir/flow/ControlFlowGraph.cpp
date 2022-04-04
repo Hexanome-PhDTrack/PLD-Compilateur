@@ -9,12 +9,17 @@ ControlFlowGraph::~ControlFlowGraph()
 {
 }
 
-void ControlFlowGraph::AddBlock(Block *block)
+Block * ControlFlowGraph::AddBlock()
 {
+    Block* block = new Block( // on crée un nouveau block
+        this,
+        this->new_BB_name()
+    );
     if(blockManager.getBlocks().size()==0){
         this->firstBlock=block;
     }
     this->blockManager.AddBlock(block);
+    return block;
 }
 
 void ControlFlowGraph::gen_asm(std::ostream &o)
