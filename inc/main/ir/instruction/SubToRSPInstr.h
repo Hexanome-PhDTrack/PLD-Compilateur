@@ -22,6 +22,5 @@ public:
         std::vector<VarData> params
 	) : IRInstr(bb, IR_SubToRSPInstr, params) {};
 
-	/** Actual code generation */
 	virtual void gen_asm(std::ostream &o);
 };

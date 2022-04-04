@@ -19,7 +19,6 @@ public:
 	 * @brief Construct a new Bit Xor Instr object
 	 *
 	 * @param bb
-     * @param t the type of the instruction
 	 * @param params
      * @param isMovingOnStack whether the variable is moving on stack or not (via register)
      * @param argumentRegister the register to store the argument in, if needed (moving via register)
@@ -33,6 +32,5 @@ public:
         isMovingOnStack(isMovingOnStack), 
         argumentRegister(argumentRegister) {};
 
-	/** Actual code generation */
 	virtual void gen_asm(std::ostream &o);
 };

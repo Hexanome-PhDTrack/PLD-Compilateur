@@ -20,7 +20,6 @@ public:
 	 * @brief Construct a new Bit Xor Instr object
 	 *
 	 * @param bb
-     * @param t the type of the instruction
 	 * @param params
      * @param isMovingOnStack 
      * @param fromParamRegister the register to get the argument from, if needed (moving via register)
@@ -40,6 +39,5 @@ public:
         }
     };
 
-	/** Actual code generation */
 	virtual void gen_asm(std::ostream &o);
 };

@@ -15,7 +15,6 @@ public:
 	 * @brief Construct a new Neg Instr object
 	 *
 	 * @param bb
-	 * @param t
 	 * @param params
 	 * var1 = -var2; => first parameter -> var1 | second parameter -> var2
 	 */
@@ -24,6 +23,5 @@ public:
 		std::vector<VarData> params
 	) : IRInstr(bb, IR_NegInstr, params) {};
 
-	/** Actual code generation */
 	virtual void gen_asm(std::ostream &o);
 };

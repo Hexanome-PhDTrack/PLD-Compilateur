@@ -15,7 +15,6 @@ public:
      * @brief Construct a new Ldconst Instr object
      *
      * @param bb
-     * @param t
      * @param params
      * var = const; => first parameter -> var | second parameter -> const
      */

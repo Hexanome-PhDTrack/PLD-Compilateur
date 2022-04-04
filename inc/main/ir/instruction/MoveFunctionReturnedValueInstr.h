@@ -1,27 +1,26 @@
 #pragma once
 
 #include "ir/block/Block.h"
-#include "ir/instruction/IRInstr.h"
 #include "variable/TypeName.h"
+#include "ir/instruction/IRInstr.h"
 
 #include <vector>
 #include <string>
 #include <iostream>
 
-class CopyInstr : public IRInstr
+class MoveFunctionReturnedValueInstr : public IRInstr
 {
     public:
-        /**
-         * @brief Construct a new Copy Instr object
+    /**
+         * @brief Construct a new Bit Xor Instr object
          *
          * @param bb
          * @param params
-         * var1 = var2; => First parameter -> var1 | second parameter -> var2
          */
-        CopyInstr(
-            Block *bb, 
+        MoveFunctionReturnedValueInstr(
+            Block *bb,
             std::vector<VarData> params
-        ) : IRInstr(bb, IR_CopyInstr, params) {};
+        ) : IRInstr(bb, IR_MoveFunctionReturnedValueInstr, params) {};
 
         virtual void gen_asm(std::ostream &o);
 };

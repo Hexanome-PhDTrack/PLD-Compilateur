@@ -8,13 +8,13 @@
 #include "ir/instruction/IRInstr.h"
 #include "variable/TypeName.h"
 
-class CastCharToIntInstr : public IRInstr {
+class CastCharToIntInstr : public IRInstr 
+{
    public:
     /**
      * @brief Construct a new CastCharToInt Instr object
      *
      * @param bb
-     * @param t
      * @param params
      * var1 = (int)var2; => first parameter -> var1 | second parameter -> var2
      */

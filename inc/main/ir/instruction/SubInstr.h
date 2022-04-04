@@ -14,13 +14,12 @@ public:
     /**
      * @brief Construct a new Sub Instr object
      *
-     * @param bb_
-     * @param t
+     * @param bb
      * @param params
      * var1 = var2 - var3; => first parameter -> var1 | second parameter -> var2 | third parameter -> var3
      */
     SubInstr(
-        Block *bb_, 
+        Block * bb, 
         std::vector<VarData> params
     ) : IRInstr(bb, IR_SubInstr, params){};
 

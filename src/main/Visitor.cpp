@@ -113,10 +113,17 @@ antlrcpp::Any Visitor::visitFuncReturn(ifccParser::FuncReturnContext *ctx)
     }
 
     // if function is void, force nop instruction
-
-
-    ReturnInstr *instr = new ReturnInstr(currentBlock, params);
+    ReturnInstr * instr;
+    if (currentFunction->getReturnType() == TYPE_VOID)
+    {
+        instr = new ReturnInstr(currentBlock, true);
+    }
+    else
+    {
+        instr = new ReturnInstr(currentBlock, params);
+    }
     currentBlock->AddIRInstr(instr);
+
     return computedVariable;
 }
 
@@ -552,6 +559,27 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
 
     // return new tmp var with type of return value
     VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), function->getReturnType());
-    newVar.SetReturnedFromFunction(true); // indicates that this var is returned from function
+
+    // before returning, save new tmp var to the stack
+    std::vector<VarData> paramsSaveTmpVar;
+    paramsSaveTmpVar.push_back(newVar);
+    switch(newVar.GetTypeName())
+    {
+        case TYPE_INT:
+            currentBlock->AddIRInstr(
+                new MoveFunctionReturnedValueInstr(currentBlock, paramsSaveTmpVar)
+            );
+            break;
+        case TYPE_CHAR:
+            currentBlock->AddIRInstr(
+                new MoveFunctionReturnedValueInstr(currentBlock, paramsSaveTmpVar)
+            );
+            break;
+        case TYPE_VOID:
+            break;
+        default:
+            break;
+    }
+
     return newVar;
 }

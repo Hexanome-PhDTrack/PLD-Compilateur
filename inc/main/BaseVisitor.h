@@ -30,6 +30,7 @@
 #include "ir/instruction/CallInstr.h"
 #include "ir/instruction/MoveFunctionArgInstr.h"
 #include "ir/instruction/MoveFunctionParamInstr.h"
+#include "ir/instruction/MoveFunctionReturnedValueInstr.h"
 #include "ir/instruction/AddToRSPInstr.h"
 #include "ir/instruction/SubToRSPInstr.h"
 

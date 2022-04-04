@@ -31,6 +31,7 @@ enum TypeIRInstr {
     IR_LdconstInstr,
     IR_MoveFunctionArgInstr,
     IR_MoveFunctionParamInstr,
+    IR_MoveFunctionReturnedValueInstr,
     IR_MulInstr,
     IR_NegInstr,
     IR_ReturnInstr,
