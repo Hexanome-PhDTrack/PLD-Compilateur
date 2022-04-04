@@ -58,7 +58,6 @@ antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *ctx)
 
     for (auto instr : ctx->instr())
     {
-        visit(instr);
         if(instr -> block()){// si on rencontre un block, on doit continuer dans un nouveau block enchainé au block rencontré
             Block* suite = new Block( // on crée un nouveau block
                 cfg,
@@ -66,7 +65,12 @@ antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *ctx)
             );
             currentBlock->setExitTrue(suite);
             currentBlock = suite;
+            cfg->AddBlock(currentBlock);
         }
+
+        visit(instr);
+
+        this->currentBlock = newBlock;
     }
 
     return 0;
@@ -500,12 +504,14 @@ antlrcpp::Any Visitor::visitIfElseStatement(ifccParser::IfElseStatementContext *
         cfg,
         cfg ->new_BB_name()
     );
+    cfg->AddBlock(ifBlock);
     lastBlock-> setExitTrue(ifBlock);// link the block
 
     Block * endIfBlock = new Block(// end if block
         cfg,
         cfg ->new_BB_name()
     );
+    cfg->AddBlock(endIfBlock);
     ifBlock->setExitTrue(endIfBlock); // link the block
 
     currentBlock = ifBlock;
@@ -515,6 +521,7 @@ antlrcpp::Any Visitor::visitIfElseStatement(ifccParser::IfElseStatementContext *
             cfg,
             cfg->new_BB_name()
         );
+        cfg->AddBlock(elseBlock);
         elseBlock-> setExitTrue(endIfBlock);
         lastBlock-> setExitFalse(elseBlock);
         currentBlock = elseBlock;
