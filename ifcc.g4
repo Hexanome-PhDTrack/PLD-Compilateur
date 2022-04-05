@@ -8,11 +8,10 @@ prog: func*
 func : TYPE VAR '(' (TYPE VAR (',' TYPE VAR)*)? ')' block
      ;
 
-block : '{' instr* '}'
+block : '{' instr* (funcReturn)? '}'
       ;
 
-instr: funcReturn
-    | varAssign
+instr: varAssign
     | varDefine
     | block
     | functionCall
