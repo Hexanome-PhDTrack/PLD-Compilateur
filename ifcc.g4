@@ -34,20 +34,21 @@ call: functionCall ';';
 functionCall: VAR '(' (expr (',' expr)*)? ')';
 
 expr: '(' expr ')' # parenthesis
+    | (OP_UNARY | MINUS='-') # unaryOp
     | expr OP_MUL_DIV expr # mulDiv
     | expr OP_ADD_SUB=('+' | '-') expr # addSub
     | expr OP_COMPARE expr # compare
     | expr OP_BITWISE expr # bitwiseOp
-    | (NOT | MINUS='-')? (VAR | CONST | CHAR) # value
-    | (NOT | MINUS='-')? functionCall # callAndGet
+    | (VAR | CONST | CHAR) # value
+    | functionCall # callAndGet
     ;
 
 WHILE : 'while';
 IF : 'if' ;
 ELSE : 'else' ;
-NOT: '!';
 RETURN : 'return' ;
 TYPE: ('void' | 'int' | 'char');
+OP_UNARY: ('!' | '~');
 OP_MUL_DIV: ('*' | '/');
 OP_COMPARE: ('<' | '>' | '<=' | '>=' | '==' | '!=');
 OP_BITWISE: ('|' | '&' | '^' | '>>' | '<<');
