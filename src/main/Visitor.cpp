@@ -37,16 +37,15 @@ antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
 {
     // create current function
     currentFunction = new Function((ctx->VAR()[0])->getText(), TYPE_INT);
+    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
+    Block* newBlock = cfg->AddBlock();
+
+    currentBlock = newBlock;// reset the block
+
     IR.AddFunction(
         (ctx->VAR()[0])->getText(),
-        currentFunction);
-
-    // create PROLOGUE block
-    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
-    currentBlock = new Block(
-        cfg,
-        PROLOGUE);
-    cfg->AddBlock(currentBlock);
+        currentFunction
+    );
 
     for (size_t i = 1; i < ctx->VAR().size(); i++) // skip first VAR (function name)
     {
@@ -74,7 +73,9 @@ antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
                 currentBlock,
                 params,
                 fromRegister, // only used when argument is passed in a register
-                argIndex));
+                argIndex
+            )
+        );
     }
 
     return visit(ctx->block());
@@ -82,15 +83,31 @@ antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
 
 antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *ctx)
 {
-    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
-    this->currentBlock = new Block(
-        cfg,
-        BODY);
-    cfg->AddBlock(currentBlock);
-
+    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();    
+    int i = 0;
     for (auto instr : ctx->instr())
     {
+        if(instr -> block()){// si on rencontre un block, on doit continuer dans un nouveau block enchainé au block précédent
+            Block* suite = cfg->AddBlock();
+            currentBlock->setExitTrue(suite);
+            currentBlock = suite;
+        }
+        //std::cout << "testI" << i << std::endl;
         visit(instr);
+        //std::cout << "testI" << i << "fin"<< std::endl;
+        // if we have other instr, we recreate a block
+
+        if(instr -> block()){
+            Block* suite = cfg->AddBlock();
+            currentBlock->setExitTrue(suite);
+            currentBlock = suite;
+        }
+        i ++;
+    }
+
+    if(ctx->funcReturn())
+    {
+        return visit(ctx->funcReturn());
     }
 
     return 0;
@@ -98,6 +115,7 @@ antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *ctx)
 
 antlrcpp::Any Visitor::visitInstr(ifccParser::InstrContext *ctx)
 {
+    
     return visitChildren(ctx);
 }
 
@@ -202,9 +220,9 @@ antlrcpp::Any Visitor::visitVarDefineMember(ifccParser::VarDefineMemberContext *
 
     ifccParser::VarDefineContext *varDefCtx = (ifccParser::VarDefineContext *)(ctx->parent);
     TypeName newVarType = getTypeNameFromString(varDefCtx->TYPE()->getText());
-    std::cout << "New variable of type " << varDefCtx->TYPE()->getText() << std::endl;
+    //std::cout << "New variable of type " << varDefCtx->TYPE()->getText() << std::endl;
     VarData newVar = cfg->add_to_symbol_table(ctx->VAR()->getText(), ctx->getStart()->getLine(), newVarType);
-    std::cout << "TypeName: " << newVar.GetTypeName() << std::endl;
+    //std::cout << "TypeName: " << newVar.GetTypeName() << std::endl;
     if (ctx->expr())
     {
         VarData computedVariable = visit(ctx->expr());
@@ -228,7 +246,7 @@ antlrcpp::Any Visitor::visitVarDefineMember(ifccParser::VarDefineMemberContext *
         currentBlock->AddIRInstr(instr);
     }
 
-    return 0;
+    return newVar;
 }
 
 antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
@@ -621,4 +639,71 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
     }
 
     return newVar;
+}
+
+antlrcpp::Any Visitor::visitIfElseStatement(ifccParser::IfElseStatementContext *ctx) {
+    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
+    VarData exprResult = visit(ctx -> expr());
+
+    std::vector<VarData> params;
+    params.push_back(exprResult);
+
+    currentBlock->AddIRInstr(new ControlStructInstr(currentBlock, params));
+
+    Block* lastBlock = currentBlock;
+
+    Block * ifBlock = cfg->AddBlock();
+    lastBlock-> setExitTrue(ifBlock);// link the block
+
+    Block * elseBlock;
+    if(ctx->ELSE()){
+        elseBlock = cfg->AddBlock();
+    }
+
+    Block * endIfBlock = cfg->AddBlock();// end if block
+    
+    ifBlock->setExitTrue(endIfBlock); // link the block
+
+    currentBlock = ifBlock;
+    visit(ctx->block(0));
+    if(ctx->ELSE()){
+        elseBlock-> setExitTrue(endIfBlock);
+        lastBlock-> setExitFalse(elseBlock);
+        currentBlock = elseBlock;
+        visit(ctx->block(1));
+    }else{
+        lastBlock-> setExitFalse(endIfBlock);
+    }
+    currentBlock = endIfBlock;
+    return 0;
+}
+
+antlrcpp::Any Visitor::visitWhileStatement(ifccParser::WhileStatementContext *ctx){
+    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
+    Block* lastBlock = currentBlock;
+
+    Block * conditionBlock = cfg->AddBlock();// add test block to eval condition
+    lastBlock->setExitTrue(conditionBlock);
+
+    currentBlock = conditionBlock; // compute the test
+    VarData exprResult = visit(ctx->expr());
+    std::vector<VarData> params;
+    params.push_back(exprResult);
+    currentBlock->AddIRInstr(new ControlStructInstr(currentBlock, params));
+
+    Block* trueBlock = cfg->AddBlock(); // add true block and link it
+    conditionBlock->setExitTrue(trueBlock);
+
+    Block* falseBlock = cfg->AddBlock(); // continue to the false block
+
+    currentBlock = trueBlock; // compute the true block
+    visit(ctx->block());
+
+    currentBlock->setExitTrue(conditionBlock); // loop to the test from the current block
+
+    
+    conditionBlock->setExitFalse(falseBlock);
+
+    currentBlock = falseBlock;
+    return 0;
 }

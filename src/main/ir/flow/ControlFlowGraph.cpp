@@ -3,6 +3,7 @@
 ControlFlowGraph::ControlFlowGraph()
 {
     this->variableManager = new VariableManager();
+	this->nextBBnumber = 0;
 }
 
 ControlFlowGraph::~ControlFlowGraph()
@@ -10,17 +11,25 @@ ControlFlowGraph::~ControlFlowGraph()
     delete variableManager;
 }
 
-void ControlFlowGraph::AddBlock(Block *block)
+Block * ControlFlowGraph::AddBlock()
 {
-    if(blockManager.getBlocks().size()==0){
-        this->firstBlock=block;
-    }
-    this->blockManager.AddBlock(block);
+	Block* block = new Block( // on crée un nouveau block
+		this,
+		this->new_BB_name()
+	);
+	if(blockManager.getBlocks().size()==0){
+		this->firstBlock=block;
+	}
+	this->blockManager.AddBlock(block);
+	return block;
 }
 
 void ControlFlowGraph::gen_asm(std::ostream &o)
 {
-    this->blockManager.gen_asm(o);
+   std::vector<Block*> blocks = blockManager.getBlocks();
+   for(auto block : blocks){
+	   block->gen_asm(o);
+   }
 }
 
 std::string ControlFlowGraph::IR_reg_to_asm(std::string name)
@@ -57,4 +66,11 @@ TypeName ControlFlowGraph::get_var_type(std::string name){
 
 bool ControlFlowGraph::removeTempVariable(VarData var){
     return variableManager->removeTempVariable(var);
+}
+
+std::string ControlFlowGraph::new_BB_name()
+{
+	std::string returnValue = "L" + std::to_string(nextBBnumber);
+	nextBBnumber++;
+	return returnValue;
 }

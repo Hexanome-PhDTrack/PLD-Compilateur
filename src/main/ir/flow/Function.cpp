@@ -67,9 +67,10 @@ void Function::gen_asm_prologue(std::ostream &o)
 void Function::gen_asm_epilogue(std::ostream &o)
 {
     o << 
-    "    # epilogue\n"
-    "    leave # restore %rbp from the stack\n"
-    "    ret # return to the caller (here the shell)\n";
+    "\t# epilogue\n"
+    ".end:\n"
+    "\tleave # restore %rbp from the stack\n"
+    "\tret # return to the caller (here the shell)\n";
 }
 
 VarData Function::AddArgument(

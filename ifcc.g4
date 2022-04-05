@@ -8,15 +8,20 @@ prog: func+
 func : TYPE VAR '(' (TYPE VAR (',' TYPE VAR)*)? ')' block
      ;
 
-block : '{' instr* '}'
+block : '{' instr* (funcReturn)? '}'
       ;
 
-instr: funcReturn
-    | varAssign
+instr: varAssign
     | varDefine
     | block
     | call
+    | ifElseStatement
+    | whileStatement
     ;
+
+ifElseStatement: IF '(' expr ')' block (ELSE block)?;
+
+whileStatement: WHILE '(' expr ')' block ;
 
 funcReturn : RETURN expr ';' ;
 
@@ -37,7 +42,10 @@ expr: '(' expr ')' # parenthesis
     | (NOT | MINUS='-')? functionCall # callAndGet
     ;
 
-
+WHILE : 'while';
+IF : 'if' ;
+ELSE : 'else' ;
+MINUS : ('-');
 NOT: '!';
 RETURN : 'return' ;
 TYPE: ('void' | 'int' | 'char');

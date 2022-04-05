@@ -7,7 +7,6 @@ public:
     BlockManager();
     ~BlockManager();
     void AddBlock(Block* block);
-    void gen_asm(std::ostream &o);
     void RemoveBlock(Block* block);
     void RemoveBlock(int index);
     void RemoveBlock(std::string name);

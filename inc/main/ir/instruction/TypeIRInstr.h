@@ -26,6 +26,7 @@ enum TypeIRInstr {
     IR_CmpLeInstr,
     IR_CmpLtInstr,
     IR_CmpNeqInstr,
+    IR_ControlStructInstr,
     IR_CopyInstr,
     IR_DivInstr,
     IR_LdconstInstr,

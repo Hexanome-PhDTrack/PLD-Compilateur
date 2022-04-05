@@ -33,11 +33,12 @@
 #include "ir/instruction/MoveFunctionReturnedValueInstr.h"
 #include "ir/instruction/AddToRSPInstr.h"
 #include "ir/instruction/SubToRSPInstr.h"
+#include "ir/instruction/ControlStructInstr.h"
 
 class BaseVisitor : public ifccBaseVisitor
 {
 public:
-    BaseVisitor() { }
+    BaseVisitor() { currentBlock = nullptr;}
     void throwError(CustomError *  error) { errorManager.AddError(error); throw error; }
     void throwWarning(Warning *warning) {warningManager.AddWarning(warning);}
     IntermediateRepresentation& getIntermediateRepresentation(){return IR;};

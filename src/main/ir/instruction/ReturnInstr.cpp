@@ -8,4 +8,7 @@ void ReturnInstr::gen_asm(std::ostream &o) {
     else {
         o << "\tmovl " << params.at(0).GetIndex() << "(%rbp), %eax \n";
     }
+
+    // multi return handling (return not in the end of the function)
+    o << "\tjmp .end\n"; // jump to end of function
 };
