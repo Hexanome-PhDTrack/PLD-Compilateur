@@ -1,14 +1,20 @@
 #include "ir/flow/ControlFlowGraph.h"
+#include "ir/flow/Function.h" // circular dependency
+#include "ir/block/Block.h" // circular dependency
+#include "ir/block/BlockManager.h" // circular dependency
 
-ControlFlowGraph::ControlFlowGraph()
+ControlFlowGraph::ControlFlowGraph(Function * function)
 {
     this->variableManager = new VariableManager();
+	this->blockManager = new BlockManager();
 	this->nextBBnumber = 0;
+	this->function = function;
 }
 
 ControlFlowGraph::~ControlFlowGraph()
 {
     delete variableManager;
+	delete blockManager;
 }
 
 Block * ControlFlowGraph::AddBlock()
@@ -17,16 +23,16 @@ Block * ControlFlowGraph::AddBlock()
 		this,
 		this->new_BB_name()
 	);
-	if(blockManager.getBlocks().size()==0){
+	if(blockManager->getBlocks().size()==0){
 		this->firstBlock=block;
 	}
-	this->blockManager.AddBlock(block);
+	this->blockManager->AddBlock(block);
 	return block;
 }
 
 void ControlFlowGraph::gen_asm(std::ostream &o)
 {
-   std::vector<Block*> blocks = blockManager.getBlocks();
+   std::vector<Block*> blocks = blockManager->getBlocks();
    for(auto block : blocks){
 	   block->gen_asm(o);
    }
@@ -70,7 +76,9 @@ bool ControlFlowGraph::removeTempVariable(VarData var){
 
 std::string ControlFlowGraph::new_BB_name()
 {
-	std::string returnValue = "L" + std::to_string(nextBBnumber);
+	std::string returnValue = "L_" 
+		+ std::to_string(nextBBnumber)
+		+ function->GetName();
 	nextBBnumber++;
 	return returnValue;
 }

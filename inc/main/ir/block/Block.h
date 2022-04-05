@@ -1,10 +1,16 @@
 #pragma once
 
 #include "variable/TypeName.h"
+#include "ir/flow/Function.h"
 
 //#include "ir/instruction/IRInstr.h"
 class IRInstr; // circular import
 class ControlFlowGraph;
+
+/*{
+    public: 
+        Function * GetFunction();
+}*/
 
 #include <vector>
 #include <string>

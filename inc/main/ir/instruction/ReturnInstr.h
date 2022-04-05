@@ -12,6 +12,7 @@ class ReturnInstr : public IRInstr
 {
 private:
     bool isVoidReturn = false;
+    std::string functionName;
 
 public:
     /**
@@ -19,18 +20,21 @@ public:
      *
      * @param bb
      * @param params
-     * 
+     * @param functionName
      * return var1 -> first paramater : var1
      */
     ReturnInstr(
         Block *bb, 
-        std::vector<VarData> params
-    ) : IRInstr(bb, IR_ReturnInstr, params) {};
+        std::vector<VarData> params,
+        std::string functionName
+    ) : IRInstr(bb, IR_ReturnInstr, params),
+        functionName(functionName) {};
 
     ReturnInstr(
         Block *bb, 
-        bool isVoidReturn
-    ) {
+        bool isVoidReturn,
+        std::string functionName
+    ) : functionName(functionName) {
         this->bb = bb;
         this->isVoidReturn = isVoidReturn;
         this->t = IR_ReturnInstr;

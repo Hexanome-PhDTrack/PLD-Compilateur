@@ -135,11 +135,15 @@ antlrcpp::Any Visitor::visitFuncReturn(ifccParser::FuncReturnContext *ctx)
     ReturnInstr *instr;
     if (currentFunction->getReturnType() == TYPE_VOID)
     {
-        instr = new ReturnInstr(currentBlock, true);
+        instr = new ReturnInstr(
+            currentBlock, true, currentFunction->GetName()
+        );
     }
     else
     {
-        instr = new ReturnInstr(currentBlock, params);
+        instr = new ReturnInstr(
+            currentBlock, params, currentFunction->GetName()
+        );
     }
     currentBlock->AddIRInstr(instr);
 

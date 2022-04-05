@@ -3,7 +3,7 @@
 Function::Function(
     std::string name, TypeName returnType
 ) : name(name), returnType(returnType) {
-    cfg = new ControlFlowGraph();
+    cfg = new ControlFlowGraph(this);
 };
 
 Function::~Function() {
@@ -66,11 +66,10 @@ void Function::gen_asm_prologue(std::ostream &o)
 
 void Function::gen_asm_epilogue(std::ostream &o)
 {
-    o << 
-    "\t# epilogue\n"
-    ".end:\n"
-    "\tleave # restore %rbp from the stack\n"
-    "\tret # return to the caller (here the shell)\n";
+    o << "\t# epilogue\n";
+    o << ".end_" << GetName() <<":\n";
+    o << "\tleave # restore %rbp from the stack\n"
+        "\tret # return to the caller (here the shell)\n";
 }
 
 VarData Function::AddArgument(

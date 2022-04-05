@@ -10,6 +10,8 @@
 #include <vector>
 #include <utility>
 
+class ControlFlowGraph; // circular dependency
+
 class Function {
     private:
         std::string name = "";

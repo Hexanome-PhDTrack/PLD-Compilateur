@@ -2,6 +2,8 @@
 
 #include "ir/block/Block.h"
 
+class Block; // circular dependency
+
 class BlockManager{
 public:
     BlockManager();

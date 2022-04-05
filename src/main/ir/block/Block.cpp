@@ -27,7 +27,9 @@ void Block::gen_asm(std::ostream &o) {
 		instr->gen_asm(o);
 	}
 	if (this->exit_true == nullptr) {
-		o << "	jmp .end\n";// on est a la fin
+
+		std::string functionName = cfg->GetFunction()->GetName();
+		o << "	jmp .end_" << functionName << "\n";// on est a la fin
 	}else{
 		if (this->exit_false != nullptr) {
 			o << "	je ." << exit_false->getBlockLabel() << "\n";
