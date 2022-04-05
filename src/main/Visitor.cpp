@@ -51,6 +51,11 @@ antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *ctx)
         visit(instr);
     }
 
+    if(ctx->funcReturn())
+    {
+        return visit(ctx->funcReturn());
+    }
+
     return 0;
 }
 
