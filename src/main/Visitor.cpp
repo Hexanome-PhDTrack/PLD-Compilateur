@@ -525,3 +525,31 @@ antlrcpp::Any Visitor::visitIfElseStatement(ifccParser::IfElseStatementContext *
     currentBlock = endIfBlock;
     return 0;
 }
+
+antlrcpp::Any Visitor::visitWhileStatement(ifccParser::WhileStatementContext *ctx){
+    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
+    Block* lastBlock = currentBlock;
+
+    Block * conditionBlock = cfg->AddBlock();// add test block to eval condition
+    lastBlock->setExitTrue(conditionBlock);
+
+    currentBlock = conditionBlock; // compute the test
+    VarData exprResult = visit(ctx->expr());
+    std::vector<VarData> params;
+    params.push_back(exprResult);
+    currentBlock->AddIRInstr(new ControlStructInstr(currentBlock, TYPE_INT, params));
+
+    Block* trueBlock = cfg->AddBlock(); // add true block and link it
+    conditionBlock->setExitTrue(trueBlock);
+
+    currentBlock = trueBlock; // compute the true block
+    visit(ctx->block());
+
+    currentBlock->setExitTrue(conditionBlock); // loop to the test from the current block
+
+    Block* falseBlock = cfg->AddBlock(); // continue to the false block
+    conditionBlock->setExitFalse(falseBlock);
+
+    currentBlock = falseBlock;
+    return 0;
+}

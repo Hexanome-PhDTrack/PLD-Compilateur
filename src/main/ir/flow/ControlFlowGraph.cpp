@@ -24,20 +24,10 @@ Block * ControlFlowGraph::AddBlock()
 
 void ControlFlowGraph::gen_asm(std::ostream &o)
 {
-   Block* current = firstBlock;
-   do{
-		current->gen_asm(o);
-		if (current->getExitFalse() != nullptr) {
-			o << "	jne ." << (current->getExitFalse())->getBlockLabel() << "\n";// jmp to false block
-			(current->getExitTrue())->gen_asm(o);// generate the true block
-			o << "	jmp ." << ((current->getExitTrue())->getExitTrue())->getBlockLabel() << "\n"; // jmp to the endif block
-			if(((current->getExitTrue())->getExitTrue()) != current->getExitFalse()){// if we have an else
-				(current->getExitFalse())->gen_asm(o);//generate the false block
-			}
-			current = current->getExitTrue();
-		}
-		current = current->getExitTrue();
-   }while(current != nullptr);
+   std::vector<Block*> blocks = blockManager.getBlocks();
+   for(auto block : blocks){
+	   block->gen_asm(o);
+   }
 }
 
 std::string ControlFlowGraph::IR_reg_to_asm(std::string name)

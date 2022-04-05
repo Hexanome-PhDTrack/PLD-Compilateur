@@ -16,10 +16,13 @@ instr: funcReturn
     | varDefine
     | block
     | ifElseStatement
+    | whileStatement
     | functionCall
     ;
 
 ifElseStatement: IF '(' expr ')' block (ELSE block)?;
+
+whileStatement: WHILE '(' expr ')' block ;
 
 funcReturn : RETURN expr ';' ;
 
@@ -38,6 +41,7 @@ expr: '(' expr ')' # parenthesis
     | (NOT | MINUS)? (VAR | CONST) # value
     ;
 
+WHILE : 'while';
 IF : 'if' ;
 ELSE : 'else' ;
 MINUS : ('-');
