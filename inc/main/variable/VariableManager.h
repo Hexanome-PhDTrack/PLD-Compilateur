@@ -15,6 +15,9 @@ class VariableManager{
     public:
         static const std::string TEMP_BASE_NAME;
 
+
+        int getScopeDepth(std::string fullName);
+
         /**
          * Checks if a variable is already defined
          * @param name name of the variable

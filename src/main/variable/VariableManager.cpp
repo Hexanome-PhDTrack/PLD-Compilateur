@@ -41,18 +41,74 @@ bool VariableManager::isTemp(std::string varName) const
 
 ///////////////////////////////////////////////////////////////////////////
 
+int VariableManager::getScopeDepth(std::string fullName)
+{
+    //first we need to get scope size
+    int scopeDepth=0;
+
+    for (int i = 0; i < fullName.size(); i++) {
+        if (isdigit(fullName[i]) || fullName[i] == '.')
+            scopeDepth++;
+        else
+            break;
+    }
+
+    return scopeDepth;
+}
+
+
 bool VariableManager::checkVarExists(std::string name, std::string scope)
 {
+    //first we need to get scope size
+
+
     std::string fullName = scope + name;
-    std::map<std::string, VarData>::iterator it = varDataCollection.find(fullName);
-    return it != varDataCollection.end();
+    int scopeSize = getScopeDepth(fullName);
+    std::string tmpScope = fullName.substr(0, scopeSize);
+    std::string tmpName = fullName.substr(scopeSize, fullName.size());
+    std::map<std::string, VarData>::iterator it;
+
+    while (tmpScope.size() > 0) {
+        std::map<std::string, VarData>::iterator it = varDataCollection.find(tmpScope + tmpName);
+        if (it !=  varDataCollection.end()) {
+            return true;
+        }
+
+        //reduce the scope
+        size_t lastPos = tmpScope.find_last_of('&');
+        if (lastPos != std::string::npos) {
+            tmpScope = tmpScope.substr(0, lastPos);
+        } else {
+            tmpScope = "";
+        }
+    }
+    return false;
 }
 VarData VariableManager::getVariable(std::string name, std::string scope)
 {
     // TODO: refactor, this function has a huge edge effect
     std::string fullName = scope + name;
-    varDataCollection.at(fullName).WitnessUsage(); // var used
-    return varDataCollection.find(fullName)->second;
+    int scopeSize = getScopeDepth(fullName);
+    std::string tmpScope = fullName.substr(0, scopeSize);
+    std::string tmpName = fullName.substr(scopeSize, fullName.size());
+    std::map<std::string, VarData>::iterator it;
+
+    while (tmpScope.size() > 0) {
+        std::map<std::string, VarData>::iterator it = varDataCollection.find(tmpScope + tmpName);
+        if (it !=  varDataCollection.end()) {
+          break;
+        }
+
+        //reduce the scope
+        size_t lastPos = tmpScope.find_last_of('&');
+        if (lastPos != std::string::npos) {
+            tmpScope = tmpScope.substr(0, lastPos);
+        } else {
+            tmpScope = "";
+        }
+    }
+    varDataCollection.at(tmpScope + tmpName).WitnessUsage(); // var used
+    return varDataCollection.find(tmpScope + tmpName)->second;
 }
 
 VarData VariableManager::addVariable(
