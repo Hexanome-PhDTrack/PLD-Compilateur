@@ -54,6 +54,7 @@ OP_COMPARE: ('<' | '>' | '<=' | '>=' | '==' | '!=');
 OP_BITWISE: ('|' | '&' | '^');
 VAR: [a-zA-Z]+;
 CONST : [0-9]+ ;
-COMMENT : '/*' .*? '*/' -> skip ;
+MULTI_LINE_COMMENT : '/*' .*? '*/' -> skip ;
+SINGLE_LINE_COMMENT : '//' .*? '\n' -> skip ;
 DIRECTIVE : '#' .*? '\n' -> skip ;
 WS    : [ \t\r\n] -> channel(HIDDEN);
