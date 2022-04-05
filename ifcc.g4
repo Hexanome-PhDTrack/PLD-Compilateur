@@ -34,7 +34,7 @@ call: functionCall ';';
 functionCall: VAR '(' (expr (',' expr)*)? ')';
 
 expr: '(' expr ')' # parenthesis
-    | (OP_UNARY | MINUS='-') # unaryOp
+    | (OP_UNARY | MINUS='-') expr # unaryOp
     | expr OP_MUL_DIV expr # mulDiv
     | expr OP_ADD_SUB=('+' | '-') expr # addSub
     | expr OP_COMPARE expr # compare
