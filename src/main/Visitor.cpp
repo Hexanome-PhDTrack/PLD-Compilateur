@@ -8,12 +8,16 @@ Visitor::~Visitor()
 {
 }
 
-antlrcpp::Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx) {
-    try{
+antlrcpp::Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx)
+{
+    try
+    {
         visit(ctx->prog());
         warningManager.CheckWarnings(IR);
         warningManager.LogWarnings();
-    }catch(CustomError* e){
+    }
+    catch (CustomError *e)
+    {
         errorManager.LogErrors();
         return 1;
     }
@@ -120,10 +124,11 @@ antlrcpp::Any Visitor::visitVarDefineMember(ifccParser::VarDefineMemberContext *
 {
     ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
     std::string varName = ctx->VAR()->getText();
-    //Check if the variable already exists, if yes we throw an error because it already exists.
-    if(cfg->isExist(varName)){
-		VarData toThrow = VarData(-1, varName, ctx->getStart()->getLine(), TYPE_INT, false);
-        MultipleDeclarationError * errorCustom = new MultipleDeclarationError(toThrow);
+    // Check if the variable already exists, if yes we throw an error because it already exists.
+    if (cfg->isExist(varName))
+    {
+        VarData toThrow = VarData(-1, varName, ctx->getStart()->getLine(), TYPE_INT, false);
+        MultipleDeclarationError *errorCustom = new MultipleDeclarationError(toThrow);
         throwError(errorCustom);
     }
 
@@ -177,21 +182,21 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
             TypeName varType = varData.GetTypeName();
             switch (varType)
             {
-                case TYPE_CHAR:
-                    instr = new CastCharToIntInstr(currentBlock, TYPE_INT, params);
-                    break;
+            case TYPE_CHAR:
+                instr = new CastCharToIntInstr(currentBlock, TYPE_INT, params);
+                break;
 
-                case TYPE_INT:
-                default:
-                    if (ctx->MINUS)
-                    {
-                        instr = new NegInstr(currentBlock, TYPE_INT, params);
-                    }
-                    else
-                    {
-                        instr = new CopyInstr(currentBlock, TYPE_INT, params);
-                    }
-                    break;
+            case TYPE_INT:
+            default:
+                if (ctx->MINUS)
+                {
+                    instr = new NegInstr(currentBlock, TYPE_INT, params);
+                }
+                else
+                {
+                    instr = new CopyInstr(currentBlock, TYPE_INT, params);
+                }
+                break;
             }
             currentBlock->AddIRInstr(instr);
         }
@@ -206,7 +211,8 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
     if (ctx->CONST())
     {
         std::string constValue = ctx->CONST()->getText();
-        if(ctx->MINUS){
+        if (ctx->MINUS)
+        {
             constValue = "-" + constValue;
         }
         VarData cst = cfg->add_const_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT, stoi(constValue));
@@ -315,7 +321,7 @@ antlrcpp::Any Visitor::visitBitwiseOp(ifccParser::BitwiseOpContext *ctx)
     params.push_back(leftVar);
     params.push_back(rightVar);
 
-    /* |, &,ˆ */
+    /* |, &,ˆ, ~, <<, >> */
     if (operatorSymbol == "|")
     {
         currentBlock->AddIRInstr(new BitOrInstr(currentBlock, TYPE_INT, params));
@@ -327,6 +333,18 @@ antlrcpp::Any Visitor::visitBitwiseOp(ifccParser::BitwiseOpContext *ctx)
     else if (operatorSymbol == "^")
     {
         currentBlock->AddIRInstr(new BitXorInstr(currentBlock, TYPE_INT, params));
+    }
+    else if (operatorSymbol == "~")
+    {
+        currentBlock->AddIRInstr(new BitNotInstr(currentBlock, TYPE_INT, params));
+    }
+    else if (operatorSymbol == "<<")
+    {
+        currentBlock->AddIRInstr(new ShiftLeftInstr(currentBlock, TYPE_INT, params));
+    }
+    else if (operatorSymbol == ">>")
+    {
+        currentBlock->AddIRInstr(new ShiftRightInstr(currentBlock, TYPE_INT, params));
     }
     return newVar;
 }
@@ -392,10 +410,10 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
     // 16 bit alignment: determine if a shift is needed to complete alignment
     int nbOfPushedParams = params.size() - 6;
     bool isStackAligned = true; // at 6 params or less, stack is already aligned
-    if (nbOfPushedParams > 0) 
+    if (nbOfPushedParams > 0)
     {
         // check if stack is aligned
-        if ((nbOfPushedParams*8) % 16 != 0) 
+        if ((nbOfPushedParams * 8) % 16 != 0)
         {
             isStackAligned = false;
 
@@ -422,13 +440,11 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
             // pass 6 first params to registers
             currentBlock->AddIRInstr(
                 new MoveFunctionParamInstr(
-                    currentBlock, 
-                    TYPE_INT, 
-                    moveParams, 
+                    currentBlock,
+                    TYPE_INT,
+                    moveParams,
                     false, // flags indicate that we want to move param to register
-                    registers[counter]
-                )
-            );
+                    registers[counter]));
         }
         else
         {
@@ -437,13 +453,12 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
             moveParams.push_back(currentParam);
             currentBlock->AddIRInstr(
                 new MoveFunctionParamInstr(
-                    currentBlock, 
-                    TYPE_INT, 
-                    moveParams, 
+                    currentBlock,
+                    TYPE_INT,
+                    moveParams,
                     true, // indicates that we want to move param through stack
-                    "" // no register can be used while adding params to stack
-                )
-            );
+                    ""    // no register can be used while adding params to stack
+                    ));
         }
         counter++;
     }
@@ -456,10 +471,13 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
     {
         // compute closest power of 16 (alignment) to nb of pushed params to stack
         int nbToAddToRSP;
-        if (isStackAligned) {
-            nbToAddToRSP = nbOfPushedParams*8;
-        } else {
-            nbToAddToRSP = (nbOfPushedParams + 1)*8;
+        if (isStackAligned)
+        {
+            nbToAddToRSP = nbOfPushedParams * 8;
+        }
+        else
+        {
+            nbToAddToRSP = (nbOfPushedParams + 1) * 8;
         }
 
         std::vector<VarData> paramsATRI;

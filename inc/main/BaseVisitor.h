@@ -2,46 +2,51 @@
 
 #include "./generated/ifccBaseVisitor.h"
 #include "error/ErrorManager.h"
-#include "warning/WarningManager.h"
 #include "ir/block/Block.h"
 #include "ir/flow/Function.h"
+#include "warning/WarningManager.h"
 
-//instr
-#include "ir/instruction/CopyInstr.h"
-#include "ir/instruction/LdconstInstr.h"
+// instr
 #include "ir/instruction/AddInstr.h"
-#include "ir/instruction/SubInstr.h"
-#include "ir/instruction/MulInstr.h"
+#include "ir/instruction/AddToRSPInstr.h"
 #include "ir/instruction/BitAndInstr.h"
+#include "ir/instruction/BitNotInstr.h"
 #include "ir/instruction/BitOrInstr.h"
 #include "ir/instruction/BitXorInstr.h"
-#include "ir/instruction/CmpGeInstr.h"
-#include "ir/instruction/CmpGtInstr.h"
-#include "ir/instruction/CmpNeqInstr.h"
-#include "ir/instruction/NegInstr.h"
-#include "ir/instruction/CmpLeInstr.h"
-#include "ir/instruction/CmpLtInstr.h"
-#include "ir/instruction/CmpEqInstr.h"
-#include "ir/instruction/DivInstr.h"
-#include "ir/instruction/ReturnInstr.h"
+#include "ir/instruction/CallInstr.h"
 #include "ir/instruction/CastCharToIntInstr.h"
 #include "ir/instruction/CastIntToCharInstr.h"
-#include "ir/instruction/CallInstr.h"
+#include "ir/instruction/CmpEqInstr.h"
+#include "ir/instruction/CmpGeInstr.h"
+#include "ir/instruction/CmpGtInstr.h"
+#include "ir/instruction/CmpLeInstr.h"
+#include "ir/instruction/CmpLtInstr.h"
+#include "ir/instruction/CmpNeqInstr.h"
+#include "ir/instruction/CopyInstr.h"
+#include "ir/instruction/DivInstr.h"
+#include "ir/instruction/LdconstInstr.h"
 #include "ir/instruction/MoveFunctionParamInstr.h"
-#include "ir/instruction/AddToRSPInstr.h"
+#include "ir/instruction/MulInstr.h"
+#include "ir/instruction/NegInstr.h"
+#include "ir/instruction/ReturnInstr.h"
+#include "ir/instruction/ShiftLeftInstr.h"
+#include "ir/instruction/ShiftRightInstr.h"
+#include "ir/instruction/SubInstr.h"
 #include "ir/instruction/SubToRSPInstr.h"
 
-class BaseVisitor : public ifccBaseVisitor
-{
-public:
-    BaseVisitor() { }
-    void throwError(CustomError *  error) { errorManager.AddError(error); throw error; }
-    void throwWarning(Warning *warning) {warningManager.AddWarning(warning);}
-    IntermediateRepresentation& getIntermediateRepresentation(){return IR;};
+class BaseVisitor : public ifccBaseVisitor {
+   public:
+    BaseVisitor() {}
+    void throwError(CustomError* error) {
+        errorManager.AddError(error);
+        throw error;
+    }
+    void throwWarning(Warning* warning) { warningManager.AddWarning(warning); }
+    IntermediateRepresentation& getIntermediateRepresentation() { return IR; };
     ErrorManager getErrorManager() { return errorManager; }
-    WarningManager getWarningManager(){return warningManager;}
+    WarningManager getWarningManager() { return warningManager; }
 
-protected:
+   protected:
     ErrorManager errorManager;
     WarningManager warningManager;
     IntermediateRepresentation IR;

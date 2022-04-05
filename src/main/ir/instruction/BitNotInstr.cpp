@@ -1,8 +1,9 @@
-#include "ir/instruction/BitOrInstr.h"
+#include "ir/instruction/BitNotInstr.h"
 
-void BitOrInstr::gen_asm(std::ostream &o) {
+void BitNotInstr::gen_asm(std::ostream &o) {
     o << "	movl " << params.at(1).GetIndex() << "(%rbp), %eax \n";
-    o << "	orl " << params.at(2).GetIndex() << "(%rbp), %eax \n";
+    o << "  notl "
+      << "%eax \n";
     o << "	movl "
       << "%eax, " << params.at(0).GetIndex() << "(%rbp) \n";
 };
