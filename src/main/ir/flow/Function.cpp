@@ -43,6 +43,7 @@ void Function::gen_asm_epilogue(std::ostream &o)
 {
     o << 
     "    # epilogue\n"
+    ".end:\n"
     "    popq %rbp # restore %rbp from the stack\n"
     "    ret # return to the caller (here the shell)\n";
 }

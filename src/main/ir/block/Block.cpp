@@ -27,7 +27,7 @@ void Block::gen_asm(std::ostream &o) {
 		instr->gen_asm(o);
 	}
 	if (this->exit_true == nullptr) {
-		//nothing
+		o << "	jmp .end\n";
 	}else{
 		if (this->exit_false == nullptr) {
 			o << "	jmp ." << exit_true->getBlockLabel() << "\n";
