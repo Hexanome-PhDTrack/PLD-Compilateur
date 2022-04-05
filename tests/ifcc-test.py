@@ -162,7 +162,7 @@ for j in jobs:
             break # and skip the 'else' branch
     else:
         unique_jobs.append(j)
-jobs=sorted(unique_jobs)
+#jobs=sorted(unique_jobs)
 # debug: after deduplication
 if args.debug:
     print("debug: list of test-cases after deduplication:"," ".join(jobs))

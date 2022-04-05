@@ -34,7 +34,7 @@ expr: '(' expr ')' # parenthesis
     | expr OP_COMPARE expr # compare
     | expr OP_BITWISE expr # bitwiseOp
     | (NOT | MINUS)? (VAR | CONST) # value
-    | functionCall # callAndGet
+    | (NOT | MINUS)? functionCall # callAndGet
     ;
 
 MINUS : ('-');

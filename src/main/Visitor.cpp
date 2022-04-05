@@ -442,6 +442,8 @@ antlrcpp::Any Visitor::visitCall(ifccParser::CallContext *ctx)
 
 antlrcpp::Any Visitor::visitCallAndGet(ifccParser::CallAndGetContext *ctx)
 {
+    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
+
     // check function is not void: visit children, get return value, check if return value is void
     VarData returnedVar = visitFunctionCall(ctx->functionCall());
     
@@ -453,6 +455,23 @@ antlrcpp::Any Visitor::visitCallAndGet(ifccParser::CallAndGetContext *ctx)
         VoidFunctionCallError * errorCustom = new VoidFunctionCallError(*function);
         throwError(errorCustom);
     }
+
+    // check for MINUS 
+    if (ctx->MINUS())
+    {
+        VarData newVarMinus = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), function->getReturnType());
+        std::vector<VarData> paramsNewVarMinus;
+        // var1 = -var2; => first parameter -> var1 | second parameter -> var2
+        paramsNewVarMinus.push_back(newVarMinus); // var1
+        paramsNewVarMinus.push_back(returnedVar); // var2
+        
+        currentBlock->AddIRInstr(
+            new NegInstr(currentBlock, paramsNewVarMinus)
+        );
+
+        returnedVar = newVarMinus;
+    }
+    // TODO: check for NOT
 
     return returnedVar;
 }
