@@ -1,13 +1,12 @@
 #include "ir/instruction/CmpLtInstr.h"
 
-void CmpLtInstr::gen_asm(std::ostream &o)
-{
+void CmpLtInstr::gen_asm(std::ostream &o) {
 	o << "	movl " << params.at(1).GetIndex() << "(%rbp), %eax \n";
 	o << "	cmpl " << params.at(2).GetIndex() << "(%rbp), %eax \n";
 	o << "	setl "
-	  << "%al";
+		<< "%al \n";
 	o << "	movzbl "
-	  << "%al, %eax \n";
+		<< "%al, %eax \n";
 	o << "	movl "
-	  << "%eax, " << params.at(0).GetIndex() << "(%rbp)\n";
+		<< "%eax, " << params.at(0).GetIndex() << "(%rbp) \n";
 };

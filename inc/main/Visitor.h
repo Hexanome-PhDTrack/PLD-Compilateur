@@ -9,7 +9,9 @@
 #include "error/ErrorManager.h"
 #include "ir/flow/ControlFlowGraph.h"
 #include "BaseVisitor.h"
+#include "error/symbols/MultipleDeclarationError.h"
 #include "error/symbols/UndeclaredVariableError.h"
+#include "warning/DividingByZeroWarning.h"
 #include "ir/block/Block.h"
 
 #include <map>
@@ -18,9 +20,6 @@
 
 class  Visitor : public BaseVisitor {
 	private:
-		// https://stackoverflow.com/questions/9954518/stdunique-ptr-with-an-incomplete-type-wont-compile
-		VariableManager varManager;
-		std::ostream *targetStream = nullptr;
 
 	public:
 		Visitor();
@@ -38,9 +37,9 @@ class  Visitor : public BaseVisitor {
 		virtual antlrcpp::Any visitAddSub(ifccParser::AddSubContext *ctx) override;
 		virtual antlrcpp::Any visitMulDiv(ifccParser::MulDivContext *ctx) override;
 		virtual antlrcpp::Any visitParenthesis(ifccParser::ParenthesisContext *ctx) override;
+		virtual antlrcpp::Any visitCompare(ifccParser::CompareContext *ctx) override;
+		virtual antlrcpp::Any visitBitwiseOp(ifccParser::BitwiseOpContext *ctx) override;
+		virtual antlrcpp::Any visitFunctionCall(ifccParser::FunctionCallContext *context) override;
 		// getters
-
-		// setters
-		void setTargetFileBuffer(std::streambuf *fileBuffer);
 };
 

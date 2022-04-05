@@ -1,7 +1,7 @@
 #include "ir/IntermediateRepresentation.h"
 
 IntermediateRepresentation::~IntermediateRepresentation() {
-    for(int i = 0; i < functionsToDelete.size(); i++){
+    for(int i = 0; i < (int)functionsToDelete.size(); i++){
         delete functionsToDelete[i];
     }
     // do not dete calls, all their data is deleted elsewhere
@@ -26,4 +26,13 @@ void IntermediateRepresentation::AddFunction(std::string name, Function* functio
 
 Function * IntermediateRepresentation::getFunction(std::string name){
     return functions.find(name)->second;
+}
+
+std::vector<Function*> IntermediateRepresentation::getAllFunctions(){
+    return functionsToDelete;
+}
+
+void IntermediateRepresentation::gen_asm(std::ostream &o){
+    //getFunction("main") -> getControlFlowGraph() -> gen_asm(o);
+    getFunction("main")->gen_asm(o);
 }

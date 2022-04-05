@@ -23,14 +23,6 @@ class VariableManager{
         bool checkVarExists(std::string name);
 
         /**
-         * @brief test if a variable exist
-         * 
-         * @param name the name
-         * @return true if the variable exist
-         * @return false 
-         */
-        bool isExist(std::string name);
-        /**
          * @brief Get the Variable object with the name
          *
          * @param name the name of the variable
@@ -46,6 +38,16 @@ class VariableManager{
          * @return VarData the new variable if the name hasn't already taken, the old one otherwise.
          */
         VarData addVariable(std::string varName, size_t lineNumber, TypeName typeName);
+        /**
+         * @brief Add the Variable object with a computed index and a constante in
+         *
+         * @param varName the name of the variable (if name = #temp, considere it as a temp variable and append the number of temp variable. recupere the full name in the vardata)
+         * @param lineNumber the line number
+         * @param typeName the type of the variable
+         * @param value the value of the constante
+         * @return VarData the new variable if the name hasn't already taken, the old one otherwise.
+         */
+        VarData addConst(std::string varName, size_t lineNumber, TypeName typeName, int value);
         /**
          * @brief remove a variable temp with the name
          *
@@ -104,8 +106,9 @@ class VariableManager{
          * @brief compute the next index and update freeIndex or currentVarIndex
          *
          * @return int the next index (considere to be used)
+         * @param type the type of the last variable
          */
-        int computeNextIndex();
+        int computeNextIndex(TypeName type);
 
         /**
          * @brief test if a var is a temp one

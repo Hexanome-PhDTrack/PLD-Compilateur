@@ -29,4 +29,13 @@ public:
      * @return Function* 
      */
     Function * getFunction(std::string name);
+
+    /**
+     * @brief Get the All Functions object
+     * 
+     * @return std::vector<Function*> 
+     */
+    std::vector<Function*> getAllFunctions();
+
+    void gen_asm(std::ostream &o);
 };

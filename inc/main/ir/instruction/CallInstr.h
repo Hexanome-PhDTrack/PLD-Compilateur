@@ -10,8 +10,23 @@
 
 class CallInstr : public IRInstr
 {
+private:
+	std::string functionName;
+
 public:
-	CallInstr(Block *bb, TypeName t, std::vector<VarData> params) : IRInstr(bb, t, params){};
+/**
+	 * @brief Construct a new Bit Xor Instr object
+	 *
+	 * @param bb
+	 * @param functionName
+	 * @param params
+	 */
+	CallInstr(
+		Block *bb, 
+		std::string functionName, 
+		std::vector<VarData> params
+	) : IRInstr(bb, TYPE_FUNCTION, params),
+		functionName(functionName) {};
 
 	/** Actual code generation */
 	virtual void gen_asm(std::ostream &o);
