@@ -507,6 +507,11 @@ antlrcpp::Any Visitor::visitIfElseStatement(ifccParser::IfElseStatementContext *
     Block * ifBlock = cfg->AddBlock();
     lastBlock-> setExitTrue(ifBlock);// link the block
 
+    Block * elseBlock;
+    if(ctx->ELSE()){
+        elseBlock = cfg->AddBlock();
+    }
+
     Block * endIfBlock = cfg->AddBlock();// end if block
     
     ifBlock->setExitTrue(endIfBlock); // link the block
@@ -514,7 +519,6 @@ antlrcpp::Any Visitor::visitIfElseStatement(ifccParser::IfElseStatementContext *
     currentBlock = ifBlock;
     visit(ctx->block(0));
     if(ctx->ELSE()){
-        Block * elseBlock = cfg->AddBlock();
         elseBlock-> setExitTrue(endIfBlock);
         lastBlock-> setExitFalse(elseBlock);
         currentBlock = elseBlock;
@@ -542,12 +546,14 @@ antlrcpp::Any Visitor::visitWhileStatement(ifccParser::WhileStatementContext *ct
     Block* trueBlock = cfg->AddBlock(); // add true block and link it
     conditionBlock->setExitTrue(trueBlock);
 
+    Block* falseBlock = cfg->AddBlock(); // continue to the false block
+
     currentBlock = trueBlock; // compute the true block
     visit(ctx->block());
 
     currentBlock->setExitTrue(conditionBlock); // loop to the test from the current block
 
-    Block* falseBlock = cfg->AddBlock(); // continue to the false block
+    
     conditionBlock->setExitFalse(falseBlock);
 
     currentBlock = falseBlock;
