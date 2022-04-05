@@ -418,7 +418,7 @@ antlrcpp::Any Visitor::visitBitwiseOp(ifccParser::BitwiseOpContext *ctx)
     params.push_back(leftVar);
     params.push_back(rightVar);
 
-    /* |, &,ˆ */
+    /* |, &,ˆ, >>, << */
     if (operatorSymbol == "|")
     {
         currentBlock->AddIRInstr(new BitOrInstr(currentBlock, params));
@@ -431,6 +431,15 @@ antlrcpp::Any Visitor::visitBitwiseOp(ifccParser::BitwiseOpContext *ctx)
     {
         currentBlock->AddIRInstr(new BitXorInstr(currentBlock, params));
     }
+    else if (operatorSymbol == ">>")
+    {
+        currentBlock->AddIRInstr(new BitRightShiftInstr(currentBlock, params));
+    }
+    else if (operatorSymbol == "<<")
+    {
+        currentBlock->AddIRInstr(new BitLeftShiftInstr(currentBlock, params));
+    }
+
     return newVar;
 }
 

@@ -45,13 +45,12 @@ expr: '(' expr ')' # parenthesis
 WHILE : 'while';
 IF : 'if' ;
 ELSE : 'else' ;
-MINUS : ('-');
 NOT: '!';
 RETURN : 'return' ;
 TYPE: ('void' | 'int' | 'char');
 OP_MUL_DIV: ('*' | '/');
 OP_COMPARE: ('<' | '>' | '<=' | '>=' | '==' | '!=');
-OP_BITWISE: ('|' | '&' | '^');
+OP_BITWISE: ('|' | '&' | '^' | '>>' | '<<');
 VAR: [a-zA-Z][0-9a-zA-Z]*;
 CONST : [0-9]+ ;
 CHAR : '\''.'\'';
