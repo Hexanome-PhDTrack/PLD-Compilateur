@@ -54,6 +54,8 @@ void Function::gen_asm_prologue(std::ostream &o)
     if (stackFrameByteSize % 16 != 0) {
         // compute next power of 16
         nbToSubToRSP = 16*(stackFrameByteSize/16 + 1);
+    } else {
+        nbToSubToRSP = stackFrameByteSize;
     }
 
     // substract the size of the stack frame from the stack pointer
