@@ -33,7 +33,7 @@ expr: '(' expr ')' # parenthesis
     | expr OP_ADD_SUB=('+' | '-') expr # addSub
     | expr OP_COMPARE expr # compare
     | expr OP_BITWISE expr # bitwiseOp
-    | (NOT | MINUS='-')? (VAR | CONST) # value
+    | (NOT | MINUS='-')? (VAR | CONST | CHAR) # value
     | (NOT | MINUS='-')? functionCall # callAndGet
     ;
 
@@ -46,6 +46,7 @@ OP_COMPARE: ('<' | '>' | '<=' | '>=' | '==' | '!=');
 OP_BITWISE: ('|' | '&' | '^');
 VAR: [a-zA-Z][0-9a-zA-Z]*;
 CONST : [0-9]+ ;
+CHAR : '\''.'\'';
 MULTI_LINE_COMMENT : '/*' .*? '*/' -> skip ;
 SINGLE_LINE_COMMENT : '//' .*? '\n' -> skip ;
 DIRECTIVE : '#' .*? '\n' -> skip ;

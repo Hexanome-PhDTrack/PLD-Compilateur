@@ -143,5 +143,5 @@ gui:
 tests:
 	@$(ECHO) "$(TURQUOISE_COLOR)$(CONSTRUCTION_SIGN) Running $(UNDERLINE)TESTS$(NO_COLOR)$(TURQUOISE_COLOR)...$(NO_COLOR)"
 	rm -rf tests/ifcc-test-output/
-	python3 tests/ifcc-test.py tests/testfiles/
+	python3 tests/ifcc-test.py tests/testfiles
 	mv ifcc-test-output tests/

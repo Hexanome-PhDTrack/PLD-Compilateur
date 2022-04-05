@@ -36,6 +36,9 @@ void Function::gen_asm(std::ostream &o)
 
 void Function::gen_asm_prologue(std::ostream &o)
 {
+#ifdef __APPLE__
+    if(name=="main") name="_main";
+#endif
     o << ".globl "<< name <<"\n";
     o << name <<":\n";
     o << 

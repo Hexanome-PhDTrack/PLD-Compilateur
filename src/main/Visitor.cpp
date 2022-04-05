@@ -267,9 +267,7 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
                 break;
             }
             currentBlock->AddIRInstr(instr);
-        }
-        else
-        {
+        } else {
             VarData toThrow = VarData(-1, ctx->VAR()->getText(), ctx->getStart()->getLine(), TYPE_INT, false);
             UndeclaredVariableError *errorCustom = new UndeclaredVariableError(toThrow);
             throwError(errorCustom);
@@ -292,6 +290,15 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
         currentBlock->AddIRInstr(instr);
     }
 
+    if (ctx->CHAR()) {
+        int charText = ctx->CHAR()->getText()[1];
+        std::vector<VarData> params;
+        VarData intChar = cfg->add_const_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT, charText);
+        params.push_back(newVar);
+        params.push_back(intChar);
+        LdconstInstr *instr = new LdconstInstr(currentBlock, params);
+        currentBlock->AddIRInstr(instr);
+    }
     return newVar;
 }
 
@@ -499,7 +506,7 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
     // TODO: check if function is defined (already known)
     // NOTE: putchar and getchar are always defined
     std::string functionName = ctx->VAR()->getText();
-    Function *function = IR.getFunction(functionName); // TODO: check if function is defined
+    Function * function = IR.getFunction(functionName); // TODO: check if function is defined
 
     // get all parameters
     std::vector<VarData> params;
