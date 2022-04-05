@@ -243,7 +243,7 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
 
                 case TYPE_INT:
                 default:
-                    if (ctx->MINUS())
+                    if (ctx->MINUS)
                     {
                         instr = new NegInstr(currentBlock, params);
                     }
@@ -266,7 +266,7 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
     if (ctx->CONST())
     {
         std::string constValue = ctx->CONST()->getText();
-        if(ctx->MINUS()){
+        if(ctx->MINUS){
             constValue = "-" + constValue;
         }
         VarData cst = cfg->add_const_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT, stoi(constValue));
@@ -286,7 +286,7 @@ antlrcpp::Any Visitor::visitAddSub(ifccParser::AddSubContext *ctx)
     ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
     VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT);
 
-    std::string operatorSymbol = ctx->OP_ADD_SUB()->getText();
+    std::string operatorSymbol = ctx->OP_ADD_SUB->getText();
     VarData leftVar = visit(ctx->expr(0)).as<VarData>();
     VarData rightVar = visit(ctx->expr(1)).as<VarData>();
 
@@ -457,7 +457,7 @@ antlrcpp::Any Visitor::visitCallAndGet(ifccParser::CallAndGetContext *ctx)
     }
 
     // check for MINUS 
-    if (ctx->MINUS())
+    if (ctx->MINUS)
     {
         VarData newVarMinus = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), function->getReturnType());
         std::vector<VarData> paramsNewVarMinus;
