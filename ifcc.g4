@@ -8,11 +8,10 @@ prog: func*
 func : TYPE VAR '(' (TYPE VAR (',' TYPE VAR)*)? ')' block
      ;
 
-block : '{' instr* '}'
+block : '{' instr* (funcReturn)? '}'
       ;
 
-instr: funcReturn
-    | varAssign
+instr: varAssign
     | varDefine
     | block
     | ifElseStatement
@@ -35,10 +34,10 @@ functionCall: VAR '(' (expr (',' expr)*)? ')' ';';
 
 expr: '(' expr ')' # parenthesis
     | expr OP_MUL_DIV expr # mulDiv
-    | expr OP_ADD_SUB expr # addSub
+    | expr OP_ADD_SUB=('+' | '-') expr # addSub
     | expr OP_COMPARE expr # compare
     | expr OP_BITWISE expr # bitwiseOp
-    | (NOT | MINUS)? (VAR | CONST) # value
+    | (NOT | MINUS='-')? (VAR | CONST) # value
     ;
 
 WHILE : 'while';
@@ -49,7 +48,6 @@ NOT: '!';
 RETURN : 'return' ;
 TYPE: ('int' | 'char');
 OP_MUL_DIV: ('*' | '/');
-OP_ADD_SUB: ('+' | '-');
 OP_COMPARE: ('<' | '>' | '<=' | '>=' | '==' | '!=');
 OP_BITWISE: ('|' | '&' | '^');
 VAR: [a-zA-Z]+;
