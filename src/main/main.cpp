@@ -28,12 +28,13 @@ int main(int argn, const char **argv) {
     }
     in << fileStream.rdbuf();
 
-    std::string targetFileName = argv[2];
+    std::string targetFileName;
     if (argn==2) {
         targetFileName = std::regex_replace(argv[1], std::regex(".c$"), ".s");
         targetFileBuffer.open(targetFileName,std::ios::out);
     }
     else if (argn == 3) {
+        targetFileName = argv[2];
         targetFileBuffer.open(targetFileName,std::ios::out);
     }
     else
