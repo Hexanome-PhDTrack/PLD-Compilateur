@@ -718,6 +718,12 @@ antlrcpp::Any Visitor::visitUnaryOp(ifccParser::UnaryOpContext *ctx)
 
     if (ctx->MINUS)
     {
+        // Throwing an error in case of a double minus
+        /*if(ctx->expr()->getText().substr(0,1) == "-")
+        {
+
+        }*/
+        std::cout << ctx->getText() << std::endl;
         currentBlock->AddIRInstr(new NegInstr(currentBlock, params));
     }
     else if (ctx->OP_UNARY())
@@ -733,5 +739,5 @@ antlrcpp::Any Visitor::visitUnaryOp(ifccParser::UnaryOpContext *ctx)
         }
     }
 
-    return 0;
+    return newVar;
 }
