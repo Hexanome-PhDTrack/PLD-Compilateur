@@ -29,6 +29,9 @@ void Block::gen_asm(std::ostream &o) {
 	if (this->exit_true == nullptr) {
 
 		std::string functionName = cfg->GetFunction()->GetName();
+#ifdef __APPLE__
+        if(functionName=="main") functionName="_main";
+#endif
 		o << "	jmp .end_" << functionName << "\n";// on est a la fin
 	}else{
 		if (this->exit_false != nullptr) {
