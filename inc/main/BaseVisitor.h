@@ -38,12 +38,22 @@
 class BaseVisitor : public ifccBaseVisitor
 {
 public:
-    BaseVisitor() { currentBlock = nullptr;}
+    BaseVisitor() { currentBlock = nullptr; currentScope="0";}
     void throwError(CustomError *  error) { errorManager.AddError(error); throw error; }
     void throwWarning(Warning *warning) {warningManager.AddWarning(warning);}
     IntermediateRepresentation& getIntermediateRepresentation(){return IR;};
     ErrorManager getErrorManager() { return errorManager; }
     WarningManager getWarningManager(){return warningManager;}
+
+    /**
+     * Increases reach of current scope
+     */
+    void increaseScope();
+
+    /**
+     * Decreases reach of current scope
+     */
+    void decreaseScope();
 
 protected:
     ErrorManager errorManager;
@@ -53,4 +63,6 @@ protected:
     // indicator of the advancement in exploration
     Function* currentFunction;
     Block* currentBlock;
+    std::string currentScope;
+    std::vector<int> allScopes;
 };

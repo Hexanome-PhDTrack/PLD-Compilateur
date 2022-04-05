@@ -20,8 +20,9 @@ public:
      */
     SubInstr(
         Block * bb, 
-        std::vector<VarData> params
-    ) : IRInstr(bb, IR_SubInstr, params){};
+        std::vector<VarData> params,
+        std::string scope
+    ) : IRInstr(bb, IR_SubInstr, params,scope){};
 
     virtual void gen_asm(std::ostream &o);
 };

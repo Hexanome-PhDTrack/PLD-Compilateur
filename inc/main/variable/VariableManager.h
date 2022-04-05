@@ -18,9 +18,10 @@ class VariableManager{
         /**
          * Checks if a variable is already defined
          * @param name name of the variable
+         * @param scope of the variable
          * @return true if var exists, false otherwise
          */
-        bool checkVarExists(std::string name);
+        bool checkVarExists(std::string name, std::string scope);
 
         /**
          * @brief Get the Variable object with the name
@@ -28,16 +29,18 @@ class VariableManager{
          * @param name the name of the variable
          * @return VarData the vardata
          */
-        VarData getVariable(std::string name);
+        VarData getVariable(std::string name, std::string scope);
         /**
          * @brief Add the Variable object with a computed index
          *
-         * @param varName the name of the variable (if name = #temp, considere it as a temp variable and append the number of temp variable. recupere the full name in the vardata)
+         * @param fullName the name of the variable (if name = #temp, considere it as a temp variable and append the number of temp variable. recupere the full name in the vardata)
          * @param lineNumber the line number
          * @param typeName the type of the variable
+         * @param scope the scope of the variable
+
          * @return VarData the new variable if the name hasn't already taken, the old one otherwise.
          */
-        VarData addVariable(std::string varName, size_t lineNumber, TypeName typeName);
+        VarData addVariable(std::string fullName, size_t lineNumber, TypeName typeName, std::string scope);
         /**
          * @brief Add the Variable object with a computed index and a constante in
          *
@@ -45,9 +48,22 @@ class VariableManager{
          * @param lineNumber the line number
          * @param typeName the type of the variable
          * @param value the value of the constante
+         * @param scope the scope of the variable
+
          * @return VarData the new variable if the name hasn't already taken, the old one otherwise.
          */
-        VarData addConst(std::string varName, size_t lineNumber, TypeName typeName, int value);
+        VarData addConst(std::string varName, size_t lineNumber, TypeName typeName, int value, std::string Scope);
+        /**
+         * @brief remove a variable temp with the name
+         *
+         * @param varName the varaible to remove
+         * @param scope the scope of the variable
+e
+         * @return true if varName is a temp var and the remove success
+         * @return false if varname is a user variable or the remove failed
+         */
+        bool removeTempVariable(std::string varName,std::string scope);
+
         /**
          * @brief remove a variable temp with the name
          *
@@ -56,7 +72,9 @@ class VariableManager{
          * @return false if varname is a user variable or the remove failed
          */
         bool removeTempVariable(std::string varName);
-        /**
+
+
+    /**
          * @brief remove a variable temp
          *
          * @param var the varaible to remove

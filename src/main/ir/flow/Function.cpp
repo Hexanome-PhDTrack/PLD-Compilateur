@@ -75,15 +75,16 @@ void Function::gen_asm_epilogue(std::ostream &o)
 VarData Function::AddArgument(
     std::string arg, 
     size_t lineNumber, 
-    TypeName type
+    TypeName type,
+    std::string scope
 ) {
     argumentNames.push_back(arg);
-    return cfg->getVariableManager()->addVariable(arg, lineNumber, type);
+    return cfg->getVariableManager()->addVariable(arg, lineNumber, type,scope);
 }
 
-VarData Function::GetArgument(std::string arg)
+VarData Function::GetArgument(std::string arg, std::string scope)
 {
-    return cfg->getVariableManager()->getVariable(arg);
+    return cfg->getVariableManager()->getVariable(arg,scope);
 }
 
 size_t Function::GetArgumentIndex(std::string arg)
@@ -101,13 +102,13 @@ std::vector<std::string> Function::GetArgumentNames()
     return argumentNames;
 }
 
-std::vector<std::pair<std::string, VarData>> Function::GetArguments()
+std::vector<std::pair<std::string, VarData>> Function::GetArguments(std::string scope)
 {
     std::vector<std::pair<std::string, VarData>> args;
     for (std::string arg : argumentNames) {
         std::pair<std::string, VarData> argPair(
             arg, 
-            cfg->getVariableManager()->getVariable(arg)
+            cfg->getVariableManager()->getVariable(arg,scope)
         );
         args.push_back(argPair);
     }

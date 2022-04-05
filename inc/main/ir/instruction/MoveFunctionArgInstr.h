@@ -29,8 +29,9 @@ public:
 		Block *bb,
 		std::vector<VarData> params,
         std::string fromParamRegister,
-        size_t argIndex
-	) : IRInstr(bb, IR_MoveFunctionArgInstr, params), 
+        size_t argIndex,
+        std::string scope
+	) : IRInstr(bb, IR_MoveFunctionArgInstr, params,scope),
         fromParamRegister(fromParamRegister),
         argIndex(argIndex) 
     {

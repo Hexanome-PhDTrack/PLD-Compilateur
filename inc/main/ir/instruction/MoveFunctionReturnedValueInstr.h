@@ -19,8 +19,9 @@ class MoveFunctionReturnedValueInstr : public IRInstr
          */
         MoveFunctionReturnedValueInstr(
             Block *bb,
-            std::vector<VarData> params
-        ) : IRInstr(bb, IR_MoveFunctionReturnedValueInstr, params) {};
+            std::vector<VarData> params,
+            std::string scope
+        ) : IRInstr(bb, IR_MoveFunctionReturnedValueInstr, params,scope) {};
 
         virtual void gen_asm(std::ostream &o);
 };

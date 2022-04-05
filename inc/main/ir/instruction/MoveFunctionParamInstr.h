@@ -27,8 +27,9 @@ public:
 		Block *bb,
 		std::vector<VarData> params,
         bool isMovingOnStack,
-        std::string argumentRegister
-	) : IRInstr(bb, IR_MoveFunctionParamInstr, params),
+        std::string argumentRegister,
+        std::string scope
+	) : IRInstr(bb, IR_MoveFunctionParamInstr, params,scope),
         isMovingOnStack(isMovingOnStack), 
         argumentRegister(argumentRegister) {};
 
