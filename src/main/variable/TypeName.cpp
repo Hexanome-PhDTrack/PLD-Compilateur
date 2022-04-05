@@ -27,3 +27,23 @@ TypeName getTypeNameFromString(std::string typeName)
 
     return actualType;
 }
+
+std::string getStringFromTypeName(TypeName typeName)
+{
+    switch(typeName){
+        /*case TYPE_ARRAY:
+            return "int";*/
+
+        case TYPE_CHAR:
+            return "char";
+
+        case TYPE_INT:
+            return "int";
+
+        case TYPE_VOID:
+            return "void";
+
+        default:
+            return "";
+    }
+}

@@ -13,3 +13,4 @@ enum TypeName {
 };
 
 TypeName getTypeNameFromString(std::string typeName);
+std::string getStringFromTypeName(TypeName typeName);

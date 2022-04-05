@@ -8,12 +8,16 @@ Visitor::~Visitor()
 {
 }
 
-antlrcpp::Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx) {
-    try{
+antlrcpp::Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx)
+{
+    try
+    {
         visit(ctx->prog());
         warningManager.CheckWarnings(IR);
         warningManager.LogWarnings();
-    }catch(CustomError* e){
+    }
+    catch (CustomError *e)
+    {
         errorManager.LogErrors();
         return 1;
     }
@@ -35,15 +39,13 @@ antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
     currentFunction = new Function((ctx->VAR()[0])->getText(), TYPE_INT);
     IR.AddFunction(
         (ctx->VAR()[0])->getText(),
-        currentFunction
-    );
+        currentFunction);
 
     // create PROLOGUE block
     ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
     currentBlock = new Block(
         cfg,
-        PROLOGUE
-    );
+        PROLOGUE);
     cfg->AddBlock(currentBlock);
 
     for (size_t i = 1; i < ctx->VAR().size(); i++) // skip first VAR (function name)
@@ -55,9 +57,8 @@ antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
 
         VarData argument = currentFunction->AddArgument(
             varName,
-            lineNumber, //ctx->getStart()->getLine()
-            varType
-        );
+            lineNumber, // ctx->getStart()->getLine()
+            varType);
 
         // get the register used to store the argument
         std::vector<std::string> registers = {"edi", "esi", "edx", "ecx", "r8d", "r9d"};
@@ -73,9 +74,7 @@ antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
                 currentBlock,
                 params,
                 fromRegister, // only used when argument is passed in a register
-                argIndex
-            )
-        );
+                argIndex));
     }
 
     return visit(ctx->block());
@@ -115,7 +114,7 @@ antlrcpp::Any Visitor::visitFuncReturn(ifccParser::FuncReturnContext *ctx)
     }
 
     // if function is void, force nop instruction
-    ReturnInstr * instr;
+    ReturnInstr *instr;
     if (currentFunction->getReturnType() == TYPE_VOID)
     {
         instr = new ReturnInstr(currentBlock, true);
@@ -167,12 +166,25 @@ antlrcpp::Any Visitor::visitVarAssign(ifccParser::VarAssignContext *ctx)
 
 antlrcpp::Any Visitor::visitVarDefine(ifccParser::VarDefineContext *ctx)
 {
-    for (auto varCtx : ctx->varDefineMember())
-    {
-        visitVarDefineMember(varCtx);
-    }
+    TypeName varType = getTypeNameFromString(ctx->TYPE()->getText());
 
-    return 0;
+    switch (varType)
+    {
+    case TYPE_INT:
+    case TYPE_CHAR:
+        for (auto varCtx : ctx->varDefineMember())
+        {
+            visitVarDefineMember(varCtx);
+        }
+
+        return 0;
+
+    default:
+        VarData toThrow = VarData(-1, "", ctx->getStart()->getLine(), varType, false);
+        IllegalTypeError *errorCustom = new IllegalTypeError(toThrow);
+        throwError(errorCustom);
+        return 0;
+    }
 }
 
 antlrcpp::Any Visitor::visitVarDefineMember(ifccParser::VarDefineMemberContext *ctx)
@@ -180,10 +192,11 @@ antlrcpp::Any Visitor::visitVarDefineMember(ifccParser::VarDefineMemberContext *
     ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
     std::string varName = ctx->VAR()->getText();
 
-    //Check if the variable already exists, if yes we throw an error because it already exists.
-    if(cfg->isExist(varName)){
-		VarData toThrow = VarData(-1, varName, ctx->getStart()->getLine(), TYPE_INT, false);
-        MultipleDeclarationError * errorCustom = new MultipleDeclarationError(toThrow);
+    // Check if the variable already exists, if yes we throw an error because it already exists.
+    if (cfg->isExist(varName))
+    {
+        VarData toThrow = VarData(-1, varName, ctx->getStart()->getLine(), TYPE_INT, false);
+        MultipleDeclarationError *errorCustom = new MultipleDeclarationError(toThrow);
         throwError(errorCustom);
     }
 
@@ -237,21 +250,21 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
             TypeName varType = varData.GetTypeName();
             switch (varType)
             {
-                case TYPE_CHAR:
-                    instr = new CastCharToIntInstr(currentBlock, params);
-                    break;
+            case TYPE_CHAR:
+                instr = new CastCharToIntInstr(currentBlock, params);
+                break;
 
-                case TYPE_INT:
-                default:
-                    if (ctx->MINUS)
-                    {
-                        instr = new NegInstr(currentBlock, params);
-                    }
-                    else
-                    {
-                        instr = new CopyInstr(currentBlock, params);
-                    }
-                    break;
+            case TYPE_INT:
+            default:
+                if (ctx->MINUS)
+                {
+                    instr = new NegInstr(currentBlock, params);
+                }
+                else
+                {
+                    instr = new CopyInstr(currentBlock, params);
+                }
+                break;
             }
             currentBlock->AddIRInstr(instr);
         }
@@ -266,7 +279,8 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
     if (ctx->CONST())
     {
         std::string constValue = ctx->CONST()->getText();
-        if(ctx->MINUS){
+        if (ctx->MINUS)
+        {
             constValue = "-" + constValue;
         }
         VarData cst = cfg->add_const_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT, stoi(constValue));
@@ -446,17 +460,17 @@ antlrcpp::Any Visitor::visitCallAndGet(ifccParser::CallAndGetContext *ctx)
 
     // check function is not void: visit children, get return value, check if return value is void
     VarData returnedVar = visitFunctionCall(ctx->functionCall());
-    
+
     // check if returnedVar is void
     std::string functionName = ctx->functionCall()->VAR()->getText();
-    Function * function = IR.getFunction(functionName);
+    Function *function = IR.getFunction(functionName);
     if (returnedVar.GetTypeName() == TYPE_VOID)
     {
-        VoidFunctionCallError * errorCustom = new VoidFunctionCallError(*function);
+        VoidFunctionCallError *errorCustom = new VoidFunctionCallError(*function);
         throwError(errorCustom);
     }
 
-    // check for MINUS 
+    // check for MINUS
     if (ctx->MINUS)
     {
         VarData newVarMinus = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), function->getReturnType());
@@ -464,10 +478,9 @@ antlrcpp::Any Visitor::visitCallAndGet(ifccParser::CallAndGetContext *ctx)
         // var1 = -var2; => first parameter -> var1 | second parameter -> var2
         paramsNewVarMinus.push_back(newVarMinus); // var1
         paramsNewVarMinus.push_back(returnedVar); // var2
-        
+
         currentBlock->AddIRInstr(
-            new NegInstr(currentBlock, paramsNewVarMinus)
-        );
+            new NegInstr(currentBlock, paramsNewVarMinus));
 
         returnedVar = newVarMinus;
     }
@@ -480,13 +493,13 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
 {
     ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
 
-    //std::string functionName = ctx->getText();
-    //functionName = functionName.substr(0, functionName.find('(')); // remove all characters starting with first '('
+    // std::string functionName = ctx->getText();
+    // functionName = functionName.substr(0, functionName.find('(')); // remove all characters starting with first '('
 
     // TODO: check if function is defined (already known)
     // NOTE: putchar and getchar are always defined
     std::string functionName = ctx->VAR()->getText();
-    Function * function = IR.getFunction(functionName); // TODO: check if function is defined
+    Function *function = IR.getFunction(functionName); // TODO: check if function is defined
 
     // get all parameters
     std::vector<VarData> params;
@@ -501,10 +514,10 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
     // 16 bit alignment: determine if a shift is needed to complete alignment
     int nbOfPushedParams = params.size() - 6;
     bool isStackAligned = true; // at 6 params or less, stack is already aligned
-    if (nbOfPushedParams > 0) 
+    if (nbOfPushedParams > 0)
     {
         // check if stack is aligned
-        if ((nbOfPushedParams*8) % 16 != 0) 
+        if ((nbOfPushedParams * 8) % 16 != 0)
         {
             isStackAligned = false;
 
@@ -532,12 +545,10 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
             // pass 6 first params to registers
             currentBlock->AddIRInstr(
                 new MoveFunctionParamInstr(
-                    currentBlock, 
-                    moveParams, 
+                    currentBlock,
+                    moveParams,
                     false, // flags indicate that we want to move param to register
-                    registers[counter]
-                )
-            );
+                    registers[counter]));
         }
         else
         {
@@ -546,12 +557,11 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
             moveParams.push_back(currentParam);
             currentBlock->AddIRInstr(
                 new MoveFunctionParamInstr(
-                    currentBlock, 
-                    moveParams, 
+                    currentBlock,
+                    moveParams,
                     true, // indicates that we want to move param through stack
-                    "" // no register can be used while adding params to stack
-                )
-            );
+                    ""    // no register can be used while adding params to stack
+                    ));
         }
         counter++;
     }
@@ -564,10 +574,13 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
     {
         // compute closest power of 16 (alignment) to nb of pushed params to stack
         int nbToAddToRSP;
-        if (isStackAligned) {
-            nbToAddToRSP = nbOfPushedParams*8;
-        } else {
-            nbToAddToRSP = (nbOfPushedParams + 1)*8;
+        if (isStackAligned)
+        {
+            nbToAddToRSP = nbOfPushedParams * 8;
+        }
+        else
+        {
+            nbToAddToRSP = (nbOfPushedParams + 1) * 8;
         }
 
         std::vector<VarData> paramsATRI;
@@ -584,22 +597,20 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
     // before returning, save new tmp var to the stack
     std::vector<VarData> paramsSaveTmpVar;
     paramsSaveTmpVar.push_back(newVar);
-    switch(newVar.GetTypeName())
+    switch (newVar.GetTypeName())
     {
-        case TYPE_INT:
-            currentBlock->AddIRInstr(
-                new MoveFunctionReturnedValueInstr(currentBlock, paramsSaveTmpVar)
-            );
-            break;
-        case TYPE_CHAR:
-            currentBlock->AddIRInstr(
-                new MoveFunctionReturnedValueInstr(currentBlock, paramsSaveTmpVar)
-            );
-            break;
-        case TYPE_VOID:
-            break;
-        default:
-            break;
+    case TYPE_INT:
+        currentBlock->AddIRInstr(
+            new MoveFunctionReturnedValueInstr(currentBlock, paramsSaveTmpVar));
+        break;
+    case TYPE_CHAR:
+        currentBlock->AddIRInstr(
+            new MoveFunctionReturnedValueInstr(currentBlock, paramsSaveTmpVar));
+        break;
+    case TYPE_VOID:
+        break;
+    default:
+        break;
     }
 
     return newVar;

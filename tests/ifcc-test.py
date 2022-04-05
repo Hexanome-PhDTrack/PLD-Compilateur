@@ -220,7 +220,11 @@ for jobindex, jobname in enumerate(jobs):
     ## both compilers  did produce an  executable, so now we  run both
     ## these executables and compare the results.
 
-    command("./exe-ifcc","ifcc-execute.txt")
+    try:
+        command("./exe-ifcc","ifcc-execute.txt")
+    except Exception as e:
+        print(bcolors.FAIL + "TEST " + str(jobindex) + ": FAIL (" + str(e) + ")" + bcolors.RESET)
+
     if open("gcc-execute.txt").read() != open("ifcc-execute.txt").read() :
         print(bcolors.FAIL + "TEST " + str(jobindex) + ": FAIL (different results at execution)" + bcolors.RESET)
         if args.verbose:

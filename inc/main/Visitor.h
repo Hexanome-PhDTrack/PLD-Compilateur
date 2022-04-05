@@ -12,6 +12,7 @@
 #include "error/symbols/MultipleDeclarationError.h"
 #include "error/symbols/UndeclaredVariableError.h"
 #include "error/function/VoidFunctionCallError.h"
+#include "error/symbols/IllegalTypeError.h"
 #include "warning/DividingByZeroWarning.h"
 #include "warning/function/ReturnTypeWarning.h"
 #include "ir/block/Block.h"

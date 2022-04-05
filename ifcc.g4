@@ -2,7 +2,7 @@ grammar ifcc;
 
 axiom : prog ;
 
-prog: func*
+prog: func+
     ;
 
 func : TYPE VAR '(' (TYPE VAR (',' TYPE VAR)*)? ')' block
@@ -40,11 +40,11 @@ expr: '(' expr ')' # parenthesis
 
 NOT: '!';
 RETURN : 'return' ;
-TYPE: ('int' | 'char');
+TYPE: ('void' | 'int' | 'char');
 OP_MUL_DIV: ('*' | '/');
 OP_COMPARE: ('<' | '>' | '<=' | '>=' | '==' | '!=');
 OP_BITWISE: ('|' | '&' | '^');
-VAR: [a-zA-Z]+;
+VAR: [a-zA-Z][0-9a-zA-Z]*;
 CONST : [0-9]+ ;
 MULTI_LINE_COMMENT : '/*' .*? '*/' -> skip ;
 SINGLE_LINE_COMMENT : '//' .*? '\n' -> skip ;
