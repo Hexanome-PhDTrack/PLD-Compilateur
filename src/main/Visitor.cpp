@@ -495,7 +495,13 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
 
 antlrcpp::Any Visitor::visitIfElseStatement(ifccParser::IfElseStatementContext *ctx) {
     ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
-    visit(ctx -> expr());
+    VarData exprResult = visit(ctx -> expr());
+
+    std::vector<VarData> params;
+    params.push_back(exprResult);
+
+    currentBlock->AddIRInstr(new ControlStructInstr(currentBlock, TYPE_INT, params));
+
     Block* lastBlock = currentBlock;
 
     Block * ifBlock = cfg->AddBlock();
@@ -513,6 +519,8 @@ antlrcpp::Any Visitor::visitIfElseStatement(ifccParser::IfElseStatementContext *
         lastBlock-> setExitFalse(elseBlock);
         currentBlock = elseBlock;
         visit(ctx->block(1));
+    }else{
+        lastBlock-> setExitFalse(endIfBlock);
     }
     currentBlock = endIfBlock;
     return 0;

@@ -30,8 +30,6 @@ public:
 
     void gen_asm(std::ostream &o); /**< x86 assembly code generation for this basic block (very simple) */
 
-    std::string GetBlockLabel() { return label; }
-
     void SetBlockLabel(std::string label) { this->label = label; }
 
     void AddIRInstr(IRInstr *instruction);

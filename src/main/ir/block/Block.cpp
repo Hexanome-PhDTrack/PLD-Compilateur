@@ -21,8 +21,10 @@ void Block::AddIRInstr(IRInstr *instruction) {
 
 void Block::gen_asm(std::ostream &o) {
 
-    for (std::vector<IRInstr *>::iterator it = instrs.begin(); it != instrs.end(); it++) {
-        (*it)->gen_asm(o);
+    o << "." << getBlockLabel() << ":\n";
+
+    for (auto instr : instrs) {
+        instr->gen_asm(o);
     }
 //    if (this->exit_true == nullptr) {
 //        //we generate epilog after this function returns inside the cfg.
