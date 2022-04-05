@@ -3,6 +3,7 @@
 #include "ir/block/Block.h"
 #include "variable/TypeName.h"
 #include "ir/instruction/IRInstr.h"
+#include "variable/VariableManager.h"
 
 #include <vector>
 #include <string>
@@ -11,8 +12,9 @@
 class MoveFunctionParamInstr : public IRInstr
 {
 private:
-    bool isMovingOnStack;
+    bool isMovingOnStack = false;
 	std::string argumentRegister;
+	VariableManager * variableManager = nullptr;
 	
 public:
 /**
@@ -20,17 +22,21 @@ public:
 	 *
 	 * @param bb
 	 * @param params
-     * @param isMovingOnStack whether the variable is moving on stack or not (via register)
      * @param argumentRegister the register to store the argument in, if needed (moving via register)
 	 */
+	// default: moving via register
 	MoveFunctionParamInstr(
 		Block *bb,
 		std::vector<VarData> params,
-        bool isMovingOnStack,
         std::string argumentRegister
-	) : IRInstr(bb, IR_MoveFunctionParamInstr, params),
-        isMovingOnStack(isMovingOnStack), 
-        argumentRegister(argumentRegister) {};
+	);
+	
+	// extra params moving via register
+	MoveFunctionParamInstr(
+		Block *bb,
+		std::vector<VarData> params,
+		VariableManager * variableManager
+	);
 
 	virtual void gen_asm(std::ostream &o);
 };

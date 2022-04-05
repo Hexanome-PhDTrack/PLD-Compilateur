@@ -560,9 +560,10 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
         }
     }
 
-    // move first 6 params to registers
+    // generate move instructions for all parameters
     std::vector<std::string> registers = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
     int counter = 0;
+    std::vector<IRInstr *> moveParamIRInstrs;
     for (VarData currentParam : params)
     {
         std::vector<VarData> moveParams;
@@ -572,27 +573,35 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
         if (counter < 6)
         {
             // pass 6 first params to registers
-            currentBlock->AddIRInstr(
+            moveParamIRInstrs.push_back(
                 new MoveFunctionParamInstr(
                     currentBlock,
                     moveParams,
-                    false, // flags indicate that we want to move param to register
-                    registers[counter]));
+                    registers[counter]
+                )
+            );
         }
         else
         {
             // pass extra params to stack
             std::vector<VarData> moveParams;
             moveParams.push_back(currentParam);
-            currentBlock->AddIRInstr(
+            moveParamIRInstrs.push_back(
                 new MoveFunctionParamInstr(
                     currentBlock,
                     moveParams,
-                    true, // indicates that we want to move param through stack
-                    ""    // no register can be used while adding params to stack
-                    ));
+                    cfg->getVariableManager()
+                )
+            );
         }
         counter++;
+    }
+
+    // reverse instruction order (C takes params in reverse order (from right to left))
+    std::reverse(moveParamIRInstrs.begin(), moveParamIRInstrs.end());
+    for(IRInstr *currentInstr : moveParamIRInstrs)
+    {
+        currentBlock->AddIRInstr(currentInstr);
     }
 
     // call function

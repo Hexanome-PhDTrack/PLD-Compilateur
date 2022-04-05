@@ -20,6 +20,9 @@
 #include <map>
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <vector>
+#include <algorithm>
 
 class  Visitor : public BaseVisitor {
 	public:
