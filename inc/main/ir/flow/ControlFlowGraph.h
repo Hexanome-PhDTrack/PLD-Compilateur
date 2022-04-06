@@ -39,6 +39,7 @@ class ControlFlowGraph {
         VarData add_const_to_symbol_table(std::string name, size_t lineNumber, TypeName t, int value, std::string scope);
         VarData getVariable(std::string name, std::string scope);
         bool isExist(std::string name, std::string scope);
+        bool isAlreadyDefine(std::string name, std::string scope);
         TypeName get_var_type(std::string name, std::string scope);
         bool removeTempVariable(VarData var);
         Block* getFirstBlock(){

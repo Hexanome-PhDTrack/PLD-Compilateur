@@ -219,7 +219,7 @@ antlrcpp::Any Visitor::visitVarDefineMember(ifccParser::VarDefineMemberContext *
     std::string varName = ctx->VAR()->getText();
 
     // Check if the variable already exists, if yes we throw an error because it already exists.
-    if (cfg->isExist(varName,currentScope))
+    if (cfg->isAlreadyDefine(varName,currentScope))
     {
         VarData toThrow = VarData(-1, varName, ctx->getStart()->getLine(), TYPE_INT, false);
         MultipleDeclarationError *errorCustom = new MultipleDeclarationError(toThrow);

@@ -219,6 +219,30 @@
                     "ignoreFailures": true
                 }
             ]
+        },
+        {
+            "name": "test",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/ifcc",
+            "args": ["/home/clement/documents/cours/4if/pld-comp/PLD-Compilateur/tmp/test.c", "./tmp/test.s"],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
         }
     ]
 }

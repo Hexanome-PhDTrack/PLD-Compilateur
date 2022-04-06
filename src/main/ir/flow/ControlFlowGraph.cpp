@@ -66,6 +66,10 @@ bool ControlFlowGraph::isExist(std::string name, std::string scope){
     return variableManager->checkVarExists(name,scope);
 }
 
+bool ControlFlowGraph::isAlreadyDefine(std::string name, std::string scope){
+	return variableManager->checkVarExistsInScope(name,scope);
+}
+
 TypeName ControlFlowGraph::get_var_type(std::string name, std::string scope){
     return variableManager->getVariable(name,scope).GetTypeName();
 }

@@ -19,12 +19,20 @@ class VariableManager{
         int getScopeDepth(std::string fullName);
 
         /**
-         * Checks if a variable is already defined
+         * Checks if a variable is already defined in all accessible scope
          * @param name name of the variable
          * @param scope of the variable
          * @return true if var exists, false otherwise
          */
         bool checkVarExists(std::string name, std::string scope);
+
+        /**
+         * Checks if a variable is already defined in this scope
+         * @param name name of the variable
+         * @param scope of the variable
+         * @return true if var exists, false otherwise
+         */
+        bool checkVarExistsInScope(std::string name, std::string scope);
 
         /**
          * @brief Get the Variable object with the name
@@ -147,4 +155,13 @@ e
          * @return false
          */
         bool isTemp(std::string varName) const;
+
+        /**
+         * @brief Get the Full Name of variable in symbole table given scope and variable name
+         * 
+         * @param name the name of the variable
+         * @param scope the scope
+         * @return std::string 
+         */
+        std::string getVariableFullName(std::string name, std::string scope);
 };
