@@ -206,10 +206,12 @@ for jobindex, jobname in enumerate(jobs):
     elif gccstatus != 0 and ifccstatus == 0:
         ## ifcc wrongly accepts invalid program -> error
         print(bcolors.FAIL + "\tRESULT " + str(jobindex) + ": FAIL (your compiler accepts an invalid program)"  + bcolors.RESET)
+        successCounter[get_test_group(jobname)] += 0
         continue
     elif gccstatus == 0 and ifccstatus != 0:
         ## ifcc wrongly rejects valid program -> error
         print(bcolors.WARNING + "\tRESULT " + str(jobindex) + ": FAIL (your compiler rejects a valid program)"  + bcolors.RESET)
+        successCounter[get_test_group(jobname)] += 0
         if args.verbose:
             dumpfile("ifcc-compile.txt")
         continue
@@ -218,6 +220,7 @@ for jobindex, jobname in enumerate(jobs):
         ldstatus=command("gcc -Wall -o exe-ifcc asm-ifcc.s", "ifcc-link.txt")
         if ldstatus:
             print(bcolors.FAIL + "\tRESULT " + str(jobindex) + ": FAIL (your compiler produces incorrect assembly)" + bcolors.RESET)
+            successCounter[get_test_group(jobname)] += 0
             if args.verbose:
                 dumpfile("ifcc-link.txt")
             continue
