@@ -162,7 +162,7 @@ for j in jobs:
             break # and skip the 'else' branch
     else:
         unique_jobs.append(j)
-jobs=sorted(unique_jobs)
+# jobs=sorted(unique_jobs)
 # debug: after deduplication
 if args.debug:
     print("debug: list of test-cases after deduplication:"," ".join(jobs))
@@ -171,11 +171,16 @@ if args.debug:
 ######################################################################################
 ## TEST step: actually compile all test-cases with both compilers
 
-successCounter = 0
+from collections import defaultdict
+successCounter = defaultdict(int)
+
+def get_test_group(jobname):
+    return jobname.split("-")[5]
+
 for jobindex, jobname in enumerate(jobs):
     os.chdir(orig_cwd)
 
-    print('TEST-CASE: '+jobname)
+    print('TEST-CASE ' + str(jobindex) +': '+jobname)
     os.chdir(jobname)
 
     ## Reference compiler = GCC
@@ -194,17 +199,17 @@ for jobindex, jobname in enumerate(jobs):
     if gccstatus != 0 and ifccstatus != 0:
         ## ifcc correctly rejects invalid program -> test-case ok
 
-        print(bcolors.OK1 + "TEST " + str(jobindex) +": OK "  + bcolors.RESET)
-        successCounter = successCounter + 1
+        print(bcolors.OK1 + "\tRESULT " + str(jobindex) +": OK "  + bcolors.RESET)
+        successCounter[get_test_group(jobname)] += 1
 
         continue
     elif gccstatus != 0 and ifccstatus == 0:
         ## ifcc wrongly accepts invalid program -> error
-        print(bcolors.FAIL + "TEST " + str(jobindex) + ": FAIL (your compiler accepts an invalid program)"  + bcolors.RESET)
+        print(bcolors.FAIL + "\tRESULT " + str(jobindex) + ": FAIL (your compiler accepts an invalid program)"  + bcolors.RESET)
         continue
     elif gccstatus == 0 and ifccstatus != 0:
         ## ifcc wrongly rejects valid program -> error
-        print(bcolors.WARNING + "TEST " + str(jobindex) + ": FAIL (your compiler rejects a valid program)"  + bcolors.RESET)
+        print(bcolors.WARNING + "\tRESULT " + str(jobindex) + ": FAIL (your compiler rejects a valid program)"  + bcolors.RESET)
         if args.verbose:
             dumpfile("ifcc-compile.txt")
         continue
@@ -212,7 +217,7 @@ for jobindex, jobname in enumerate(jobs):
         ## ifcc accepts to compile valid program -> let's link it
         ldstatus=command("gcc -Wall -o exe-ifcc asm-ifcc.s", "ifcc-link.txt")
         if ldstatus:
-            print(bcolors.FAIL + "TEST " + str(jobindex) + ": FAIL (your compiler produces incorrect assembly)" + bcolors.RESET)
+            print(bcolors.FAIL + "\tRESULT " + str(jobindex) + ": FAIL (your compiler produces incorrect assembly)" + bcolors.RESET)
             if args.verbose:
                 dumpfile("ifcc-link.txt")
             continue
@@ -222,7 +227,7 @@ for jobindex, jobname in enumerate(jobs):
 
     command("./exe-ifcc","ifcc-execute.txt")
     if open("gcc-execute.txt").read() != open("ifcc-execute.txt").read() :
-        print(bcolors.FAIL + "TEST " + str(jobindex) + ": FAIL (different results at execution)" + bcolors.RESET)
+        print(bcolors.FAIL + "\tRESULT " + str(jobindex) + ": FAIL (different results at execution)" + bcolors.RESET)
         if args.verbose:
             print("GCC:")
             dumpfile("gcc-execute.txt")
@@ -231,9 +236,11 @@ for jobindex, jobname in enumerate(jobs):
         continue
 
     ## last but not least
-    print(bcolors.OK + "TEST " + str(jobindex) + ": OK"+ bcolors.RESET)
-    successCounter = successCounter + 1
+    print(bcolors.OK + "\tRESULT " + str(jobindex) + ": OK"+ bcolors.RESET)
+    successCounter[get_test_group(jobname)] += 1
 
-print("passed tests: " + str(successCounter) + ", total tests: " + str(len(jobs)))
-successRate = round((successCounter / len(jobs)) * 100)
-print("success rate: " + str(successRate) + '%' )
+print("[*] Passed tests: " + bcolors.OK + str(sum(successCounter.values())) + bcolors.RESET + ", total tests: " + bcolors.OK + str(len(jobs)) + bcolors.RESET )
+print(f"[*] Global success rate: {bcolors.OK} {round(sum(successCounter.values()) / len(jobs) * 100)}% {bcolors.RESET}")
+for group, count in successCounter.items():
+    successRate = round((count / len(list(filter(lambda j: j.find(group) != -1, jobs)))) * 100)
+    print(f"\t[-] Success rate of tests [{group}] :  {bcolors.OK} {str(successRate)}% {bcolors.RESET}" )
