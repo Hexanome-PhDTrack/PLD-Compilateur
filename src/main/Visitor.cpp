@@ -483,8 +483,6 @@ antlrcpp::Any Visitor::visitCall(ifccParser::CallContext *ctx)
 
 antlrcpp::Any Visitor::visitCallAndGet(ifccParser::CallAndGetContext *ctx)
 {
-    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
-
     // check function is not void: visit children, get return value, check if return value is void
     VarData returnedVar = visitFunctionCall(ctx->functionCall());
 

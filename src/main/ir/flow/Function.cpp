@@ -29,6 +29,12 @@ void Function::gen_asm(std::ostream &o)
         return;
     }
 
+    // generate code for special functions
+    if (name == "vsum") {
+        gen_asm_vsum(o);
+        return;
+    }
+
     this->gen_asm_prologue(o);
     this->cfg->gen_asm(o);
     this->gen_asm_epilogue(o);
@@ -112,4 +118,23 @@ std::vector<std::pair<std::string, VarData>> Function::GetArguments()
         args.push_back(argPair);
     }
     return args;
+}
+
+
+// specialized functions
+void Function::gen_asm_vsum(std::ostream &o)
+{
+    std::vector<std::string> lines;
+
+    // read file line by line and store in lines
+    std::ifstream file("res/vsum.s");
+    std::string line;
+    while (std::getline(file, line)) {
+        lines.push_back(line);
+    }
+
+    // write lines to output
+    for (std::string line : lines) {
+        o << line << "\n";
+    }
 }

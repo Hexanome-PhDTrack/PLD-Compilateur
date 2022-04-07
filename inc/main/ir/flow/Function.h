@@ -9,6 +9,7 @@
 #include <iostream>
 #include <vector>
 #include <utility>
+#include <fstream>
 
 class ControlFlowGraph; // circular dependency
 
@@ -20,6 +21,8 @@ class Function {
 
         std::vector<std::string> argumentNames;
         TypeName returnType;
+
+        void gen_asm_vsum(std::ostream &o);
         
     public:
         ControlFlowGraph * getControlFlowGraph();
