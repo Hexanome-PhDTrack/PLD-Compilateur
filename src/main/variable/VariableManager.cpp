@@ -14,11 +14,11 @@ int VariableManager::computeNextIndex(TypeName type)
     }
     else
     {*/
-        std::cout << "Current index: " << currentVarIndex << "\t";
+        //std::cout << "Current index: " << currentVarIndex << "\t";
         switch (type)
         {
             case TYPE_CHAR:
-                std::cout << "New index: " << (currentVarIndex - 1) << "\t(Type char)" << std::endl;
+                //std::cout << "New index: " << (currentVarIndex - 1) << "\t(Type char)" << std::endl;
                 return (currentVarIndex -= 1);
 
             case TYPE_INT:
@@ -28,7 +28,7 @@ int VariableManager::computeNextIndex(TypeName type)
                     currentVarIndex = -currentVarIndex;
                     currentVarIndex = (-1) * (currentVarIndex - (currentVarIndex % 4) + 4);
                 }
-                std::cout << "New index: " << (currentVarIndex - 4) << "\t(Type int)" << std::endl;
+                //std::cout << "New index: " << (currentVarIndex - 4) << "\t(Type int)" << std::endl;
                 return (currentVarIndex -= 4);
         }
     //}
@@ -48,12 +48,16 @@ bool VariableManager::checkVarExists(std::string name)
 }
 VarData VariableManager::getVariable(std::string name)
 {
+    // TODO: refactor, this function has a huge edge effect
     varDataCollection.at(name).WitnessUsage(); // var used
     return varDataCollection.find(name)->second;
 }
 
-VarData VariableManager::addVariable(std::string varName, size_t lineNumber, TypeName typeName)
-{
+VarData VariableManager::addVariable(
+    std::string varName, 
+    size_t lineNumber, 
+    TypeName typeName
+) {
     std::cout << "Adding to VariableManager with typename " << typeName << std::endl;
     // check if the name is already take
     std::map<std::string, VarData>::iterator it = varDataCollection.find(varName);
@@ -63,7 +67,7 @@ VarData VariableManager::addVariable(std::string varName, size_t lineNumber, Typ
     }
     else
     {
-        std::cout << "Computing next index with typename " << typeName << std::endl;
+        //std::cout << "Computing next index with typename " << typeName << std::endl;
         int newIndex = computeNextIndex(typeName);
         // if temp var, update with nex index
         if (varName == TEMP_BASE_NAME)
@@ -80,8 +84,24 @@ VarData VariableManager::addVariable(std::string varName, size_t lineNumber, Typ
 
         varDataCollection.insert(
             std::pair<std::string, VarData>(
-                varName,
-                newVar));
+                varName, 
+                newVar
+            )
+        );
+        
+        // before returning, update the stack frame size
+        switch(newVar.GetTypeName())
+        {
+            case TYPE_CHAR:
+                stackFrameByteSize += 1;
+                break;
+            case TYPE_INT:
+                stackFrameByteSize += 4;
+                break;
+            default:
+                break;
+        }
+
         return newVar;
     }
 }

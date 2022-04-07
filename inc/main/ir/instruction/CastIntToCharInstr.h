@@ -8,18 +8,20 @@
 #include "ir/instruction/IRInstr.h"
 #include "variable/TypeName.h"
 
-class CastIntToCharInstr : public IRInstr {
+class CastIntToCharInstr : public IRInstr 
+{
    public:
-    /**
-     * @brief Construct a new CastIntToChar Instr object
-     *
-     * @param bb
-     * @param t
-     * @param params
-     * var1 = (char)var2; => first parameter -> var1 | second parameter -> var2
-     */
-    CastIntToCharInstr(Block *bb, TypeName t, std::vector<VarData> params)
-        : IRInstr(bb, t, params){};
+        /**
+         * @brief Construct a new CastIntToChar Instr object
+         *
+         * @param bb
+         * @param params
+         * var1 = (char)var2; => first parameter -> var1 | second parameter -> var2
+         */
+        CastIntToCharInstr(
+            Block *bb, 
+            std::vector<VarData> params
+            ) : IRInstr(bb, IR_CastIntToCharInstr, params) {};
 
-    virtual void gen_asm(std::ostream &o);
+        virtual void gen_asm(std::ostream &o);
 };

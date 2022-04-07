@@ -80,6 +80,16 @@ class VariableManager{
         VariableManager(){}
         virtual ~VariableManager() {}
 
+        // getters & setters
+        inline int GetStackFrameByteSize() const
+        {
+            return stackFrameByteSize;
+        }
+        inline void IncrementStackFrameByteSize(int increment)
+        {
+            stackFrameByteSize += increment;
+        }
+
     private:
         /**
          * @brief the free index available
@@ -97,10 +107,12 @@ class VariableManager{
          */
         int countAllTempVar = 0;
         /**
-         * @brief map variable map and variable data
+         * @brief map variable name and variable data
          *
          */
         std::map<std::string, VarData> varDataCollection;
+        // size in byte of all allocated local variables
+        int stackFrameByteSize = 0; 
 
         /**
          * @brief compute the next index and update freeIndex or currentVarIndex

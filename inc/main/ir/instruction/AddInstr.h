@@ -15,11 +15,13 @@ public:
      * @brief Construct a new Add Instr object
      *
      * @param bb
-     * @param t
      * @param params
      * var1 = var2 + var3; => first parameter -> var1 | second parameter -> var2 | third parameter -> var3
      */
-    AddInstr(Block *bb, TypeName t, std::vector<VarData> params) : IRInstr(bb, t, params){};
+    AddInstr(
+        Block *bb, 
+        std::vector<VarData> params
+    ) : IRInstr(bb, IR_AddInstr, params){};
 
     virtual void gen_asm(std::ostream &o);
 };

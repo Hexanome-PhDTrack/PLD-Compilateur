@@ -162,8 +162,7 @@ for j in jobs:
             break # and skip the 'else' branch
     else:
         unique_jobs.append(j)
-# jobs=sorted(unique_jobs)
-# debug: after deduplication
+
 if args.debug:
     print("debug: list of test-cases after deduplication:"," ".join(jobs))
 
@@ -228,7 +227,11 @@ for jobindex, jobname in enumerate(jobs):
     ## both compilers  did produce an  executable, so now we  run both
     ## these executables and compare the results.
 
-    command("./exe-ifcc","ifcc-execute.txt")
+    try:
+        command("./exe-ifcc","ifcc-execute.txt")
+    except Exception as e:
+        print(bcolors.FAIL + "TEST " + str(jobindex) + ": FAIL (" + str(e) + ")" + bcolors.RESET)
+
     if open("gcc-execute.txt").read() != open("ifcc-execute.txt").read() :
         print(bcolors.FAIL + "\tRESULT " + str(jobindex) + ": FAIL (different results at execution)" + bcolors.RESET)
         if args.verbose:

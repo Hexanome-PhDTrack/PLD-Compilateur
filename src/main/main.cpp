@@ -20,22 +20,22 @@ int main(int argn, const char **argv) {
     std::filebuf targetFileBuffer;
 
     // get input file
-    ifstream fileStream(argv[1]);
+    std::string inputFileName = argv[1];
+    ifstream fileStream(inputFileName);
     if(!fileStream.good()) {
         cout << "File not found. Please provide a valid file." << endl;
         return 1;
     }
     in << fileStream.rdbuf();
 
+    std::string targetFileName;
     if (argn==2) {
-        std::string targetName(
-            std::regex_replace(argv[1], std::regex(".c$"), ".s")
-        );
-        targetFileBuffer.open(targetName,std::ios::out);
+        targetFileName = std::regex_replace(argv[1], std::regex(".c$"), ".s");
+        targetFileBuffer.open(targetFileName,std::ios::out);
     }
     else if (argn == 3) {
-        std::string targetName(argv[2]);
-        targetFileBuffer.open(targetName,std::ios::out);
+        targetFileName = argv[2];
+        targetFileBuffer.open(targetFileName,std::ios::out);
     }
     else
     {
@@ -79,6 +79,15 @@ int main(int argn, const char **argv) {
 
     if(targetFileBuffer.is_open()){
         targetFileBuffer.close();
+    }
+
+    // check generated file is not empty or composed only of whitespaces
+    ifstream generatedFileStream(targetFileName);
+    stringstream generatedFile;
+    generatedFile << generatedFileStream.rdbuf();
+    if(generatedFile.str().empty() || generatedFile.str() == " \n"){
+        cerr << "error: generated file should not be empty." << endl;
+        exit(1);
     }
     
     return success;

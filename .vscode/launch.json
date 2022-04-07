@@ -75,6 +75,174 @@
                     "ignoreFailures": true
                 }
             ]
+        },
+        {
+            "name": "assignment function call",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/ifcc",
+            "args": ["/home/onyr/Documents/4if/phd_track/PLD-Compilateur/tests/testfiles/function_calls/getchar.c", "putchar.s"],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "very invalid program",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/ifcc",
+            "args": ["/home/onyr/Documents/4if/phd_track/PLD-Compilateur/tests/testfiles/2_invalid_program.c", "putchar.s"],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "function call inside return",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/ifcc",
+            "args": ["/home/onyr/Documents/4if/phd_track/PLD-Compilateur/tests/testfiles/functions/multi_Fct.c", "putchar.s"],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "multi_FctParam",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/ifcc",
+            "args": ["/home/onyr/Documents/4if/phd_track/PLD-Compilateur/tests/testfiles/functions/multi_FctParam.c", "putchar.s"],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "return 42",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/ifcc",
+            "args": ["/home/onyr/Documents/4if/s2/gram_langages/PLD-Compilateur/tests/testfiles/1_return42.c"],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "function_6_params",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/ifcc",
+            "args": ["/home/onyr/Documents/4if/phd_track/PLD-Compilateur/tests/testfiles/function_declarations/function_6_params.c", "putchar.s"],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "while function segfault",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/ifcc",
+            "args": ["/home/onyr/Documents/4if/phd_track/PLD-Compilateur/tests/testfiles/loops/while_function.c", "putchar.s"],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
         }
     ]
 }

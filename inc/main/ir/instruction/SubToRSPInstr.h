@@ -20,8 +20,7 @@ public:
 	SubToRSPInstr(
 		Block *bb,
         std::vector<VarData> params
-	) : IRInstr(bb, TYPE_FUNCTION, params) {};
+	) : IRInstr(bb, IR_SubToRSPInstr, params) {};
 
-	/** Actual code generation */
 	virtual void gen_asm(std::ostream &o);
 };

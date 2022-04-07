@@ -2,21 +2,26 @@ grammar ifcc;
 
 axiom : prog ;
 
-prog: func*
+prog: func+
     ;
 
 func : TYPE VAR '(' (TYPE VAR (',' TYPE VAR)*)? ')' block
      ;
 
-block : '{' instr* '}'
+block : '{' instr* (funcReturn)? '}'
       ;
 
-instr: funcReturn
-    | varAssign
+instr: varAssign
     | varDefine
     | block
-    | functionCall
+    | call
+    | ifElseStatement
+    | whileStatement
     ;
+
+ifElseStatement: IF '(' expr ')' block (ELSE block)?;
+
+whileStatement: WHILE '(' expr ')' block ;
 
 funcReturn : RETURN expr ';' ;
 
@@ -25,26 +30,31 @@ varAssign: VAR '=' expr ';';
 varDefine: TYPE varDefineMember (',' varDefineMember)* ';';
 varDefineMember: VAR ('=' expr)?;
 
-functionCall: VAR '(' (expr (',' expr)*)? ')' ';';
+call: functionCall ';';
+functionCall: VAR '(' (expr (',' expr)*)? ')';
 
 expr: '(' expr ')' # parenthesis
+    | (OP_UNARY | MINUS='-') expr # unaryOp
     | expr OP_MUL_DIV expr # mulDiv
-    | expr OP_ADD_SUB expr # addSub
+    | expr OP_ADD_SUB=('+' | '-') expr # addSub
     | expr OP_COMPARE expr # compare
     | expr OP_BITWISE expr # bitwiseOp
-    | (NOT | MINUS)? (VAR | CONST) # value
+    | (VAR | CONST | CHAR) # value
+    | functionCall # callAndGet
     ;
 
-MINUS : ('-');
-NOT: '!';
+WHILE : 'while';
+IF : 'if' ;
+ELSE : 'else' ;
 RETURN : 'return' ;
-TYPE: ('int' | 'char');
+TYPE: ('void' | 'int' | 'char');
+OP_UNARY: ('!' | '~');
 OP_MUL_DIV: ('*' | '/');
-OP_ADD_SUB: ('+' | '-');
 OP_COMPARE: ('<' | '>' | '<=' | '>=' | '==' | '!=');
-OP_BITWISE: ('|' | '&' | '^');
-VAR: [a-zA-Z]+;
+OP_BITWISE: ('|' | '&' | '^' | '>>' | '<<');
+VAR: [a-zA-Z][0-9a-zA-Z]*;
 CONST : [0-9]+ ;
+CHAR : '\''.'\'';
 MULTI_LINE_COMMENT : '/*' .*? '*/' -> skip ;
 SINGLE_LINE_COMMENT : '//' .*? '\n' -> skip ;
 DIRECTIVE : '#' .*? '\n' -> skip ;

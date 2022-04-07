@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 
 // enum of types
 enum TypeName {
@@ -8,7 +9,8 @@ enum TypeName {
     TYPE_VOID,
     TYPE_ARRAY,
     TYPE_CHAR,
-    TYPE_FUNCTION
+    TYPE_UNKNOWN
 };
 
 TypeName getTypeNameFromString(std::string typeName);
+std::string getStringFromTypeName(TypeName typeName);

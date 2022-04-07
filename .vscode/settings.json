@@ -62,6 +62,7 @@
         "cerrno": "cpp",
         "regex": "cpp",
         "shared_mutex": "cpp",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "negValue.C": "cpp"
     }
 }

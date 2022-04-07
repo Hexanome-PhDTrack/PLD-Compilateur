@@ -1,10 +1,21 @@
 #include "ir/IntermediateRepresentation.h"
 
+IntermediateRepresentation::IntermediateRepresentation() {
+    // add known functions
+    // add putchar
+    Function * putchar = new Function("putchar", TYPE_VOID);
+    AddFunction("putchar", putchar);
+
+    // add getchar
+    Function * getchar = new Function("getchar", TYPE_CHAR);
+    AddFunction("getchar", getchar);
+}
+
 IntermediateRepresentation::~IntermediateRepresentation() {
-    for(int i = 0; i < (int)functionsToDelete.size(); i++){
-        delete functionsToDelete[i];
+    for (auto function : functionsToDelete) {
+        delete function;
     }
-    // do not dete calls, all their data is deleted elsewhere
+    // do not delete calls, all their data is deleted elsewhere
     //    + caller, callee deleted in loop above
     //    + callBlock deleted in CFG destructor
 }
@@ -33,6 +44,9 @@ std::vector<Function*> IntermediateRepresentation::getAllFunctions(){
 }
 
 void IntermediateRepresentation::gen_asm(std::ostream &o){
-    //getFunction("main") -> getControlFlowGraph() -> gen_asm(o);
-    getFunction("main")->gen_asm(o);
+    //getFunction("main")->gen_asm(o);
+    // generate asm for all functions
+    for (auto function : getAllFunctions()) {
+        function->gen_asm(o);
+    }
 }

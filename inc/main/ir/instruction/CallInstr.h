@@ -14,7 +14,7 @@ private:
 	std::string functionName;
 
 public:
-/**
+	/**
 	 * @brief Construct a new Bit Xor Instr object
 	 *
 	 * @param bb
@@ -25,9 +25,8 @@ public:
 		Block *bb, 
 		std::string functionName, 
 		std::vector<VarData> params
-	) : IRInstr(bb, TYPE_FUNCTION, params),
+	) : IRInstr(bb, IR_CallInstr, params),
 		functionName(functionName) {};
 
-	/** Actual code generation */
 	virtual void gen_asm(std::ostream &o);
 };

@@ -7,6 +7,10 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
+#include <utility>
+
+class ControlFlowGraph; // circular dependency
 
 class Function {
     private:
@@ -14,6 +18,7 @@ class Function {
 
         ControlFlowGraph * cfg;
 
+        std::vector<std::string> argumentNames;
         TypeName returnType;
         
     public:
@@ -22,7 +27,16 @@ class Function {
         void gen_asm_prologue(std::ostream& o);
         void gen_asm_epilogue(std::ostream& o);
 
-        std::string getName();
+        std::string GetName();
+        VarData AddArgument(
+            std::string arg, 
+            size_t lineNumber, 
+            TypeName type
+        );
+        VarData GetArgument(std::string arg);
+        size_t GetArgumentIndex(std::string arg);
+        std::vector<std::string> GetArgumentNames();
+        std::vector<std::pair<std::string, VarData>> GetArguments();
 
         TypeName getReturnType();
 
