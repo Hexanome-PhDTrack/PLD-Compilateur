@@ -29,16 +29,16 @@ public:
 		Block *bb,
 		std::vector<VarData> params,
         std::string argumentRegister,
-		std::string scope
-	);
-	
+        std::string scope
+    );
+
 	// extra params moving via register
 	MoveFunctionParamInstr(
 		Block *bb,
 		std::vector<VarData> params,
-		VariableManager * variableManager,
-		std::string scope
-	);
+        VariableManager * variableManager,
+        std::string scope
+    );
 
 	virtual void gen_asm(std::ostream &o);
 };

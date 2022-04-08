@@ -1,6 +1,6 @@
 grammar ifcc;
 
-axiom : prog ;
+axiom : prog EOF;
 
 prog: func+
     ;
