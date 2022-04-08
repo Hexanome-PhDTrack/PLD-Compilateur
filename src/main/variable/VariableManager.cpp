@@ -39,28 +39,100 @@ bool VariableManager::isTemp(std::string varName) const
     return varName.substr(0, TEMP_BASE_NAME.size()) == TEMP_BASE_NAME;
 }
 
+std::string VariableManager::getVariableFullName(std::string name, std::string scope){
+    return name+scope;
+}
+
 ///////////////////////////////////////////////////////////////////////////
 
-bool VariableManager::checkVarExists(std::string name)
+int VariableManager::getScopeDepth(std::string fullName)
 {
-    std::map<std::string, VarData>::iterator it = varDataCollection.find(name);
-    return it != varDataCollection.end();
+    //first we need to get scope size
+
+    for (int i = fullName.size() - 1; i >= 0; i--) {
+        if (!isdigit(fullName[i]) && fullName[i] != '&')
+            return i + 1;
+    }
+
+    return 0;
 }
-VarData VariableManager::getVariable(std::string name)
+
+
+bool VariableManager::checkVarExists(std::string name, std::string scope)
+{
+    //first we need to get scope size
+    std::string fullName = getVariableFullName(name, scope);
+    int scopeSize = getScopeDepth(fullName);
+    std::string tmpScope = fullName.substr(scopeSize, fullName.size());
+    std::string tmpName = fullName.substr(0, scopeSize);
+    std::map<std::string, VarData>::iterator it;
+
+    while (tmpScope.size() > 0) {
+        std::map<std::string, VarData>::iterator it = varDataCollection.find(getVariableFullName(tmpName, tmpScope));
+        if (it !=  varDataCollection.end()) {
+            return true;
+        }
+
+        //reduce the scope
+        size_t lastPos = tmpScope.find_last_of('&');
+        if (lastPos != std::string::npos) {
+            tmpScope = tmpScope.substr(0, lastPos);
+        } else {
+            tmpScope = "";
+        }
+    }
+    return false;
+}
+
+bool VariableManager::checkVarExistsInScope(std::string name, std::string scope){
+    std::map<std::string, VarData>::iterator it = varDataCollection.find(getVariableFullName(name, scope));
+    if (it !=  varDataCollection.end()) {
+        return true;
+    }
+    return false;
+}
+
+
+
+VarData VariableManager::getVariable(std::string name, std::string scope)
 {
     // TODO: refactor, this function has a huge edge effect
-    varDataCollection.at(name).WitnessUsage(); // var used
-    return varDataCollection.find(name)->second;
+    std::string fullName = getVariableFullName(name, scope);
+    int scopeSize = getScopeDepth(fullName);
+    std::string tmpScope = fullName.substr(scopeSize, fullName.size()); 
+    std::string tmpName = fullName.substr(0, scopeSize);
+    std::map<std::string, VarData>::iterator it;
+
+    while (tmpScope.size() > 0) {
+        std::map<std::string, VarData>::iterator it = varDataCollection.find(getVariableFullName(tmpName, tmpScope));
+        if (it !=  varDataCollection.end()) {
+          break;
+        }
+
+        //reduce the scope
+        size_t lastPos = tmpScope.find_last_of('&');
+        if (lastPos != std::string::npos) {
+            tmpScope = tmpScope.substr(0, lastPos);
+        } else {
+            tmpScope = "";
+        }
+    }
+    varDataCollection.at(getVariableFullName(tmpName, tmpScope)).WitnessUsage(); // var used
+    return varDataCollection.find(getVariableFullName(tmpName, tmpScope))->second;
 }
 
 VarData VariableManager::addVariable(
-    std::string varName, 
+    std::string varName,
     size_t lineNumber, 
-    TypeName typeName
+    TypeName typeName,
+    std::string scope
 ) {
     std::cout << "Adding to VariableManager with typename " << typeName << std::endl;
     // check if the name is already take
-    std::map<std::string, VarData>::iterator it = varDataCollection.find(varName);
+
+    std::string fullName = getVariableFullName(varName, scope);
+
+    std::map<std::string, VarData>::iterator it = varDataCollection.find(fullName);
     if (it != varDataCollection.end())
     {
         return it->second;
@@ -72,20 +144,21 @@ VarData VariableManager::addVariable(
         // if temp var, update with nex index
         if (varName == TEMP_BASE_NAME)
         {
-            varName += countAllTempVar;
+            varName += std::to_string(countAllTempVar) + "s";//delimitation of scope
             countAllTempVar++;
+            fullName = getVariableFullName(varName, scope);
         }
         VarData newVar = VarData(
-            newIndex,
-            varName,
-            lineNumber,
-            typeName,
-            false);
+                newIndex,
+                fullName,
+                lineNumber,
+                typeName,
+                false);
 
         varDataCollection.insert(
             std::pair<std::string, VarData>(
-                varName, 
-                newVar
+                    fullName,
+                    newVar
             )
         );
         
@@ -106,10 +179,11 @@ VarData VariableManager::addVariable(
     }
 }
 
-VarData VariableManager::addConst(std::string varName, size_t lineNumber, TypeName typeName, int value)
+VarData VariableManager::addConst(std::string varName, size_t lineNumber, TypeName typeName, int value, std::string scope)
 {
     // check if the name is already take
-    std::map<std::string, VarData>::iterator it = varDataCollection.find(varName);
+    std::string fullName = getVariableFullName(varName, scope);
+    std::map<std::string, VarData>::iterator it = varDataCollection.find(fullName);
     if (it != varDataCollection.end())
     {
         return it->second;
@@ -120,22 +194,48 @@ VarData VariableManager::addConst(std::string varName, size_t lineNumber, TypeNa
         // if temp var, update with nex index
         if (varName == TEMP_BASE_NAME)
         {
-            varName += countAllTempVar;
+            varName = varName + std::to_string(countAllTempVar) + "s";//delimitation of scope
             countAllTempVar++;
+            fullName = getVariableFullName(varName, scope);
         }
+        
         VarData newVar = VarData(
-            newIndex,
-            varName,
-            lineNumber,
-            typeName,
-            true);
+                newIndex,
+                fullName,
+                lineNumber,
+                typeName,
+                true);
         newVar.SetValue(value);
 
         varDataCollection.insert(
             std::pair<std::string, VarData>(
-                varName,
-                newVar));
+                    fullName,
+                    newVar));
         return newVar;
+    }
+}
+
+bool VariableManager::removeTempVariable(std::string varName, std::string scope)
+{
+    std::string fullName = varName+scope;
+    // if temp var
+    if (isTemp(fullName))
+    {
+        std::map<std::string, VarData>::iterator it = varDataCollection.find(fullName);
+        if (it != varDataCollection.end())
+        {
+            freeIndex.push((*it).second.GetIndex());
+            varDataCollection.erase(it);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else
+    {
+        return false;
     }
 }
 

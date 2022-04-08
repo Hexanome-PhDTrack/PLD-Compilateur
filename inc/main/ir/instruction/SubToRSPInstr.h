@@ -19,8 +19,9 @@ public:
      */
 	SubToRSPInstr(
 		Block *bb,
-        std::vector<VarData> params
-	) : IRInstr(bb, IR_SubToRSPInstr, params) {};
+        std::vector<VarData> params,
+        std::string scope
+	) : IRInstr(bb, IR_SubToRSPInstr, params,scope) {};
 
 	virtual void gen_asm(std::ostream &o);
 };

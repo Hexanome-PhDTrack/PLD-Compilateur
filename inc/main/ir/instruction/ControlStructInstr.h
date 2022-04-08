@@ -12,8 +12,9 @@ public:
 	 */
 	ControlStructInstr(
 		Block *bb, 
-		std::vector<VarData> params
-	) : IRInstr(bb, IR_ControlStructInstr, params){};
+		std::vector<VarData> params,
+        std::string scope
+	) : IRInstr(bb, IR_ControlStructInstr, params,scope){};
 
 	virtual void gen_asm(std::ostream &o);
 };

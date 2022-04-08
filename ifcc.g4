@@ -52,7 +52,7 @@ OP_UNARY: ('!' | '~');
 OP_MUL_DIV: ('*' | '/');
 OP_COMPARE: ('<' | '>' | '<=' | '>=' | '==' | '!=');
 OP_BITWISE: ('|' | '&' | '^' | '>>' | '<<');
-VAR: [a-zA-Z][0-9a-zA-Z]*;
+VAR: [a-zA-Z][0-9a-zA-Z_]*;
 CONST : [0-9]+ ;
 CHAR : '\''.'\'';
 MULTI_LINE_COMMENT : '/*' .*? '*/' -> skip ;

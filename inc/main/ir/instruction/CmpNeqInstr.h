@@ -20,8 +20,9 @@ public:
 	 */
 	CmpNeqInstr(
 		Block *bb, 
-		std::vector<VarData> params
-	) : IRInstr(bb, IR_CmpNeqInstr, params) {};
+		std::vector<VarData> params,
+        std::string scope
+	) : IRInstr(bb, IR_CmpNeqInstr, params,scope) {};
 
 	virtual void gen_asm(std::ostream &o);
 };
