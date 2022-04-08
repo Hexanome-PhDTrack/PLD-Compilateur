@@ -749,11 +749,9 @@ antlrcpp::Any Visitor::visitUnaryOp(ifccParser::UnaryOpContext *ctx)
 
     return newVar;
 }
-
-
 void BaseVisitor::increaseScope() {
     int currentSize = count(currentScope.begin(), currentScope.end(), '&') + 1;
-    if (currentSize >= allScopes.size()) {
+    if (currentSize >= (int)allScopes.size()) {
         allScopes.push_back(0);
     }
     currentScope = currentScope + "&" + std::to_string(allScopes[currentSize]++);

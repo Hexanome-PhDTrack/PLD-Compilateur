@@ -15,7 +15,7 @@ private:
     bool isMovingOnStack = false;
 	std::string argumentRegister;
 	VariableManager * variableManager = nullptr;
-
+	
 public:
 /**
 	 * @brief Construct a new Bit Xor Instr object
