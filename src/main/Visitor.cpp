@@ -497,19 +497,14 @@ antlrcpp::Any Visitor::visitCallAndGet(ifccParser::CallAndGetContext *ctx)
     // check function is not void: visit children, get return value, check if return value is void
     VarData returnedVar = visitFunctionCall(ctx->functionCall());
 
-    // check if returnedVar is void
     std::string functionName = ctx->functionCall()->VAR()->getText();
+
+    // check if returnedVar is void
     Function *function = IR.getFunction(functionName);
     if (returnedVar.GetTypeName() == TYPE_VOID)
     {
         VoidFunctionCallError *errorCustom = new VoidFunctionCallError(*function);
         throwError(errorCustom);
-    }
-
-    // check for custom function
-    if (functionName == "vsum") {
-        Function * vsum = new Function("vsum", TYPE_INT);
-        IR.AddFunction("vsum", vsum);
     }
 
     return returnedVar;
@@ -522,10 +517,18 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
     // std::string functionName = ctx->getText();
     // functionName = functionName.substr(0, functionName.find('(')); // remove all characters starting with first '('
 
-    // TODO: check if function is defined (already known)
+    // check if function is defined (already known)
     // NOTE: putchar and getchar are always defined
     std::string functionName = ctx->VAR()->getText();
-    Function *function = IR.getFunction(functionName); // TODO: check if function is defined
+
+    // check for custom function
+    if (functionName == "vsum") {
+        Function * vsum = new Function("vsum", TYPE_INT);
+        IR.AddFunction("vsum", vsum);
+    } 
+    Function *function = IR.getFunction(functionName);
+
+    // check if function is defined
     if(function == nullptr)
     {
         UndefinedFunctionError *errorCustom = new UndefinedFunctionError(functionName);
@@ -571,7 +574,6 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
         std::vector<VarData> moveParams;
         moveParams.push_back(currentParam);
 
-        // TODO: refactor this to be shorter
         if (counter < 6)
         {
             // pass 6 first params to registers

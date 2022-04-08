@@ -74,6 +74,10 @@ To run the produced executables, run `./bin/ifcc <path/file.c>`.
 
 1. `make clean` or `make clear` to delete generated, build and executable files.
 
+### Using ANTLR Gui visualization
+
+1. Make sure the ANTLR files are compiled. Use `make antlr` if it is not the case.
+2. Run `make gui FILE=<file_path.c>` to run the ANTLR Gui analysis of the parsing on the provided FILE.
 
 ## Manual antlr4 and compiling
 
