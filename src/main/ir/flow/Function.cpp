@@ -128,6 +128,21 @@ void Function::gen_asm_vsum(std::ostream &o)
 
     // read file line by line and store in lines
     std::ifstream file("res/vsum.s");
+
+    // check file not empty
+    if (file.peek() == std::ifstream::traits_type::eof()) {
+        std::cerr << "Error: res/vsum.s is empty" << std::endl;
+
+        // reopening file
+        file = std::ifstream("../../res/vsum.s");
+
+        // check file not empty
+        if (file.peek() == std::ifstream::traits_type::eof()) {
+            std::cerr << "Error: ../res/vsum.s is empty" << std::endl;
+            exit(1);
+        }
+    }
+
     std::string line;
     while (std::getline(file, line)) {
         lines.push_back(line);

@@ -36,7 +36,11 @@ antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx)
 antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
 {
     // create current function
-    currentFunction = new Function((ctx->VAR()[0])->getText(), TYPE_INT);
+    currentFunction = new Function(
+        (ctx->VAR()[0])->getText(), 
+        TYPE_INT //getTypeNameFromString((ctx->TYPE()[0])->getText())
+    );
+
     ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
     Block *newBlock = cfg->AddBlock();
 
@@ -493,6 +497,12 @@ antlrcpp::Any Visitor::visitCallAndGet(ifccParser::CallAndGetContext *ctx)
     {
         VoidFunctionCallError *errorCustom = new VoidFunctionCallError(*function);
         throwError(errorCustom);
+    }
+
+    // check for custom function
+    if (functionName == "vsum") {
+        Function * vsum = new Function("vsum", TYPE_INT);
+        IR.AddFunction("vsum", vsum);
     }
 
     return returnedVar;

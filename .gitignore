@@ -15,6 +15,7 @@ bin/*
 *.o
 compiler/ifcc
 bin/
+input
 
 # exclude temporary files
 tmp/

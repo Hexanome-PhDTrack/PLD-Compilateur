@@ -5,7 +5,7 @@ axiom : prog ;
 prog: func+
     ;
 
-func : TYPE VAR '(' (TYPE VAR (',' TYPE VAR)*)? ')' block
+func : TYPE VAR '(' (TYPE VAR (',' TYPE VAR)*)? (',' VARIADIC)? ')' block
      ;
 
 block : '{' instr* (funcReturn)? '}'
@@ -59,3 +59,4 @@ MULTI_LINE_COMMENT : '/*' .*? '*/' -> skip ;
 SINGLE_LINE_COMMENT : '//' .*? '\n' -> skip ;
 DIRECTIVE : '#' .*? '\n' -> skip ;
 WS    : [ \t\r\n] -> channel(HIDDEN);
+VARIADIC : '...';
