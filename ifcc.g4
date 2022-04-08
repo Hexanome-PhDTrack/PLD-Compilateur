@@ -2,7 +2,7 @@ grammar ifcc;
 
 axiom : prog ;
 
-prog: func+
+prog: func+ EOF
     ;
 
 func : TYPE VAR '(' (TYPE VAR (',' TYPE VAR)*)? ')' block
