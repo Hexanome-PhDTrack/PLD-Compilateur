@@ -6,7 +6,7 @@ MoveFunctionParamInstr::MoveFunctionParamInstr(
     std::vector<VarData> params,
     std::string argumentRegister,
     std::string scope
-) : IRInstr(bb, IR_MoveFunctionParamInstr, params, scope) 
+) : IRInstr(bb, IR_MoveFunctionParamInstr, params,scope)
 {
     this->argumentRegister = argumentRegister;
 };
@@ -17,7 +17,7 @@ MoveFunctionParamInstr::MoveFunctionParamInstr(
     std::vector<VarData> params,
     VariableManager * variableManager,
     std::string scope
-) : IRInstr(bb, IR_MoveFunctionParamInstr, params, scope) {
+) : IRInstr(bb, IR_MoveFunctionParamInstr, params,scope) {
     this->isMovingOnStack = true;
     this->variableManager = variableManager;
 

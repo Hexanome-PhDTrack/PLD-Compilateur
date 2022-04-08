@@ -86,7 +86,7 @@ antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
 antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *ctx)
 {
     increaseScope();
-    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();    
+    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
     int i = 0;
     for (auto instr : ctx->instr())
     {
@@ -228,9 +228,9 @@ antlrcpp::Any Visitor::visitVarDefineMember(ifccParser::VarDefineMemberContext *
 
     ifccParser::VarDefineContext *varDefCtx = (ifccParser::VarDefineContext *)(ctx->parent);
     TypeName newVarType = getTypeNameFromString(varDefCtx->TYPE()->getText());
-    // std::cout << "New variable of type " << varDefCtx->TYPE()->getText() << std::endl;
+    //std::cout << "New variable of type " << varDefCtx->TYPE()->getText() << std::endl;
     VarData newVar = cfg->add_to_symbol_table(ctx->VAR()->getText(), ctx->getStart()->getLine(), newVarType,currentScope);
-    // std::cout << "TypeName: " << newVar.GetTypeName() << std::endl;
+    //std::cout << "TypeName: " << newVar.GetTypeName() << std::endl;
     if (ctx->expr())
     {
         VarData computedVariable = visit(ctx->expr());
@@ -429,11 +429,11 @@ antlrcpp::Any Visitor::visitBitwiseOp(ifccParser::BitwiseOpContext *ctx)
     }
     else if (operatorSymbol == ">>")
     {
-        currentBlock->AddIRInstr(new BitRightShiftInstr(currentBlock, params, currentScope));
+        currentBlock->AddIRInstr(new BitRightShiftInstr(currentBlock, params,currentScope));
     }
     else if (operatorSymbol == "<<")
     {
-        currentBlock->AddIRInstr(new BitLeftShiftInstr(currentBlock, params, currentScope));
+        currentBlock->AddIRInstr(new BitLeftShiftInstr(currentBlock, params,currentScope));
     }
 
     return newVar;
@@ -564,9 +564,7 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
                 new MoveFunctionParamInstr(
                     currentBlock,
                     moveParams,
-                    registers[counter],
-                    currentScope)
-            );
+                    registers[counter],currentScope));
         }
         else
         {
@@ -578,8 +576,7 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
                     currentBlock,
                     moveParams,
                     cfg->getVariableManager(),
-                    currentScope
-                    ));
+                    currentScope));
         }
         counter++;
     }
@@ -718,7 +715,7 @@ antlrcpp::Any Visitor::visitWhileStatement(ifccParser::WhileStatementContext *ct
 antlrcpp::Any Visitor::visitUnaryOp(ifccParser::UnaryOpContext *ctx)
 {
     ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
-    VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT, currentScope);
+    VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT,currentScope);
 
     VarData currVar = visit(ctx->expr()).as<VarData>();
     cfg->removeTempVariable(currVar);
@@ -735,18 +732,18 @@ antlrcpp::Any Visitor::visitUnaryOp(ifccParser::UnaryOpContext *ctx)
 
         }*/
         std::cout << ctx->getText() << std::endl;
-        currentBlock->AddIRInstr(new NegInstr(currentBlock, params, currentScope));
+        currentBlock->AddIRInstr(new NegInstr(currentBlock, params,currentScope));
     }
     else if (ctx->OP_UNARY())
     {
         std::string operatorSymbol = ctx->OP_UNARY()->getText();
         if (operatorSymbol == "!")
         {
-            currentBlock->AddIRInstr(new BitNotInstr(currentBlock, params, currentScope));
+            currentBlock->AddIRInstr(new BitNotInstr(currentBlock, params,currentScope));
         }
         else if (operatorSymbol == "~")
         {
-            currentBlock->AddIRInstr(new BitComplementInstr(currentBlock, params, currentScope));
+            currentBlock->AddIRInstr(new BitComplementInstr(currentBlock, params,currentScope));
         }
     }
 
