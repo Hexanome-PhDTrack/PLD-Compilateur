@@ -35,8 +35,16 @@ void IntermediateRepresentation::AddFunction(std::string name, Function* functio
     functionsToDelete.push_back(function);
 }
 
-Function * IntermediateRepresentation::getFunction(std::string name){
-    return functions.find(name)->second;
+Function * IntermediateRepresentation::getFunction(std::string name) {
+    auto found = functions.find(name);
+    Function * function = nullptr;
+
+    // check function was found
+    if (found != functions.end()) {
+        function = found->second;
+    }
+
+    return function;
 }
 
 std::vector<Function*> IntermediateRepresentation::getAllFunctions(){

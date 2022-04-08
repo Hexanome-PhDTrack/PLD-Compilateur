@@ -29,6 +29,9 @@ public:
      * @return Function* 
      */
     Function * getFunction(std::string name);
+    inline std::map<std::string, Function*> GetFunctions() {
+        return functions;
+    }
 
     /**
      * @brief Get the All Functions object

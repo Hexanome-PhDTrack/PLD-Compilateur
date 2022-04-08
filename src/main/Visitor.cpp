@@ -526,6 +526,11 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
     // NOTE: putchar and getchar are always defined
     std::string functionName = ctx->VAR()->getText();
     Function *function = IR.getFunction(functionName); // TODO: check if function is defined
+    if(function == nullptr)
+    {
+        UndefinedFunctionError *errorCustom = new UndefinedFunctionError(functionName);
+        throwError(errorCustom);
+    }
 
     // get all parameters
     std::vector<VarData> params;
