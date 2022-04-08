@@ -20,8 +20,9 @@ public:
 	 */
 	CmpEqInstr(
 		Block *bb, 
-		std::vector<VarData> params
-	) : IRInstr(bb, IR_CmpEqInstr, params) {};
+		std::vector<VarData> params,
+        std::string scope
+	) : IRInstr(bb, IR_CmpEqInstr, params,scope) {};
 
 	virtual void gen_asm(std::ostream &o);
 };

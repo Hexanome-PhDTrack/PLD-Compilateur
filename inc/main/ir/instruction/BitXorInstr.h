@@ -20,8 +20,9 @@ public:
 	 */
 	BitXorInstr(
 		Block *bb, 
-		std::vector<VarData> params
-	) : IRInstr(bb, IR_BitXorInstr, params){};
+		std::vector<VarData> params,
+        std::string scope
+	) : IRInstr(bb, IR_BitXorInstr, params,scope){};
 
 	virtual void gen_asm(std::ostream &o);
 };

@@ -24,8 +24,9 @@ public:
 	CallInstr(
 		Block *bb, 
 		std::string functionName, 
-		std::vector<VarData> params
-	) : IRInstr(bb, IR_CallInstr, params),
+		std::vector<VarData> params,
+        std::string scope
+	) : IRInstr(bb, IR_CallInstr, params,scope),
 		functionName(functionName) {};
 
 	virtual void gen_asm(std::ostream &o);

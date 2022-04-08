@@ -20,8 +20,9 @@ public:
 	 */
 	CmpLtInstr(
 		Block *bb, 
-		std::vector<VarData> params
-	) : IRInstr(bb, IR_CmpLtInstr, params) {};
+		std::vector<VarData> params,
+        std::string scope
+	) : IRInstr(bb, IR_CmpLtInstr, params,scope) {};
 
 	virtual void gen_asm(std::ostream &o);
 };

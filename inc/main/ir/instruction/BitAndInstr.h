@@ -20,8 +20,9 @@ public:
 	 */
 	BitAndInstr(
 		Block *bb, 
-		std::vector<VarData> params
-	) : IRInstr(bb, IR_BitAndInstr, params){};
+		std::vector<VarData> params,
+        std::string scope
+	) : IRInstr(bb, IR_BitAndInstr, params,scope){};
 
 	virtual void gen_asm(std::ostream &o);
 };

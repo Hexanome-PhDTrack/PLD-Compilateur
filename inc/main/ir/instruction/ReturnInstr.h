@@ -26,8 +26,9 @@ public:
     ReturnInstr(
         Block *bb, 
         std::vector<VarData> params,
-        std::string functionName
-    ) : IRInstr(bb, IR_ReturnInstr, params),
+        std::string functionName,
+        std::string scope
+    ) : IRInstr(bb, IR_ReturnInstr, params,scope),
         functionName(functionName) {};
 
     ReturnInstr(
