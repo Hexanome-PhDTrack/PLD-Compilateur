@@ -109,10 +109,14 @@ e
         VariableManager(){}
         virtual ~VariableManager() {}
 
-        // getters
+        // getters & setters
         inline int GetStackFrameByteSize() const
         {
             return stackFrameByteSize;
+        }
+        inline void IncrementStackFrameByteSize(int increment)
+        {
+            stackFrameByteSize += increment;
         }
 
     private:

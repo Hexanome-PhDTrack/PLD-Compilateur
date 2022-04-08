@@ -46,8 +46,7 @@ antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
 
     IR.AddFunction(
         (ctx->VAR()[0])->getText(),
-        currentFunction
-    );
+        currentFunction);
 
     for (size_t i = 1; i < ctx->VAR().size(); i++) // skip first VAR (function name)
     {
@@ -87,29 +86,31 @@ antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *ctx)
 antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *ctx)
 {
     increaseScope();
-    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();    
+    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
     int i = 0;
     for (auto instr : ctx->instr())
     {
-        if(instr -> block()){// si on rencontre un block, on doit continuer dans un nouveau block enchainé au block précédent
-            Block* suite = cfg->AddBlock();
+        if (instr->block())
+        { // si on rencontre un block, on doit continuer dans un nouveau block enchainé au block précédent
+            Block *suite = cfg->AddBlock();
             currentBlock->setExitTrue(suite);
             currentBlock = suite;
         }
-        //std::cout << "testI" << i << std::endl;
+        // std::cout << "testI" << i << std::endl;
         visit(instr);
-        //std::cout << "testI" << i << "fin"<< std::endl;
-        // if we have other instr, we recreate a block
+        // std::cout << "testI" << i << "fin"<< std::endl;
+        //  if we have other instr, we recreate a block
 
-        if(instr -> block()){
-            Block* suite = cfg->AddBlock();
+        if (instr->block())
+        {
+            Block *suite = cfg->AddBlock();
             currentBlock->setExitTrue(suite);
             currentBlock = suite;
         }
-        i ++;
+        i++;
     }
 
-    if(ctx->funcReturn())
+    if (ctx->funcReturn())
     {
         return visit(ctx->funcReturn());
     }
@@ -119,7 +120,7 @@ antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *ctx)
 
 antlrcpp::Any Visitor::visitInstr(ifccParser::InstrContext *ctx)
 {
-    
+
     return visitChildren(ctx);
 }
 
@@ -140,8 +141,7 @@ antlrcpp::Any Visitor::visitFuncReturn(ifccParser::FuncReturnContext *ctx)
     if (currentFunction->getReturnType() == TYPE_VOID)
     {
         instr = new ReturnInstr(
-            currentBlock, true, currentFunction->GetName()
-        );
+            currentBlock, true, currentFunction->GetName());
     }
     else
     {
@@ -282,18 +282,13 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
 
             case TYPE_INT:
             default:
-                if (ctx->MINUS)
-                {
-                    instr = new NegInstr(currentBlock, params,currentScope);
-                }
-                else
-                {
-                    instr = new CopyInstr(currentBlock, params,currentScope);
-                }
+                instr = new CopyInstr(currentBlock, params,currentScope);
                 break;
             }
             currentBlock->AddIRInstr(instr);
-        } else {
+        }
+        else
+        {
             VarData toThrow = VarData(-1, ctx->VAR()->getText(), ctx->getStart()->getLine(), TYPE_INT, false);
             UndeclaredVariableError *errorCustom = new UndeclaredVariableError(toThrow);
             throwError(errorCustom);
@@ -303,10 +298,6 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
     if (ctx->CONST())
     {
         std::string constValue = ctx->CONST()->getText();
-        if (ctx->MINUS)
-        {
-            constValue = "-" + constValue;
-        }
         VarData cst = cfg->add_const_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT, stoi(constValue),currentScope);
         // store cst to tmp
         std::vector<VarData> params;
@@ -316,7 +307,8 @@ antlrcpp::Any Visitor::visitValue(ifccParser::ValueContext *ctx)
         currentBlock->AddIRInstr(instr);
     }
 
-    if (ctx->CHAR()) {
+    if (ctx->CHAR())
+    {
         int charText = ctx->CHAR()->getText()[1];
         std::vector<VarData> params;
         VarData intChar = cfg->add_const_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT, charText,currentScope);
@@ -422,7 +414,7 @@ antlrcpp::Any Visitor::visitBitwiseOp(ifccParser::BitwiseOpContext *ctx)
     params.push_back(leftVar);
     params.push_back(rightVar);
 
-    /* |, &,ˆ */
+    /* |, &,ˆ, >>, << */
     if (operatorSymbol == "|")
     {
         currentBlock->AddIRInstr(new BitOrInstr(currentBlock, params,currentScope));
@@ -435,6 +427,15 @@ antlrcpp::Any Visitor::visitBitwiseOp(ifccParser::BitwiseOpContext *ctx)
     {
         currentBlock->AddIRInstr(new BitXorInstr(currentBlock, params,currentScope));
     }
+    else if (operatorSymbol == ">>")
+    {
+        currentBlock->AddIRInstr(new BitRightShiftInstr(currentBlock, params,currentScope));
+    }
+    else if (operatorSymbol == "<<")
+    {
+        currentBlock->AddIRInstr(new BitLeftShiftInstr(currentBlock, params,currentScope));
+    }
+
     return newVar;
 }
 
@@ -489,8 +490,6 @@ antlrcpp::Any Visitor::visitCall(ifccParser::CallContext *ctx)
 
 antlrcpp::Any Visitor::visitCallAndGet(ifccParser::CallAndGetContext *ctx)
 {
-    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
-
     // check function is not void: visit children, get return value, check if return value is void
     VarData returnedVar = visitFunctionCall(ctx->functionCall());
 
@@ -502,22 +501,6 @@ antlrcpp::Any Visitor::visitCallAndGet(ifccParser::CallAndGetContext *ctx)
         VoidFunctionCallError *errorCustom = new VoidFunctionCallError(*function);
         throwError(errorCustom);
     }
-
-    // check for MINUS
-    if (ctx->MINUS)
-    {
-        VarData newVarMinus = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), function->getReturnType(),currentScope);
-        std::vector<VarData> paramsNewVarMinus;
-        // var1 = -var2; => first parameter -> var1 | second parameter -> var2
-        paramsNewVarMinus.push_back(newVarMinus); // var1
-        paramsNewVarMinus.push_back(returnedVar); // var2
-
-        currentBlock->AddIRInstr(
-            new NegInstr(currentBlock, paramsNewVarMinus,currentScope));
-
-        returnedVar = newVarMinus;
-    }
-    // TODO: check for NOT
 
     return returnedVar;
 }
@@ -532,7 +515,7 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
     // TODO: check if function is defined (already known)
     // NOTE: putchar and getchar are always defined
     std::string functionName = ctx->VAR()->getText();
-    Function * function = IR.getFunction(functionName); // TODO: check if function is defined
+    Function *function = IR.getFunction(functionName); // TODO: check if function is defined
 
     // get all parameters
     std::vector<VarData> params;
@@ -564,9 +547,10 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
         }
     }
 
-    // move first 6 params to registers
+    // generate move instructions for all parameters
     std::vector<std::string> registers = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
     int counter = 0;
+    std::vector<IRInstr *> moveParamIRInstrs;
     for (VarData currentParam : params)
     {
         std::vector<VarData> moveParams;
@@ -576,11 +560,10 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
         if (counter < 6)
         {
             // pass 6 first params to registers
-            currentBlock->AddIRInstr(
+            moveParamIRInstrs.push_back(
                 new MoveFunctionParamInstr(
                     currentBlock,
                     moveParams,
-                    false, // flags indicate that we want to move param to register
                     registers[counter],currentScope));
         }
         else
@@ -588,17 +571,21 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
             // pass extra params to stack
             std::vector<VarData> moveParams;
             moveParams.push_back(currentParam);
-            currentBlock->AddIRInstr(
+            moveParamIRInstrs.push_back(
                 new MoveFunctionParamInstr(
                     currentBlock,
                     moveParams,
-                    true, // indicates that we want to move param through stack
-                    "",    // no register can be used while adding params to stack
-                    currentScope
-
-                    ));
+                    cfg->getVariableManager(),
+                    currentScope));
         }
         counter++;
+    }
+
+    // reverse instruction order (C takes params in reverse order (from right to left))
+    std::reverse(moveParamIRInstrs.begin(), moveParamIRInstrs.end());
+    for (IRInstr *currentInstr : moveParamIRInstrs)
+    {
+        currentBlock->AddIRInstr(currentInstr);
     }
 
     // call function
@@ -654,36 +641,40 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
 antlrcpp::Any Visitor::visitIfElseStatement(ifccParser::IfElseStatementContext *ctx) {
     increaseScope();
     ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
-    VarData exprResult = visit(ctx -> expr());
+    VarData exprResult = visit(ctx->expr());
 
     std::vector<VarData> params;
     params.push_back(exprResult);
 
     currentBlock->AddIRInstr(new ControlStructInstr(currentBlock, params,currentScope));
 
-    Block* lastBlock = currentBlock;
+    Block *lastBlock = currentBlock;
 
-    Block * ifBlock = cfg->AddBlock();
-    lastBlock-> setExitTrue(ifBlock);// link the block
+    Block *ifBlock = cfg->AddBlock();
+    lastBlock->setExitTrue(ifBlock); // link the block
 
-    Block * elseBlock;
-    if(ctx->ELSE()){
+    Block *elseBlock;
+    if (ctx->ELSE())
+    {
         elseBlock = cfg->AddBlock();
     }
 
-    Block * endIfBlock = cfg->AddBlock();// end if block
-    
+    Block *endIfBlock = cfg->AddBlock(); // end if block
+
     ifBlock->setExitTrue(endIfBlock); // link the block
 
     currentBlock = ifBlock;
     visit(ctx->block(0));
-    if(ctx->ELSE()){
-        elseBlock-> setExitTrue(endIfBlock);
-        lastBlock-> setExitFalse(elseBlock);
+    if (ctx->ELSE())
+    {
+        elseBlock->setExitTrue(endIfBlock);
+        lastBlock->setExitFalse(elseBlock);
         currentBlock = elseBlock;
         visit(ctx->block(1));
-    }else{
-        lastBlock-> setExitFalse(endIfBlock);
+    }
+    else
+    {
+        lastBlock->setExitFalse(endIfBlock);
     }
     currentBlock = endIfBlock;
     decreaseScope();
@@ -693,9 +684,9 @@ antlrcpp::Any Visitor::visitIfElseStatement(ifccParser::IfElseStatementContext *
 antlrcpp::Any Visitor::visitWhileStatement(ifccParser::WhileStatementContext *ctx){
     increaseScope();
     ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
-    Block* lastBlock = currentBlock;
+    Block *lastBlock = currentBlock;
 
-    Block * conditionBlock = cfg->AddBlock();// add test block to eval condition
+    Block *conditionBlock = cfg->AddBlock(); // add test block to eval condition
     lastBlock->setExitTrue(conditionBlock);
 
     currentBlock = conditionBlock; // compute the test
@@ -704,22 +695,59 @@ antlrcpp::Any Visitor::visitWhileStatement(ifccParser::WhileStatementContext *ct
     params.push_back(exprResult);
     currentBlock->AddIRInstr(new ControlStructInstr(currentBlock, params,currentScope));
 
-    Block* trueBlock = cfg->AddBlock(); // add true block and link it
+    Block *trueBlock = cfg->AddBlock(); // add true block and link it
     conditionBlock->setExitTrue(trueBlock);
 
-    Block* falseBlock = cfg->AddBlock(); // continue to the false block
+    Block *falseBlock = cfg->AddBlock(); // continue to the false block
 
     currentBlock = trueBlock; // compute the true block
     visit(ctx->block());
 
     currentBlock->setExitTrue(conditionBlock); // loop to the test from the current block
 
-    
     conditionBlock->setExitFalse(falseBlock);
 
     currentBlock = falseBlock;
     decreaseScope();
     return 0;
+}
+
+antlrcpp::Any Visitor::visitUnaryOp(ifccParser::UnaryOpContext *ctx)
+{
+    ControlFlowGraph *cfg = currentFunction->getControlFlowGraph();
+    VarData newVar = cfg->add_to_symbol_table("#tmp", ctx->getStart()->getLine(), TYPE_INT,currentScope);
+
+    VarData currVar = visit(ctx->expr()).as<VarData>();
+    cfg->removeTempVariable(currVar);
+
+    std::vector<VarData> params;
+    params.push_back(newVar);
+    params.push_back(currVar);
+
+    if (ctx->MINUS)
+    {
+        // Throwing an error in case of a double minus
+        /*if(ctx->expr()->getText().substr(0,1) == "-")
+        {
+
+        }*/
+        std::cout << ctx->getText() << std::endl;
+        currentBlock->AddIRInstr(new NegInstr(currentBlock, params,currentScope));
+    }
+    else if (ctx->OP_UNARY())
+    {
+        std::string operatorSymbol = ctx->OP_UNARY()->getText();
+        if (operatorSymbol == "!")
+        {
+            currentBlock->AddIRInstr(new BitNotInstr(currentBlock, params,currentScope));
+        }
+        else if (operatorSymbol == "~")
+        {
+            currentBlock->AddIRInstr(new BitComplementInstr(currentBlock, params,currentScope));
+        }
+    }
+
+    return newVar;
 }
 
 

@@ -34,6 +34,10 @@
 #include "ir/instruction/AddToRSPInstr.h"
 #include "ir/instruction/SubToRSPInstr.h"
 #include "ir/instruction/ControlStructInstr.h"
+#include "ir/instruction/BitLeftShiftInstr.h"
+#include "ir/instruction/BitRightShiftInstr.h"
+#include "ir/instruction/BitNotInstr.h"
+#include "ir/instruction/BitComplementInstr.h"
 
 class BaseVisitor : public ifccBaseVisitor
 {

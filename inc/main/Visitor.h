@@ -20,6 +20,9 @@
 #include <map>
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <vector>
+#include <algorithm>
 
 class  Visitor : public BaseVisitor {
 	public:
@@ -45,5 +48,6 @@ class  Visitor : public BaseVisitor {
 		virtual antlrcpp::Any visitFunctionCall(ifccParser::FunctionCallContext *ctx) override;
 		virtual antlrcpp::Any visitCallAndGet(ifccParser::CallAndGetContext *ctx) override;
 		virtual antlrcpp::Any visitWhileStatement(ifccParser::WhileStatementContext *ctx) override;
+		virtual antlrcpp::Any visitUnaryOp(ifccParser::UnaryOpContext *ctx) override;
 };
 

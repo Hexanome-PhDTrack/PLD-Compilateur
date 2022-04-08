@@ -221,11 +221,11 @@
             ]
         },
         {
-            "name": "test",
+            "name": "while function segfault",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/ifcc",
-            "args": ["/home/clement/documents/cours/4if/pld-comp/PLD-Compilateur/tmp/test.c", "./tmp/test.s"],
+            "args": ["/home/onyr/Documents/4if/phd_track/PLD-Compilateur/tests/testfiles/loops/while_function.c", "putchar.s"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

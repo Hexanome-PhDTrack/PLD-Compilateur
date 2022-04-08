@@ -1,6 +1,7 @@
 int main()
 {
     int a = 60;
-    int c = 2 >> a;
+    int b = 13;
+    int c = a ^ b ^ (-38);
     return c;
 }
