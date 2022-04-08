@@ -4,6 +4,8 @@ IntermediateRepresentation::IntermediateRepresentation() {
     // add known functions
     // add putchar
     Function * putchar = new Function("putchar", TYPE_VOID);
+    putchar->AddArgument("c", -1, TYPE_CHAR, "0");
+    putchar->SetVariadic(true);
     AddFunction("putchar", putchar);
 
     // add getchar

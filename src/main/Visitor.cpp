@@ -524,6 +524,7 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
     // check for custom function
     if (functionName == "vsum") {
         Function * vsum = new Function("vsum", TYPE_INT);
+        vsum->SetVariadic(true);
         IR.AddFunction("vsum", vsum);
     } 
     Function *function = IR.getFunction(functionName);
@@ -544,6 +545,34 @@ antlrcpp::Any Visitor::visitFunctionCall(ifccParser::FunctionCallContext *ctx)
     }
 
     // TODO: check params types are correct
+    if (!function->IsVariadic())
+    {
+        // check if params are in correct number
+        if (params.size() != function->GetArgumentCount())
+        {
+            WrongNumberOfParamsError *errorCustom = new WrongNumberOfParamsError(
+                *function, params.size(), function->GetArgumentCount()
+            );
+            throwError(errorCustom);
+        }
+
+        // check if params types are correct (type mismatch)
+        for (size_t i = 0; i < params.size(); i++)
+        {
+            TypeName paramType = params[i].GetTypeName();
+            TypeName expectedType = function->GetArgumentByIndex(i).GetTypeName();
+            if (paramType != expectedType)
+            {
+                // warning for type mismatch
+                ParamTypeMismatchWarning * warningCustom = new ParamTypeMismatchWarning(
+                    *function, params[i].GetVarName(), 
+                    getStringFromTypeName(paramType), 
+                    getStringFromTypeName(expectedType)
+                );
+                throwWarning(warningCustom);
+            }
+        }
+    }
 
     // 16 bit alignment: determine if a shift is needed to complete alignment
     int nbOfPushedParams = params.size() - 6;

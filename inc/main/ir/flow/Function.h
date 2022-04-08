@@ -21,6 +21,7 @@ class Function {
 
         std::vector<std::string> argumentNames;
         TypeName returnType;
+        bool isVariadic = false;
 
         void gen_asm_vsum(std::ostream &o);
         
@@ -38,8 +39,12 @@ class Function {
         );
         VarData GetArgument(std::string arg, std::string scope);
         size_t GetArgumentIndex(std::string arg);
+        VarData GetArgumentByIndex(size_t index);
         std::vector<std::string> GetArgumentNames();
         std::vector<std::pair<std::string, VarData>> GetArguments(std::string scope);
+        inline bool IsVariadic() { return isVariadic; }
+        inline void SetVariadic(bool variadic) { this->isVariadic = variadic; }
+        inline size_t GetArgumentCount() { return argumentNames.size(); }
 
         TypeName getReturnType();
 

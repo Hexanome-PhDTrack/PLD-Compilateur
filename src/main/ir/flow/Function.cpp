@@ -121,6 +121,11 @@ std::vector<std::pair<std::string, VarData>> Function::GetArguments(std::string 
     return args;
 }
 
+VarData Function::GetArgumentByIndex(size_t index) {
+    std::string argName = argumentNames.at(index);
+    return cfg->getVariableManager()->getVariable(argName, "0");
+}
+
 
 // specialized functions
 void Function::gen_asm_vsum(std::ostream &o)
